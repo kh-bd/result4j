@@ -10,6 +10,7 @@ import lombok.ToString;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -68,6 +69,15 @@ public interface Option<V> {
      * @param predicate predicate
      */
     Option<V> filter(Predicate<? super V> predicate);
+
+    /**
+     * Transform internal value by specified function.
+     *
+     * @param function transformer
+     * @param <R>      new result type
+     * @return transformed option
+     */
+    <R> Option<R> map(Function<? super V, ? extends R> function);
 
     /**
      * Create empty option value.
@@ -150,6 +160,11 @@ class None<V> implements Option<V> {
     public Option<V> filter(@NonNull Predicate<? super V> predicate) {
         return this;
     }
+
+    @Override
+    public <R> Option<R> map(@NonNull Function<? super V, ? extends R> function) {
+        return Option.none();
+    }
 }
 
 @ToString
@@ -190,5 +205,10 @@ class Some<V> implements Option<V> {
             return this;
         }
         return Option.none();
+    }
+
+    @Override
+    public <R> Option<R> map(Function<? super V, ? extends R> function) {
+        return Option.fromNullable(function.apply(value));
     }
 }

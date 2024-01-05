@@ -10,6 +10,7 @@
 
     <modules>
         <module>result4j-core</module>
+        <module>result4j-processor</module>
     </modules>
 
     <name>Result4j</name>
@@ -73,6 +74,11 @@
             <dependency>
                 <groupId>dev.khbd.result4j</groupId>
                 <artifactId>result4j-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>dev.khbd.result4j</groupId>
+                <artifactId>result4j-processor</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

@@ -11,7 +11,6 @@ import lombok.experimental.UtilityClass;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -171,9 +170,9 @@ public interface Try<V> {
     }
 
     /**
-     * Convert value to optional.
+     * Convert value to option.
      */
-    Optional<V> toOptional();
+    Option<V> toOption();
 
     /**
      * Convert value to stream.
@@ -386,29 +385,26 @@ public interface Try<V> {
     }
 
     /**
-     * Create try wrapper from optional value.
+     * Create try wrapper from option value.
      *
-     * @param opt           optional value
+     * @param option        option value
      * @param errorSupplier supplier for throwable
      * @param <T>           value type
-     * @return try with value if optional contains value and try with error otherwise
+     * @return try with value if option contains value and try with error otherwise
      */
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    static <T> Try<T> fromOptional(@NonNull Optional<T> opt, Supplier<Throwable> errorSupplier) {
-        return Try.of(opt::get)
-                .orElseF(it -> Try.failure(errorSupplier.get()));
+    static <T> Try<T> fromOption(@NonNull Option<T> option, Supplier<Throwable> errorSupplier) {
+        return option.map(Try::success).getOrElse(() -> Try.failure(errorSupplier.get()));
     }
 
     /**
-     * Create try wrapper from optional value.
+     * Create try wrapper from option value.
      *
-     * @param opt optional value
-     * @param <T> value type
-     * @return try with value if optional contains value and try with error otherwise
+     * @param option option value
+     * @param <T>    value type
+     * @return try with value if option contains value and try with error otherwise
      */
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    static <T> Try<T> fromOptional(@NonNull Optional<T> opt) {
-        return Try.of(opt::get);
+    static <T> Try<T> fromOption(@NonNull Option<T> option) {
+        return Try.of(option::get);
     }
 
 }
@@ -500,8 +496,8 @@ class Success<V> implements Try<V> {
     }
 
     @Override
-    public Optional<V> toOptional() {
-        return Optional.of(value);
+    public Option<V> toOption() {
+        return Option.some(value);
     }
 
     @Override
@@ -590,8 +586,8 @@ class Failure<V> implements Try<V> {
     }
 
     @Override
-    public Optional<V> toOptional() {
-        return Optional.empty();
+    public Option<V> toOption() {
+        return Option.none();
     }
 
     @Override

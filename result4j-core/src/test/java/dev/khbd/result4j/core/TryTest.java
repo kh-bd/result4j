@@ -12,7 +12,6 @@ import static org.mockito.Mockito.verify;
 import org.testng.annotations.Test;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -160,17 +159,17 @@ public class TryTest {
     }
 
     @Test
-    public void toOptional_valueIsFailure_returnEmpty() {
-        Optional<?> result = Try.failure(new RuntimeException("Ops")).toOptional();
+    public void toOption_valueIsFailure_returnEmpty() {
+        Option<?> result = Try.failure(new RuntimeException("Ops")).toOption();
 
-        assertThat(result).isEmpty();
+        assertThat(result.isEmpty()).isTrue();
     }
 
     @Test
-    public void toOptional_valueIsSuccess_returnNotEmpty() {
-        Optional<String> result = Try.success("hello").toOptional();
+    public void toOption_valueIsSuccess_returnNotEmpty() {
+        Option<String> result = Try.success("hello").toOption();
 
-        assertThat(result).hasValue("hello");
+        assertThat(result.get()).isEqualTo("hello");
     }
 
     @Test
@@ -270,15 +269,15 @@ public class TryTest {
     }
 
     @Test
-    public void fromOptional_valueIsNullAndThrowableSupplierExists_throwNPE() {
-        Throwable error = catchThrowable(() -> Try.fromOptional(null));
+    public void fromOption_valueIsNullAndThrowableSupplierExists_throwNPE() {
+        Throwable error = catchThrowable(() -> Try.fromOption(null));
 
         assertThat(error).isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    public void fromOptional_valueIsEmptyAndThrowableSupplierExists_returnErroneousTry() {
-        Try<?> result = Try.fromOptional(Optional.empty(), RuntimeException::new);
+    public void fromOption_valueIsEmptyAndThrowableSupplierExists_returnErroneousTry() {
+        Try<?> result = Try.fromOption(Option.none(), RuntimeException::new);
 
         Throwable error = catchThrowable(result::get);
 
@@ -286,22 +285,22 @@ public class TryTest {
     }
 
     @Test
-    public void fromOptional_valueIsNotEmptyAndThrowableSupplierExists_returnTryWithValue() {
-        String result = Try.fromOptional(Optional.of("value"), () -> new RuntimeException("")).get();
+    public void fromOption_valueIsNotEmptyAndThrowableSupplierExists_returnTryWithValue() {
+        String result = Try.fromOption(Option.some("value"), () -> new RuntimeException("")).get();
 
         assertThat(result).isEqualTo("value");
     }
 
     @Test
-    public void fromOptional_valueIsNull_throwNPE() {
-        Throwable error = catchThrowable(() -> Try.fromOptional(null));
+    public void fromOption_valueIsNull_throwNPE() {
+        Throwable error = catchThrowable(() -> Try.fromOption(null));
 
         assertThat(error).isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    public void fromOptional_valueIsEmpty_returnErroneousTry() {
-        Try<?> result = Try.fromOptional(Optional.empty());
+    public void fromOption_valueIsEmpty_returnErroneousTry() {
+        Try<?> result = Try.fromOption(Option.none());
 
         Throwable error = catchThrowable(result::get);
 
@@ -309,8 +308,8 @@ public class TryTest {
     }
 
     @Test
-    public void fromOptional_valueIsNotEmpty_returnTryWithValue() {
-        String result = Try.fromOptional(Optional.of("value")).get();
+    public void fromOption_valueIsNotEmpty_returnTryWithValue() {
+        String result = Try.fromOption(Option.some("value")).get();
 
         assertThat(result).isEqualTo("value");
     }

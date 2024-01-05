@@ -454,114 +454,79 @@ public class TryTest {
 
     @Test
     public void zip_firstTryIsErroneous_returnThem() {
-        Exception e = new Exception("");
-        Try<String> first = Try.failure(e);
+        Exception error = new Exception("");
+        Try<String> first = Try.failure(error);
         Try<String> second = Try.success("hello");
 
-        Try<Pair<String, String>> result = first.zip(second);
+        Try<String> result = first.zip(second, String::concat);
 
         assertThat(result.isFailure()).isTrue();
-        assertThat(result.getError()).isEqualTo(e);
+        assertThat(result.getError()).isEqualTo(error);
     }
 
     @Test
     public void zip_secondTryIsErroneous_returnThem() {
-        Exception error = new Exception("");
-        Try<String> first = Try.success("hello");
-        Try<String> second = Try.failure(error);
-
-        Try<Pair<String, String>> result = first.zip(second);
-
-        assertThat(result.isFailure()).isTrue();
-        assertThat(result.getError()).isEqualTo(error);
-    }
-
-    @Test
-    public void zip_bothContainsValue_returnPair() {
-        Try<String> first = Try.success("hello");
-        Try<String> second = Try.success("world");
-
-        Try<Pair<String, String>> result = first.zip(second);
-
-        assertThat(result.get()).isEqualTo(Pair.of("hello", "world"));
-    }
-
-    @Test
-    public void zipF_firstTryIsErroneous_returnThem() {
-        Exception error = new Exception("");
-        Try<String> first = Try.failure(error);
-        Try<String> second = Try.success("hello");
-
-        Try<String> result = first.zipF(second, String::concat);
-
-        assertThat(result.isFailure()).isTrue();
-        assertThat(result.getError()).isEqualTo(error);
-    }
-
-    @Test
-    public void zipF_secondTryIsErroneous_returnThem() {
         Throwable error = new RuntimeException("error");
         Try<String> first = Try.success("hello");
         Try<String> second = Try.failure(error);
 
-        Try<String> result = first.zipF(second, String::concat);
+        Try<String> result = first.zip(second, String::concat);
 
         assertThat(result.isFailure()).isTrue();
         assertThat(result.getError()).isEqualTo(error);
     }
 
     @Test
-    public void zipF_bothContainsValue_returnCombinedValue() {
+    public void zip_bothContainsValue_returnCombinedValue() {
         Try<String> first = Try.success("hello");
         Try<String> second = Try.success(" world");
 
-        Try<String> result = first.zipF(second, String::concat);
+        Try<String> result = first.zip(second, String::concat);
 
         assertThat(result.get()).isEqualTo("hello world");
     }
 
     @Test
-    public void zipFF_bothAreSuccessAndFunctionReturnSuccess_returnSuccess() {
+    public void zipF_bothAreSuccessAndFunctionReturnSuccess_returnSuccess() {
         Try<String> first = Try.success("hello");
         Try<String> second = Try.success(" world");
 
-        Try<String> result = first.zipFF(second, (v1, v2) -> Try.success(v1 + v2));
+        Try<String> result = first.zipF(second, (v1, v2) -> Try.success(v1 + v2));
 
         assertThat(result.get()).isEqualTo("hello world");
     }
 
     @Test
-    public void zipFF_bothAreSuccessAndFunctionReturnFail_returnFail() {
+    public void zipF_bothAreSuccessAndFunctionReturnFail_returnFail() {
         Try<String> first = Try.success("hello");
         Try<String> second = Try.success(" world");
         Exception error = new Exception("error");
 
-        Try<String> result = first.zipFF(second, (v1, v2) -> Try.failure(error));
+        Try<String> result = first.zipF(second, (v1, v2) -> Try.failure(error));
 
         assertThat(result.isSuccess()).isFalse();
         assertThat(result.getError()).isEqualTo(error);
     }
 
-
     @Test
-    public void zipFF_firstIsFail_returnFail() {
+    public void zipF_firstIsFail_returnFail() {
         Exception error = new Exception("error");
         Try<String> first = Try.failure(error);
         Try<String> second = Try.success(" world");
 
-        Try<String> result = first.zipFF(second, (v1, v2) -> Try.success(v1 + v2));
+        Try<String> result = first.zipF(second, (v1, v2) -> Try.success(v1 + v2));
 
         assertThat(result.isSuccess()).isFalse();
         assertThat(result.getError()).isEqualTo(error);
     }
 
     @Test
-    public void zipFF_secondIsFail_returnFail() {
+    public void zipF_secondIsFail_returnFail() {
         Exception error = new Exception("error");
         Try<String> first = Try.success("hello");
         Try<String> second = Try.failure(error);
 
-        Try<String> result = first.zipFF(second, (v1, v2) -> Try.success(v1 + v2));
+        Try<String> result = first.zipF(second, (v1, v2) -> Try.success(v1 + v2));
 
         assertThat(result.isSuccess()).isFalse();
         assertThat(result.getError()).isEqualTo(error);

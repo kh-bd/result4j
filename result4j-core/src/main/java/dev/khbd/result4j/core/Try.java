@@ -117,17 +117,6 @@ public interface Try<V> {
     Try<V> filter(Predicate<? super V> predicate, Supplier<Throwable> errorF);
 
     /**
-     * Zip with other value.
-     *
-     * @param other other try
-     * @param <U>   other try value type
-     * @return zipped try
-     */
-    default <U> Try<Pair<V, U>> zip(Try<U> other) {
-        return zipF(other, Pair::of);
-    }
-
-    /**
      * Zip with other value and apply function to them.
      *
      * @param other other try
@@ -136,8 +125,8 @@ public interface Try<V> {
      * @param <R>   result type
      * @return zipped and combined try value
      */
-    default <U, R> Try<R> zipF(Try<U> other, BiFunction<? super V, ? super U, ? extends R> func) {
-        return zipFF(other, (v1, v2) -> Try.success(func.apply(v1, v2)));
+    default <U, R> Try<R> zip(Try<U> other, BiFunction<? super V, ? super U, ? extends R> func) {
+        return zipF(other, (v1, v2) -> Try.success(func.apply(v1, v2)));
     }
 
     /**
@@ -149,7 +138,7 @@ public interface Try<V> {
      * @param <R>   result type
      * @return combined try value
      */
-    default <U, R> Try<R> zipFF(Try<U> other, BiFunction<? super V, ? super U, Try<R>> func) {
+    default <U, R> Try<R> zipF(Try<U> other, BiFunction<? super V, ? super U, Try<R>> func) {
         return flatMap(value -> other.flatMap(otherValue -> func.apply(value, otherValue)));
     }
 

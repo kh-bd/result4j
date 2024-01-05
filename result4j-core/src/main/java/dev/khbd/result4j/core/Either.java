@@ -221,25 +221,31 @@ public interface Either<L, R> {
                                       Function<? super R, Either<? extends L1, ? extends R1>> rightF);
 
     /**
-     * Combine either into pair.
+     * Combine both either by function.
      *
-     * @param other other either
+     * @param other other either instance
+     * @param func  combinator function
      * @param <R1>  other either right type
+     * @param <R2>  combined either right type
      * @return combined either
      */
-    default <R1> Either<L, Pair<R, R1>> zip(Either<? extends L, ? extends R1> other) {
-        return zipRight(other);
+    default <R1, R2> Either<L, R2> zip(Either<? extends L, ? extends R1> other,
+                                       BiFunction<? super R, ? super R1, ? extends R2> func) {
+        return zipRight(other, func);
     }
 
     /**
-     * Combine either into pair.
+     * Combine both either by function.
      *
-     * @param other other either
+     * @param other other either instance
+     * @param func  combinator function
      * @param <R1>  other either right type
+     * @param <R2>  combined either right type
      * @return combined either
      */
-    default <R1> Either<L, Pair<R, R1>> zipRight(Either<? extends L, ? extends R1> other) {
-        return zipRightF(other, Pair::of);
+    default <R1, R2> Either<L, R2> zipRight(Either<? extends L, ? extends R1> other,
+                                            BiFunction<? super R, ? super R1, ? extends R2> func) {
+        return zipRightF(other, (v1, v2) -> Either.right(func.apply(v1, v2)));
     }
 
     /**
@@ -252,7 +258,7 @@ public interface Either<L, R> {
      * @return combined either
      */
     default <R1, R2> Either<L, R2> zipF(Either<? extends L, ? extends R1> other,
-                                        BiFunction<? super R, ? super R1, ? extends R2> func) {
+                                        BiFunction<? super R, ? super R1, Either<? extends L, ? extends R2>> func) {
         return zipRightF(other, func);
     }
 
@@ -266,48 +272,9 @@ public interface Either<L, R> {
      * @return combined either
      */
     default <R1, R2> Either<L, R2> zipRightF(Either<? extends L, ? extends R1> other,
-                                             BiFunction<? super R, ? super R1, ? extends R2> func) {
-        return zipRightFF(other, (v1, v2) -> Either.right(func.apply(v1, v2)));
-    }
-
-    /**
-     * Combine both either by function.
-     *
-     * @param other other either instance
-     * @param func  combinator function
-     * @param <R1>  other either right type
-     * @param <R2>  combined either right type
-     * @return combined either
-     */
-    default <R1, R2> Either<L, R2> zipFF(Either<? extends L, ? extends R1> other,
-                                         BiFunction<? super R, ? super R1, Either<? extends L, ? extends R2>> func) {
-        return zipRightFF(other, func);
-    }
-
-    /**
-     * Combine both either by function.
-     *
-     * @param other other either instance
-     * @param func  combinator function
-     * @param <R1>  other either right type
-     * @param <R2>  combined either right type
-     * @return combined either
-     */
-    default <R1, R2> Either<L, R2> zipRightFF(Either<? extends L, ? extends R1> other,
-                                              BiFunction<? super R, ? super R1, Either<? extends L, ? extends R2>> func) {
+                                             BiFunction<? super R, ? super R1, Either<? extends L, ? extends R2>> func) {
         Either<L, R1> narrowed = cast(other);
         return flatMapRight(v1 -> narrowed.flatMapRight(v2 -> func.apply(v1, v2)));
-    }
-
-    /**
-     * Combine either into pair.
-     *
-     * @param other other either
-     * @param <L1>  other left type
-     * @return combined either
-     */
-    default <L1> Either<Pair<L, L1>, R> zipLeft(Either<? extends L1, ? extends R> other) {
-        return zipLeftF(other, Pair::of);
     }
 
     /**
@@ -319,9 +286,9 @@ public interface Either<L, R> {
      * @param <L2>  combined left type
      * @return combined either
      */
-    default <L1, L2> Either<L2, R> zipLeftF(Either<? extends L1, ? extends R> other,
-                                            BiFunction<? super L, ? super L1, ? extends L2> func) {
-        return zipLeftFF(other, (v1, v2) -> Either.left(func.apply(v1, v2)));
+    default <L1, L2> Either<L2, R> zipLeft(Either<? extends L1, ? extends R> other,
+                                           BiFunction<? super L, ? super L1, ? extends L2> func) {
+        return zipLeftF(other, (v1, v2) -> Either.left(func.apply(v1, v2)));
     }
 
     /**
@@ -333,8 +300,8 @@ public interface Either<L, R> {
      * @param <L2>  combined either left type
      * @return combined either
      */
-    default <L1, L2> Either<L2, R> zipLeftFF(Either<? extends L1, ? extends R> other,
-                                             BiFunction<? super L, ? super L1, Either<? extends L2, ? extends R>> func) {
+    default <L1, L2> Either<L2, R> zipLeftF(Either<? extends L1, ? extends R> other,
+                                            BiFunction<? super L, ? super L1, Either<? extends L2, ? extends R>> func) {
         Either<L1, R> narrowed = cast(other);
         return flatMapLeft(v1 -> narrowed.flatMapLeft(v2 -> func.apply(v1, v2)));
     }
@@ -374,9 +341,6 @@ public interface Either<L, R> {
     default void ifAny(Runnable code) {
         ifBoth(l -> code.run(), r -> code.run());
     }
-
-    // peek and if are the same???
-    // drop some method?
 
     /**
      * Invoke side effect function.

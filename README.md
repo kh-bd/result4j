@@ -1,2 +1,2 @@
 # result4j
-Library with simple primitives like `Option`, `EIther`, etc.
+Library with simple primitives like `Option`, `Either`, etc.

@@ -202,7 +202,7 @@ public interface Try<V> {
      * @param successF success callback
      * @param failureF failure callback
      */
-    void ifBoth(Consumer<V> successF, Consumer<? super Throwable> failureF);
+    void ifBoth(Consumer<? super V> successF, Consumer<? super Throwable> failureF);
 
     /**
      * Peek success value.
@@ -230,7 +230,7 @@ public interface Try<V> {
      * @param successF success callback
      * @param failureF failure callback
      */
-    default Try<V> peekBoth(Consumer<V> successF, Consumer<? super Throwable> failureF) {
+    default Try<V> peekBoth(Consumer<? super V> successF, Consumer<? super Throwable> failureF) {
         ifBoth(successF, failureF);
         return this;
     }
@@ -512,7 +512,7 @@ class Success<V> implements Try<V> {
     }
 
     @Override
-    public void ifBoth(Consumer<V> successF, Consumer<? super Throwable> failureF) {
+    public void ifBoth(Consumer<? super V> successF, Consumer<? super Throwable> failureF) {
         successF.accept(value);
     }
 }
@@ -602,7 +602,7 @@ class Failure<V> implements Try<V> {
     }
 
     @Override
-    public void ifBoth(Consumer<V> successF, Consumer<? super Throwable> failureF) {
+    public void ifBoth(Consumer<? super V> successF, Consumer<? super Throwable> failureF) {
         failureF.accept(ex);
     }
 

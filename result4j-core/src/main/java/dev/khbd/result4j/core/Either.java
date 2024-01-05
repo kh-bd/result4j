@@ -334,15 +334,6 @@ public interface Either<L, R> {
     }
 
     /**
-     * Execute side effect function in any case.
-     *
-     * @param code code to execute
-     */
-    default void ifAny(Runnable code) {
-        ifBoth(l -> code.run(), r -> code.run());
-    }
-
-    /**
      * Invoke side effect function.
      *
      * @param leftF  left function

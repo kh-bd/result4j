@@ -612,30 +612,6 @@ public class EitherTest {
     }
 
     @Test
-    public void ifAny_eitherIsLeft_invokeCallback() {
-        Either<?, Integer> either = Either.right(10);
-        Runnable code = mock(Runnable.class);
-
-        either.ifAny(code);
-
-        assertThat(either.isRight()).isTrue();
-        assertThat(either.getRight()).isEqualTo(10);
-        verify(code, times(1)).run();
-    }
-
-    @Test
-    public void ifAny_eitherIsRight_invokeCallback() {
-        Either<Integer, ?> either = Either.left(10);
-        Runnable code = mock(Runnable.class);
-
-        either.ifAny(code);
-
-        assertThat(either.isLeft()).isTrue();
-        assertThat(either.getLeft()).isEqualTo(10);
-        verify(code, times(1)).run();
-    }
-
-    @Test
     public void biFlatMap_eitherIsRightAndFunctionIsRight_returnRight() {
         Either<String, Integer> either = Either.right(10);
 

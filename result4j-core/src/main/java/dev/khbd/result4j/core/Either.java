@@ -9,7 +9,6 @@ import lombok.ToString;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -58,21 +57,21 @@ public interface Either<L, R> {
     Stream<L> leftToStream();
 
     /**
-     * Convert to optional based on right value.
+     * Convert to option based on right value.
      */
-    default Optional<R> toOptional() {
-        return rightToOptional();
+    default Option<R> toOption() {
+        return rightToOption();
     }
 
     /**
-     * Convert to optional based on right value.
+     * Convert to option based on right value.
      */
-    Optional<R> rightToOptional();
+    Option<R> rightToOption();
 
     /**
-     * Convert to optional based on left value.
+     * Convert to option based on left value.
      */
-    Optional<L> leftToOptional();
+    Option<L> leftToOption();
 
     /**
      * Get left value.
@@ -657,43 +656,40 @@ public interface Either<L, R> {
     }
 
     /**
-     * Factory method to create either from optional element.
+     * Factory method to create either from option element.
      *
      * @param right right value
      * @param <R>   right value type
      * @return evaluated either
      */
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    static <R> Either<?, R> fromOptional(Optional<R> right) {
-        return rightFromOptional(right);
+    static <R> Either<?, R> fromOption(Option<R> right) {
+        return rightFromOption(right);
     }
 
     /**
-     * Factory method to create either from optional element.
+     * Factory method to create either from option element.
      *
      * @param right right value
      * @param <R>   right value type
      * @return evaluated either
      */
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    static <R> Either<?, R> rightFromOptional(Optional<R> right) {
+    static <R> Either<?, R> rightFromOption(Option<R> right) {
         return right
                 .map(Either::right)
-                .orElseGet(() -> Either.left("Element is null"));
+                .getOrElse(() -> Either.left("Element is null"));
     }
 
     /**
-     * Factory method to create either from optional element.
+     * Factory method to create either from option element.
      *
      * @param left left value
      * @param <L>  right value type
      * @return evaluated either
      */
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    static <L> Either<L, ?> leftFromOptional(Optional<L> left) {
+    static <L> Either<L, ?> leftFromOption(Option<L> left) {
         return left
                 .map(Either::left)
-                .orElseGet(() -> Either.right("Element is null"));
+                .getOrElse(() -> Either.right("Element is null"));
     }
 
     /**
@@ -755,13 +751,13 @@ class Left<L, R> implements Either<L, R> {
     }
 
     @Override
-    public Optional<L> leftToOptional() {
-        return Optional.of(left);
+    public Option<L> leftToOption() {
+        return Option.some(left);
     }
 
     @Override
-    public Optional<R> rightToOptional() {
-        return Optional.empty();
+    public Option<R> rightToOption() {
+        return Option.none();
     }
 
     @Override
@@ -897,13 +893,13 @@ class Right<L, R> implements Either<L, R> {
     }
 
     @Override
-    public Optional<L> leftToOptional() {
-        return Optional.empty();
+    public Option<L> leftToOption() {
+        return Option.none();
     }
 
     @Override
-    public Optional<R> rightToOptional() {
-        return Optional.of(right);
+    public Option<R> rightToOption() {
+        return Option.some(right);
     }
 
     @Override

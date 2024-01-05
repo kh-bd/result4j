@@ -11,7 +11,6 @@ import static org.mockito.Mockito.verify;
 import org.testng.annotations.Test;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -57,15 +56,15 @@ public class EitherTest {
     }
 
     @Test
-    public void fromOptional_valueIsEmpty_returnLeft() {
-        Either<?, String> either = Either.fromOptional(Optional.empty());
+    public void fromOption_valueIsEmpty_returnLeft() {
+        Either<?, String> either = Either.fromOption(Option.none());
 
         assertThat(either.isLeft()).isTrue();
     }
 
     @Test
-    public void fromOptional_valueIsNotEmpty_returnRight() {
-        Either<?, String> either = Either.fromOptional(Optional.of("hello"));
+    public void fromOption_valueIsNotEmpty_returnRight() {
+        Either<?, String> either = Either.fromOption(Option.some("hello"));
 
         assertThat(either.isRight()).isTrue();
         assertThat(either.getRight()).isEqualTo("hello");
@@ -146,33 +145,45 @@ public class EitherTest {
     }
 
     @Test
-    public void toLeftOptional_valueIsLeft_returnSome() {
-        assertThat(Either.left(10).leftToOptional()).hasValue(10);
+    public void toLeftOption_valueIsLeft_returnSome() {
+        Option<Integer> result = Either.left(10).leftToOption();
+
+        assertThat(result.get()).isEqualTo(10);
     }
 
     @Test
-    public void toLeftOptional_valueIsRight_returnEmpty() {
-        assertThat(Either.right(10).leftToOptional()).isEmpty();
+    public void toLeftOption_valueIsRight_returnEmpty() {
+        Option<Object> result = Either.right(10).leftToOption();
+
+        assertThat(result.isEmpty()).isTrue();
     }
 
     @Test
-    public void toRightOptional_valueIsRight_returnSome() {
-        assertThat(Either.right(10).rightToOptional()).hasValue(10);
+    public void toRightOption_valueIsRight_returnSome() {
+        Option<Integer> result = Either.right(10).rightToOption();
+
+        assertThat(result.get()).isEqualTo(10);
     }
 
     @Test
-    public void toRightOptional_valueIsLeft_returnEmpty() {
-        assertThat(Either.left(10).rightToOptional()).isEmpty();
+    public void toRightOption_valueIsLeft_returnEmpty() {
+        Option<Object> result = Either.left(10).rightToOption();
+
+        assertThat(result.isEmpty()).isTrue();
     }
 
     @Test
-    public void toOptional_valueIsRight_returnSome() {
-        assertThat(Either.right(10).toOptional()).hasValue(10);
+    public void toOption_valueIsRight_returnSome() {
+        Option<Integer> result = Either.right(10).toOption();
+
+        assertThat(result.get()).isEqualTo(10);
     }
 
     @Test
-    public void toOptional_valueIsLeft_returnEmpty() {
-        assertThat(Either.left(10).toOptional()).isEmpty();
+    public void toOption_valueIsLeft_returnEmpty() {
+        Option<Object> result = Either.left(10).toOption();
+
+        assertThat(result.isEmpty()).isTrue();
     }
 
     @Test

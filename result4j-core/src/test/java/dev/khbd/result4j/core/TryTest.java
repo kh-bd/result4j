@@ -24,43 +24,43 @@ import java.util.stream.Stream;
 public class TryTest {
 
     @Test
-    public void recover_valueIsSuccess_returnIt() {
-        Try<String> value = Try.success("hello").recover(Throwable::getMessage);
+    public void orElse_valueIsSuccess_returnIt() {
+        Try<String> value = Try.success("hello").orElse(Throwable::getMessage);
 
         assertThat(value.isSuccess()).isTrue();
         assertThat(value.get()).isEqualTo("hello");
     }
 
     @Test
-    public void recover_valueIsFailure_returnRecovered() {
+    public void orElse_valueIsFailure_returnRecovered() {
         Try<String> value = Try.<String>failure(new RuntimeException("Ops"))
-                .recover(Throwable::getMessage);
+                .orElse(Throwable::getMessage);
 
         assertThat(value.isSuccess()).isTrue();
         assertThat(value.get()).isEqualTo("Ops");
     }
 
     @Test
-    public void recoverF_valueIsSuccess_returnIt() {
-        Try<String> value = Try.success("hello").recoverF(error -> Try.success(error.getMessage()));
+    public void orElseF_valueIsSuccess_returnIt() {
+        Try<String> value = Try.success("hello").orElseF(error -> Try.success(error.getMessage()));
 
         assertThat(value.isSuccess()).isTrue();
         assertThat(value.get()).isEqualTo("hello");
     }
 
     @Test
-    public void recoverF_valueIsFailureAndRecoverIsSuccess_returnRecovered() {
+    public void orElseF_valueIsFailureAndRecoverIsSuccess_returnRecovered() {
         Try<String> value = Try.<String>failure(new RuntimeException("Ops"))
-                .recoverF(error -> Try.success(error.getMessage()));
+                .orElseF(error -> Try.success(error.getMessage()));
 
         assertThat(value.isSuccess()).isTrue();
         assertThat(value.get()).isEqualTo("Ops");
     }
 
     @Test
-    public void recoverF_valueIsFailureAndRecoverIsFailure_returnRecovered() {
+    public void orElseF_valueIsFailureAndRecoverIsFailure_returnRecovered() {
         Try<String> value = Try.<String>failure(new RuntimeException("Ops"))
-                .recoverF(error -> Try.failure(new RuntimeException("Recovered")));
+                .orElseF(error -> Try.failure(new RuntimeException("Recovered")));
 
         assertThat(value.isSuccess()).isFalse();
         assertThat(value.getError().getMessage()).isEqualTo("Recovered");

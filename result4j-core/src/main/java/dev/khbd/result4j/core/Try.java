@@ -1,5 +1,7 @@
 package dev.khbd.result4j.core;
 
+import static dev.khbd.result4j.core.Utils.cast;
+
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -148,7 +150,7 @@ public interface Try<V> {
      * @param recover recover function
      * @return recovered either
      */
-    Try<V> recover(Function<Throwable, ? extends V> recover);
+    Try<V> orElse(Function<Throwable, ? extends V> recover);
 
     /**
      * Recover erroneous try into new try.
@@ -156,7 +158,7 @@ public interface Try<V> {
      * @param recoverF recover function
      * @return recovered either
      */
-    Try<V> recoverF(Function<Throwable, Try<V>> recoverF);
+    Try<V> orElseF(Function<Throwable, Try<? extends V>> recoverF);
 
     /**
      * Convert try to either.
@@ -394,7 +396,7 @@ public interface Try<V> {
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     static <T> Try<T> fromOptional(@NonNull Optional<T> opt, Supplier<Throwable> errorSupplier) {
         return Try.of(opt::get)
-                .recoverF(it -> Try.failure(errorSupplier.get()));
+                .orElseF(it -> Try.failure(errorSupplier.get()));
     }
 
     /**
@@ -488,12 +490,12 @@ class Success<V> implements Try<V> {
     }
 
     @Override
-    public Try<V> recover(Function<Throwable, ? extends V> recover) {
+    public Try<V> orElse(Function<Throwable, ? extends V> recover) {
         return this;
     }
 
     @Override
-    public Try<V> recoverF(Function<Throwable, Try<V>> recoverF) {
+    public Try<V> orElseF(Function<Throwable, Try<? extends V>> recoverF) {
         return this;
     }
 
@@ -578,13 +580,13 @@ class Failure<V> implements Try<V> {
     }
 
     @Override
-    public Try<V> recover(Function<Throwable, ? extends V> recoverF) {
+    public Try<V> orElse(Function<Throwable, ? extends V> recoverF) {
         return Try.of(() -> recoverF.apply(ex));
     }
 
     @Override
-    public Try<V> recoverF(Function<Throwable, Try<V>> recoverF) {
-        return Try.flatten(Try.of(() -> recoverF.apply(ex)));
+    public Try<V> orElseF(Function<Throwable, Try<? extends V>> recoverF) {
+        return cast(Try.flatten(Try.of(() -> recoverF.apply(ex))));
     }
 
     @Override

@@ -142,6 +142,20 @@ public interface Option<V> {
     }
 
     /**
+     * Recover option by another instance.
+     *
+     * @param other another instance
+     */
+    Option<V> orElse(Option<? extends V> other);
+
+    /**
+     * Recover option by another instance.
+     *
+     * @param otherF another instance factory
+     */
+    Option<V> orElse(Supplier<Option<? extends V>> otherF);
+
+    /**
      * Unwrap call.
      *
      * <p>This is method with special support through compiler plugin.
@@ -297,6 +311,16 @@ class None<V> implements Option<V> {
     public Option<V> peek(@NonNull Consumer<? super V> function) {
         return this;
     }
+
+    @Override
+    public Option<V> orElse(@NonNull Option<? extends V> other) {
+        return cast(other);
+    }
+
+    @Override
+    public Option<V> orElse(@NonNull Supplier<Option<? extends V>> otherF) {
+        return cast(otherF.get());
+    }
 }
 
 @ToString
@@ -352,6 +376,16 @@ class Some<V> implements Option<V> {
     @Override
     public Option<V> peek(@NonNull Consumer<? super V> function) {
         function.accept(value);
+        return this;
+    }
+
+    @Override
+    public Option<V> orElse(@NonNull Option<? extends V> other) {
+        return this;
+    }
+
+    @Override
+    public Option<V> orElse(@NonNull Supplier<Option<? extends V>> otherF) {
         return this;
     }
 }

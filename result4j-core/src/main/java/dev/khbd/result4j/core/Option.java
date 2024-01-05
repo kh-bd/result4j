@@ -10,9 +10,12 @@ import lombok.ToString;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * Option data class.
@@ -80,6 +83,65 @@ public interface Option<V> {
     <R> Option<R> map(Function<? super V, ? extends R> function);
 
     /**
+     * Transform internal value by specified function.
+     *
+     * @param function transformer
+     * @param <R>      new result type
+     * @return transformed option
+     */
+    <R> Option<R> flatMap(Function<? super V, Option<? extends R>> function);
+
+    /**
+     * Zip option with another option.
+     *
+     * @param other    other option
+     * @param function combine function
+     * @param <R>      other option value type
+     * @param <C>      result value type
+     * @return combined value if both options are some
+     */
+    default <R, C> Option<C> zip(@NonNull Option<? extends R> other,
+                                 @NonNull BiFunction<? super V, ? super R, ? extends C> function) {
+        return zipF(other, (v, r) -> Option.fromNullable(function.apply(v, r)));
+    }
+
+    /**
+     * Zip option with another option.
+     *
+     * @param other    other option
+     * @param function combine function
+     * @param <R>      other option value type
+     * @param <C>      result value type
+     * @return combined value if both options are some
+     */
+    default <R, C> Option<C> zipF(@NonNull Option<? extends R> other,
+                                  @NonNull BiFunction<? super V, ? super R, Option<? extends C>> function) {
+        return flatMap(v -> other.flatMap(r -> function.apply(v, r)));
+    }
+
+    /**
+     * Peek value if present.
+     *
+     * @param function value consumer
+     * @return self option instance
+     */
+    Option<V> peek(Consumer<? super V> function);
+
+    /**
+     * Convert option instance to optional.
+     */
+    default Optional<V> toOptional() {
+        return map(Optional::of).getOrElse(Optional::empty);
+    }
+
+    /**
+     * Convert option instance to stream.
+     */
+    default Stream<V> toStream() {
+        return map(Stream::of).getOrElse(Stream::empty);
+    }
+
+    /**
      * Create empty option value.
      *
      * @param <V> value type
@@ -123,6 +185,16 @@ public interface Option<V> {
         return value.map(Option::some)
                 .orElseGet(Option::none);
     }
+
+    /**
+     * Flatten nested option into flat one.
+     *
+     * @param value option value
+     * @param <V>   value type
+     */
+    static <V> Option<V> flatten(@NonNull Option<Option<V>> value) {
+        return value.flatMap(Function.identity());
+    }
 }
 
 @ToString
@@ -164,6 +236,16 @@ class None<V> implements Option<V> {
     @Override
     public <R> Option<R> map(@NonNull Function<? super V, ? extends R> function) {
         return Option.none();
+    }
+
+    @Override
+    public <R> Option<R> flatMap(@NonNull Function<? super V, Option<? extends R>> function) {
+        return Option.none();
+    }
+
+    @Override
+    public Option<V> peek(@NonNull Consumer<? super V> function) {
+        return this;
     }
 }
 
@@ -208,7 +290,18 @@ class Some<V> implements Option<V> {
     }
 
     @Override
-    public <R> Option<R> map(Function<? super V, ? extends R> function) {
+    public <R> Option<R> map(@NonNull Function<? super V, ? extends R> function) {
         return Option.fromNullable(function.apply(value));
+    }
+
+    @Override
+    public <R> Option<R> flatMap(@NonNull Function<? super V, Option<? extends R>> function) {
+        return cast(function.apply(value));
+    }
+
+    @Override
+    public Option<V> peek(@NonNull Consumer<? super V> function) {
+        function.accept(value);
+        return this;
     }
 }

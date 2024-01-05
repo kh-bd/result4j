@@ -34,7 +34,7 @@ public class ResultPropagatePlugin implements Plugin {
                 Options options = new Options(args);
 
                 PrettyPrinter printer = options.prettyPrintEnabled() ? new StdoutPrettyPrinter() : new NoOpsPrettyPrinter();
-                IdentNameStrategyFactory nameStrategyFactory = new UUIDIdentNameStrategyFactory();
+                IdentNameStrategyFactory nameStrategyFactory = new IncrementIdentNameStrategyFactory();
 
                 CompilationUnitTree unit = event.getCompilationUnit();
                 Context context = ((BasicJavacTask) task).getContext();

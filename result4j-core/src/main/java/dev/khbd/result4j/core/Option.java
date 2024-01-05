@@ -7,6 +7,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -258,6 +260,36 @@ public interface Option<V> {
      */
     static <V> Option<V> flatten(@NonNull Option<Option<V>> value) {
         return value.flatMap(Function.identity());
+    }
+
+    /**
+     * Traverse list  and reduce all elements into single option value.
+     *
+     * @param list list
+     * @param <V>  result type
+     */
+    static <V> Option<List<V>> sequence(@NonNull List<Option<V>> list) {
+        return traverse(list, Function.identity());
+    }
+
+    /**
+     * Traverse list with applying function to each element and reduce all elements into single option value.
+     *
+     * @param list list
+     * @param f    transformer
+     * @param <R>  original element type
+     * @param <V>  result type
+     */
+    static <R, V> Option<List<V>> traverse(@NonNull List<R> list, @NonNull Function<? super R, Option<? extends V>> f) {
+        var result = new ArrayList<V>();
+        for (R e : list) {
+            var eOpt = f.apply(e);
+            if (eOpt.isEmpty()) {
+                return Option.none();
+            }
+            result.add(eOpt.get());
+        }
+        return Option.some(result);
     }
 }
 

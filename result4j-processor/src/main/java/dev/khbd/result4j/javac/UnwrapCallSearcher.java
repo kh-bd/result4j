@@ -2,6 +2,7 @@ package dev.khbd.result4j.javac;
 
 import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.ExpressionStatementTree;
+import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
@@ -33,7 +34,7 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
             return new UnwrapCallLens(receiver, expr -> jcVariable.init = expr);
         }
 
-        return scan(node.getInitializer(), o);
+        return scan(jcVariable.init, o);
     }
 
     @Override
@@ -45,7 +46,7 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
             return new UnwrapCallLens(receiver, expr -> jcExprStatement.expr = expr);
         }
 
-        return scan(node.getExpression(), o);
+        return scan(jcExprStatement.expr, o);
     }
 
     @Override
@@ -57,7 +58,7 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
             return new UnwrapCallLens(receiver, expr -> jcLoop.expr = expr);
         }
 
-        return scan(node.getExpression(), o);
+        return scan(jcLoop.expr, o);
     }
 
     @Override
@@ -91,6 +92,18 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
         }
 
         return null;
+    }
+
+    @Override
+    public UnwrapCallLens visitMemberSelect(MemberSelectTree node, Object o) {
+        JCTree.JCFieldAccess jcField = (JCTree.JCFieldAccess) node;
+
+        JCTree.JCExpression receiver = getUnwrapCallReceiver(jcField.selected);
+        if (receiver != null) {
+            return new UnwrapCallLens(receiver, expr -> jcField.selected = expr);
+        }
+
+        return scan(jcField.selected, o);
     }
 
     private static List<JCTree.JCExpression> replace(List<JCTree.JCExpression> list,

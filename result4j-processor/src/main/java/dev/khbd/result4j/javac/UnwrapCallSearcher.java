@@ -1,5 +1,6 @@
 package dev.khbd.result4j.javac;
 
+import com.sun.source.tree.AssertTree;
 import com.sun.source.tree.ConditionalExpressionTree;
 import com.sun.source.tree.DoWhileLoopTree;
 import com.sun.source.tree.EnhancedForLoopTree;
@@ -32,6 +33,11 @@ import java.util.Objects;
 class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
 
     private final Symbol type;
+
+    @Override
+    public UnwrapCallLens visitAssert(AssertTree node, Object o) {
+        return null;
+    }
 
     @Override
     public UnwrapCallLens visitParenthesized(ParenthesizedTree node, Object o) {

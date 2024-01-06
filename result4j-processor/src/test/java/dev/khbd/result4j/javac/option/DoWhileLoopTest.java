@@ -6,6 +6,7 @@ import dev.khbd.result4j.core.Option;
 import dev.khbd.result4j.javac.AbstractPluginTest;
 import org.testng.annotations.Test;
 
+import javax.tools.Diagnostic;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -41,7 +42,6 @@ public class DoWhileLoopTest extends AbstractPluginTest {
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/do_while_loop/Main.java", source);
 
-        System.out.println(result);
         assertThat(result.isSuccess()).isTrue();
 
         ClassLoader classLoader = result.classLoader();
@@ -56,5 +56,44 @@ public class DoWhileLoopTest extends AbstractPluginTest {
         sequenced = (Option<List<String>>) method.invoke(null, List.of(Option.some("1"), Option.some("2"), Option.some("3")));
         assertThat(sequenced.isEmpty()).isFalse();
         assertThat(sequenced.get()).isEqualTo(List.of("1", "2", "3"));
+    }
+
+    @Test
+    public void propagate_unwrapInDoWhileCondition() {
+        String source = """
+                package cases.do_while_loop;
+                                
+                import java.util.Random;
+                import dev.khbd.result4j.core.Option;
+                                
+                public class Main {
+                                
+                    public static int count() {
+                        var rnd = new Random();
+                        
+                        int count = 0;
+                        
+                        do {
+                            count++;
+                            // fail to compile
+                        } while(random(rnd).unwrap());
+                        
+                        return count;
+                    }
+                    
+                    public static Option<Boolean> random(Random rnd) {
+                        if (rnd.nextBoolean()) {
+                            return Option.some(rnd.nextBoolean());
+                        }
+                        return Option.none();
+                    }
+                }
+                """;
+
+        CompilationResult result = compiler.compile(new PluginOptions(true), "cases/do_while_loop/Main.java", source);
+
+        assertThat(result.isFail()).isTrue();
+        assertThat(result.getErrors()).extracting(Diagnostic::toString)
+                .anyMatch(msg -> msg.contains(" Unsupported position for unwrap method call"));
     }
 }

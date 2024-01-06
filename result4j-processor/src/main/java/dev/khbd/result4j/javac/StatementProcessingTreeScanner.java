@@ -4,6 +4,7 @@ import com.sun.source.tree.BlockTree;
 import com.sun.source.tree.DoWhileLoopTree;
 import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.ForLoopTree;
+import com.sun.source.tree.IfTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.WhileLoopTree;
 import com.sun.source.util.TreeScanner;
@@ -76,9 +77,23 @@ class StatementProcessingTreeScanner extends TreeScanner<Boolean, Object> {
         return processOneStatementBlock(jcLoop.body, st -> jcLoop.body = st, o);
     }
 
+    @Override
+    public Boolean visitIf(IfTree node, Object o) {
+        JCTree.JCIf jcIf = (JCTree.JCIf) node;
+
+        return reduce(
+                processOneStatementBlock(jcIf.thenpart, st -> jcIf.thenpart = st, o),
+                processOneStatementBlock(jcIf.elsepart, st -> jcIf.elsepart = st, o)
+        );
+    }
+
     private Boolean processOneStatementBlock(JCTree.JCStatement statement,
                                              Consumer<JCTree.JCStatement> changedStatementApplier,
                                              Object o) {
+        if (statement == null) {
+            return Boolean.FALSE;
+        }
+
         if (statement.getKind() == Tree.Kind.BLOCK) {
             return scan(statement, o);
         }

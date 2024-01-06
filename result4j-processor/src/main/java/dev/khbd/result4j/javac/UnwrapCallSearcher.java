@@ -5,6 +5,7 @@ import com.sun.source.tree.DoWhileLoopTree;
 import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.ExpressionStatementTree;
 import com.sun.source.tree.ForLoopTree;
+import com.sun.source.tree.IfTree;
 import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.MethodTree;
@@ -125,11 +126,6 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
     }
 
     @Override
-    public UnwrapCallLens visitMethod(MethodTree node, Object o) {
-        return super.visitMethod(node, o);
-    }
-
-    @Override
     public UnwrapCallLens visitReturn(ReturnTree node, Object o) {
         // do not need special support because
         // node.getExpression cannot be the unwrap method call.
@@ -140,6 +136,12 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
     @Override
     public UnwrapCallLens visitConditionalExpression(ConditionalExpressionTree node, Object o) {
         // do not analise conditional expression parts
+        return null;
+    }
+
+    @Override
+    public UnwrapCallLens visitIf(IfTree node, Object o) {
+        // do not analise if condition
         return null;
     }
 

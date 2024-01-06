@@ -8,8 +8,8 @@ import com.sun.source.tree.ForLoopTree;
 import com.sun.source.tree.IfTree;
 import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.MethodInvocationTree;
-import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.ReturnTree;
+import com.sun.source.tree.ThrowTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.tree.WhileLoopTree;
@@ -30,6 +30,18 @@ import java.util.Objects;
 class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
 
     private final Symbol type;
+
+    @Override
+    public UnwrapCallLens visitThrow(ThrowTree node, Object o) {
+        JCTree.JCThrow jcThrow = (JCTree.JCThrow) node;
+
+        JCTree.JCExpression receiver = getUnwrapCallReceiver(jcThrow.expr);
+        if (receiver != null) {
+            return new UnwrapCallLens(receiver, expr -> jcThrow.expr = expr);
+        }
+
+        return scan(jcThrow.expr, o);
+    }
 
     @Override
     public UnwrapCallLens visitVariable(VariableTree node, Object o) {

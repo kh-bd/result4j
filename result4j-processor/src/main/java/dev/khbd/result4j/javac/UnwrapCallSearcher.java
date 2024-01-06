@@ -14,6 +14,7 @@ import com.sun.source.tree.ReturnTree;
 import com.sun.source.tree.SynchronizedTree;
 import com.sun.source.tree.ThrowTree;
 import com.sun.source.tree.Tree;
+import com.sun.source.tree.TryTree;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.tree.WhileLoopTree;
 import com.sun.source.util.TreeScanner;
@@ -33,6 +34,11 @@ import java.util.Objects;
 class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
 
     private final Symbol type;
+
+    @Override
+    public UnwrapCallLens visitTry(TryTree node, Object o) {
+        return null;
+    }
 
     @Override
     public UnwrapCallLens visitAssert(AssertTree node, Object o) {

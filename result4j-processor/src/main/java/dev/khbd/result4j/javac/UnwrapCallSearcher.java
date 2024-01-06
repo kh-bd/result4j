@@ -2,12 +2,17 @@ package dev.khbd.result4j.javac;
 
 import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.ExpressionStatementTree;
+import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
+import com.sun.source.tree.WhileLoopTree;
 import com.sun.source.util.TreeScanner;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.tree.JCTree;
+import com.sun.tools.javac.util.List;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Objects;
 
 /**
  * Unwrap lens searcher.
@@ -53,6 +58,45 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
         }
 
         return scan(node.getExpression(), o);
+    }
+
+    @Override
+    public UnwrapCallLens visitWhileLoop(WhileLoopTree node, Object o) {
+        return null;
+    }
+
+    @Override
+    public UnwrapCallLens visitMethodInvocation(MethodInvocationTree node, Object o) {
+        JCTree.JCMethodInvocation jcCall = (JCTree.JCMethodInvocation) node;
+
+        JCTree.JCExpression receiver = getUnwrapCallReceiver(jcCall.meth);
+        if (receiver != null) {
+            return new UnwrapCallLens(receiver, expr -> jcCall.meth = expr);
+        }
+        UnwrapCallLens methLens = scan(jcCall.meth, o);
+        if (Objects.nonNull(methLens)) {
+            return methLens;
+        }
+
+        List<JCTree.JCExpression> args = jcCall.args;
+        for (JCTree.JCExpression arg : args) {
+            JCTree.JCExpression argReceiver = getUnwrapCallReceiver(arg);
+            if (Objects.nonNull(argReceiver)) {
+                return new UnwrapCallLens(argReceiver, expr -> jcCall.args = replace(args, arg, expr));
+            }
+            UnwrapCallLens argLens = scan(arg, o);
+            if (Objects.nonNull(argLens)) {
+                return argLens;
+            }
+        }
+
+        return null;
+    }
+
+    private static List<JCTree.JCExpression> replace(List<JCTree.JCExpression> list,
+                                                     JCTree.JCExpression original,
+                                                     JCTree.JCExpression replacement) {
+        return list.map(expr -> expr == original ? replacement : expr);
     }
 
     private JCTree.JCExpression getUnwrapCallReceiver(JCTree.JCExpression expression) {

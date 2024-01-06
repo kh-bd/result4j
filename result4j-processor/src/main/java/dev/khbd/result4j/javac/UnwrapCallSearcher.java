@@ -1,5 +1,6 @@
 package dev.khbd.result4j.javac;
 
+import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.ExpressionStatementTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
@@ -37,6 +38,18 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
         JCTree.JCExpression receiver = getUnwrapCallReceiver(jcExprStatement.expr);
         if (receiver != null) {
             return new UnwrapCallLens(receiver, expr -> jcExprStatement.expr = expr);
+        }
+
+        return scan(node.getExpression(), o);
+    }
+
+    @Override
+    public UnwrapCallLens visitEnhancedForLoop(EnhancedForLoopTree node, Object o) {
+        JCTree.JCEnhancedForLoop jcLoop = (JCTree.JCEnhancedForLoop) node;
+
+        JCTree.JCExpression receiver = getUnwrapCallReceiver(jcLoop.expr);
+        if (receiver != null) {
+            return new UnwrapCallLens(receiver, expr -> jcLoop.expr = expr);
         }
 
         return scan(node.getExpression(), o);

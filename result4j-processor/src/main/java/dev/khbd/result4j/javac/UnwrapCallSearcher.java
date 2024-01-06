@@ -6,6 +6,7 @@ import com.sun.source.tree.ExpressionStatementTree;
 import com.sun.source.tree.ForLoopTree;
 import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.MethodInvocationTree;
+import com.sun.source.tree.ReturnTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.tree.WhileLoopTree;
@@ -65,16 +66,19 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
 
     @Override
     public UnwrapCallLens visitForLoop(ForLoopTree node, Object o) {
+        // stop deep scanning. for loop body is scanned during separate steps
         return null;
     }
 
     @Override
     public UnwrapCallLens visitWhileLoop(WhileLoopTree node, Object o) {
+        // stop deep scanning. while loop body is scanned during separate steps
         return null;
     }
 
     @Override
     public UnwrapCallLens visitDoWhileLoop(DoWhileLoopTree node, Object o) {
+        // stop deep scanning. do while loop body is scanned during separate steps
         return null;
     }
 
@@ -116,6 +120,14 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
         }
 
         return scan(jcField.selected, o);
+    }
+
+    @Override
+    public UnwrapCallLens visitReturn(ReturnTree node, Object o) {
+        // do not need special support because
+        // node.getExpression cannot be the unwrap method call.
+        // So, search method call deeply
+        return super.visitReturn(node, o);
     }
 
     private static List<JCTree.JCExpression> replace(List<JCTree.JCExpression> list,

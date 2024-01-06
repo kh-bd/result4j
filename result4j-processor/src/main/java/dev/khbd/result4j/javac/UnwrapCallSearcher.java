@@ -8,7 +8,9 @@ import com.sun.source.tree.ForLoopTree;
 import com.sun.source.tree.IfTree;
 import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.MethodInvocationTree;
+import com.sun.source.tree.ParenthesizedTree;
 import com.sun.source.tree.ReturnTree;
+import com.sun.source.tree.SynchronizedTree;
 import com.sun.source.tree.ThrowTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
@@ -30,6 +32,28 @@ import java.util.Objects;
 class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
 
     private final Symbol type;
+
+    @Override
+    public UnwrapCallLens visitParenthesized(ParenthesizedTree node, Object o) {
+        JCTree.JCParens jcParens = (JCTree.JCParens) node;
+
+        JCTree.JCExpression receiver = getUnwrapCallReceiver(jcParens.expr);
+        if (receiver != null) {
+            return new UnwrapCallLens(receiver, expr -> jcParens.expr = expr);
+        }
+
+        return scan(jcParens.expr, o);
+    }
+
+    @Override
+    public UnwrapCallLens visitSynchronized(SynchronizedTree node, Object o) {
+        JCTree.JCSynchronized jcSync = (JCTree.JCSynchronized) node;
+
+        // sync lock is jcParens, so do not try to analise it.
+        // go one step deeper
+
+        return scan(jcSync.lock, o);
+    }
 
     @Override
     public UnwrapCallLens visitThrow(ThrowTree node, Object o) {

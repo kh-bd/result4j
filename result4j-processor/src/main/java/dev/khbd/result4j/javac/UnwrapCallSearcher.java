@@ -1,5 +1,6 @@
 package dev.khbd.result4j.javac;
 
+import com.sun.source.tree.DoWhileLoopTree;
 import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.ExpressionStatementTree;
 import com.sun.source.tree.MemberSelectTree;
@@ -63,6 +64,11 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
 
     @Override
     public UnwrapCallLens visitWhileLoop(WhileLoopTree node, Object o) {
+        return null;
+    }
+
+    @Override
+    public UnwrapCallLens visitDoWhileLoop(DoWhileLoopTree node, Object o) {
         return null;
     }
 

@@ -1,11 +1,13 @@
 package dev.khbd.result4j.javac;
 
+import com.sun.source.tree.ConditionalExpressionTree;
 import com.sun.source.tree.DoWhileLoopTree;
 import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.ExpressionStatementTree;
 import com.sun.source.tree.ForLoopTree;
 import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.MethodInvocationTree;
+import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.ReturnTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
@@ -86,10 +88,10 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
     public UnwrapCallLens visitMethodInvocation(MethodInvocationTree node, Object o) {
         JCTree.JCMethodInvocation jcCall = (JCTree.JCMethodInvocation) node;
 
-        JCTree.JCExpression receiver = getUnwrapCallReceiver(jcCall.meth);
-        if (receiver != null) {
-            return new UnwrapCallLens(receiver, expr -> jcCall.meth = expr);
-        }
+        // jcCall.meth cannot be the unwrap method call.
+        // either field access or ident.
+        // So, do not need to search lens in jcCall.meth directly
+
         UnwrapCallLens methLens = scan(jcCall.meth, o);
         if (Objects.nonNull(methLens)) {
             return methLens;
@@ -123,11 +125,27 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
     }
 
     @Override
+    public UnwrapCallLens visitMethod(MethodTree node, Object o) {
+        return super.visitMethod(node, o);
+    }
+
+    @Override
     public UnwrapCallLens visitReturn(ReturnTree node, Object o) {
         // do not need special support because
         // node.getExpression cannot be the unwrap method call.
         // So, search method call deeply
         return super.visitReturn(node, o);
+    }
+
+    @Override
+    public UnwrapCallLens visitConditionalExpression(ConditionalExpressionTree node, Object o) {
+        // do not analise conditional expression parts
+        return null;
+    }
+
+    @Override
+    public UnwrapCallLens reduce(UnwrapCallLens r1, UnwrapCallLens r2) {
+        return Objects.nonNull(r1) ? r1 : r2;
     }
 
     private static List<JCTree.JCExpression> replace(List<JCTree.JCExpression> list,

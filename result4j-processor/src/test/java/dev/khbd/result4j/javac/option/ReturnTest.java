@@ -37,7 +37,6 @@ public class ReturnTest extends AbstractPluginTest {
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_return/Main.java", source);
 
-        System.out.println(result);
         assertThat(result.isSuccess()).isTrue();
 
         ClassLoader classLoader = result.classLoader();

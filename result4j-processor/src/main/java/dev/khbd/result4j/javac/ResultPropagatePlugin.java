@@ -54,7 +54,7 @@ public class ResultPropagatePlugin implements Plugin {
 
                 StatementProcessingTreeScanner scanner = new StatementProcessingTreeScanner(List.of(
                         optionProcessor
-                ));
+                ), context);
 
                 ReAttributer attributer = new ReAttributer(context);
 

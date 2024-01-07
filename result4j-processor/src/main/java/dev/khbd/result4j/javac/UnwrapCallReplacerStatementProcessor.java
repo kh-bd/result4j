@@ -17,7 +17,7 @@ class UnwrapCallReplacerStatementProcessor implements StatementProcessor {
 
     @Override
     public ProcessedStatement process(JCTree.JCStatement statement) {
-        UnwrapCallLens lens = searcher.scan(statement, null);
+        UnwrapCallLens lens = searcher.visit(statement, null);
 
         if (lens == null) {
             return new ProcessedStatement(false, statement);

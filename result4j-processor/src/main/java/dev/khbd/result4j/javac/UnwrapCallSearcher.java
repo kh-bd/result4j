@@ -1,13 +1,7 @@
 package dev.khbd.result4j.javac;
 
-import com.sun.source.tree.AssertTree;
-import com.sun.source.tree.BlockTree;
-import com.sun.source.tree.ConditionalExpressionTree;
-import com.sun.source.tree.DoWhileLoopTree;
 import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.ExpressionStatementTree;
-import com.sun.source.tree.ForLoopTree;
-import com.sun.source.tree.IfTree;
 import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.ParenthesizedTree;
@@ -16,10 +10,8 @@ import com.sun.source.tree.SwitchTree;
 import com.sun.source.tree.SynchronizedTree;
 import com.sun.source.tree.ThrowTree;
 import com.sun.source.tree.Tree;
-import com.sun.source.tree.TryTree;
+import com.sun.source.tree.UnaryTree;
 import com.sun.source.tree.VariableTree;
-import com.sun.source.tree.WhileLoopTree;
-import com.sun.source.util.TreeScanner;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.List;
@@ -33,13 +25,20 @@ import java.util.Objects;
  * @author Sergei Khadanovich
  */
 @RequiredArgsConstructor
-class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
+class UnwrapCallSearcher implements EmptyTreeVisitor<UnwrapCallLens, Object> {
 
     private final Symbol type;
 
     @Override
-    public UnwrapCallLens visitBlock(BlockTree node, Object o) {
-        return null;
+    public UnwrapCallLens visitUnary(UnaryTree node, Object o) {
+        JCTree.JCUnary jcUnary = (JCTree.JCUnary) node;
+
+        JCTree.JCExpression receiver = getUnwrapCallReceiver(jcUnary.arg);
+        if (receiver != null) {
+            return new UnwrapCallLens(receiver, expr -> jcUnary.arg = expr);
+        }
+
+        return visit(jcUnary.arg, o);
     }
 
     @Override
@@ -51,17 +50,7 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
             return new UnwrapCallLens(receiver, expr -> jcSwitch.selector = expr);
         }
 
-        return scan(jcSwitch.selector, o);
-    }
-
-    @Override
-    public UnwrapCallLens visitTry(TryTree node, Object o) {
-        return null;
-    }
-
-    @Override
-    public UnwrapCallLens visitAssert(AssertTree node, Object o) {
-        return null;
+        return visit(jcSwitch.selector, o);
     }
 
     @Override
@@ -73,7 +62,7 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
             return new UnwrapCallLens(receiver, expr -> jcParens.expr = expr);
         }
 
-        return scan(jcParens.expr, o);
+        return visit(jcParens.expr, o);
     }
 
     @Override
@@ -83,7 +72,7 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
         // sync lock is jcParens, so do not try to analise it.
         // go one step deeper
 
-        return scan(jcSync.lock, o);
+        return visit(jcSync.lock, o);
     }
 
     @Override
@@ -95,7 +84,7 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
             return new UnwrapCallLens(receiver, expr -> jcThrow.expr = expr);
         }
 
-        return scan(jcThrow.expr, o);
+        return visit(jcThrow.expr, o);
     }
 
     @Override
@@ -107,7 +96,7 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
             return new UnwrapCallLens(receiver, expr -> jcVariable.init = expr);
         }
 
-        return scan(jcVariable.init, o);
+        return visit(jcVariable.init, o);
     }
 
     @Override
@@ -119,7 +108,7 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
             return new UnwrapCallLens(receiver, expr -> jcExprStatement.expr = expr);
         }
 
-        return scan(jcExprStatement.expr, o);
+        return visit(jcExprStatement.expr, o);
     }
 
     @Override
@@ -131,25 +120,7 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
             return new UnwrapCallLens(receiver, expr -> jcLoop.expr = expr);
         }
 
-        return scan(jcLoop.expr, o);
-    }
-
-    @Override
-    public UnwrapCallLens visitForLoop(ForLoopTree node, Object o) {
-        // stop deep scanning. for loop body is scanned during separate steps
-        return null;
-    }
-
-    @Override
-    public UnwrapCallLens visitWhileLoop(WhileLoopTree node, Object o) {
-        // stop deep scanning. while loop body is scanned during separate steps
-        return null;
-    }
-
-    @Override
-    public UnwrapCallLens visitDoWhileLoop(DoWhileLoopTree node, Object o) {
-        // stop deep scanning. do while loop body is scanned during separate steps
-        return null;
+        return visit(jcLoop.expr, o);
     }
 
     @Override
@@ -160,7 +131,7 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
         // either field access or ident.
         // So, do not need to search lens in jcCall.meth directly
 
-        UnwrapCallLens methLens = scan(jcCall.meth, o);
+        UnwrapCallLens methLens = visit(jcCall.meth, o);
         if (Objects.nonNull(methLens)) {
             return methLens;
         }
@@ -171,7 +142,7 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
             if (Objects.nonNull(argReceiver)) {
                 return new UnwrapCallLens(argReceiver, expr -> jcCall.args = replace(args, arg, expr));
             }
-            UnwrapCallLens argLens = scan(arg, o);
+            UnwrapCallLens argLens = visit(arg, o);
             if (Objects.nonNull(argLens)) {
                 return argLens;
             }
@@ -189,7 +160,7 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
             return new UnwrapCallLens(receiver, expr -> jcField.selected = expr);
         }
 
-        return scan(jcField.selected, o);
+        return visit(jcField.selected, o);
     }
 
     @Override
@@ -197,19 +168,7 @@ class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
         // do not need special support because
         // node.getExpression cannot be the unwrap method call.
         // So, search method call deeply
-        return super.visitReturn(node, o);
-    }
-
-    @Override
-    public UnwrapCallLens visitConditionalExpression(ConditionalExpressionTree node, Object o) {
-        // do not analise conditional expression parts
-        return null;
-    }
-
-    @Override
-    public UnwrapCallLens visitIf(IfTree node, Object o) {
-        // do not analise if condition
-        return null;
+        return visit(node.getExpression(), o);
     }
 
     @Override

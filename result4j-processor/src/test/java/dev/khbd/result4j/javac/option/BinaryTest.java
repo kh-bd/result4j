@@ -105,7 +105,7 @@ public class BinaryTest extends AbstractPluginTest {
                 public class Main {
                                 
                     public static Option<Integer> getSum(boolean flag) {
-                        var result = getInt(flag).unwrap();
+                        var result = 1 + getInt(flag).unwrap();
                         return Option.some(result);
                     }
                     

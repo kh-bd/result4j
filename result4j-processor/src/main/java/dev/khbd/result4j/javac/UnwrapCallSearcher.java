@@ -1,6 +1,7 @@
 package dev.khbd.result4j.javac;
 
 import com.sun.source.tree.AssignmentTree;
+import com.sun.source.tree.CompoundAssignmentTree;
 import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.ExpressionStatementTree;
 import com.sun.source.tree.MemberSelectTree;
@@ -29,6 +30,18 @@ import java.util.Objects;
 class UnwrapCallSearcher implements EmptyTreeVisitor<UnwrapCallLens, Object> {
 
     private final Symbol type;
+
+    @Override
+    public UnwrapCallLens visitCompoundAssignment(CompoundAssignmentTree node, Object o) {
+        JCTree.JCAssignOp jcAssign = (JCTree.JCAssignOp) node;
+
+        JCTree.JCExpression receiver = getUnwrapCallReceiver(jcAssign.rhs);
+        if (receiver != null) {
+            return new UnwrapCallLens(receiver, expr -> jcAssign.rhs = expr);
+        }
+
+        return visit(jcAssign.rhs, o);
+    }
 
     @Override
     public UnwrapCallLens visitAssignment(AssignmentTree node, Object o) {

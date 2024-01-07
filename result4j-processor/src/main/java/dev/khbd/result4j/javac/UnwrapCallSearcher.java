@@ -17,6 +17,7 @@ import com.sun.source.tree.SynchronizedTree;
 import com.sun.source.tree.ThrowTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.TryTree;
+import com.sun.source.tree.UnaryTree;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.tree.WhileLoopTree;
 import com.sun.source.util.TreeScanner;
@@ -36,6 +37,18 @@ import java.util.Objects;
 class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
 
     private final Symbol type;
+
+    @Override
+    public UnwrapCallLens visitUnary(UnaryTree node, Object o) {
+        JCTree.JCUnary jcUnary = (JCTree.JCUnary) node;
+
+        JCTree.JCExpression receiver = getUnwrapCallReceiver(jcUnary.arg);
+        if (receiver != null) {
+            return new UnwrapCallLens(receiver, expr -> jcUnary.arg = expr);
+        }
+
+        return scan(jcUnary.arg, o);
+    }
 
     @Override
     public UnwrapCallLens visitBlock(BlockTree node, Object o) {

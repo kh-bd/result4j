@@ -1,6 +1,7 @@
 package dev.khbd.result4j.javac;
 
 import com.sun.source.tree.AssertTree;
+import com.sun.source.tree.BlockTree;
 import com.sun.source.tree.ConditionalExpressionTree;
 import com.sun.source.tree.DoWhileLoopTree;
 import com.sun.source.tree.EnhancedForLoopTree;
@@ -11,6 +12,7 @@ import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.ParenthesizedTree;
 import com.sun.source.tree.ReturnTree;
+import com.sun.source.tree.SwitchTree;
 import com.sun.source.tree.SynchronizedTree;
 import com.sun.source.tree.ThrowTree;
 import com.sun.source.tree.Tree;
@@ -34,6 +36,23 @@ import java.util.Objects;
 class UnwrapCallSearcher extends TreeScanner<UnwrapCallLens, Object> {
 
     private final Symbol type;
+
+    @Override
+    public UnwrapCallLens visitBlock(BlockTree node, Object o) {
+        return null;
+    }
+
+    @Override
+    public UnwrapCallLens visitSwitch(SwitchTree node, Object o) {
+        JCTree.JCSwitch jcSwitch = (JCTree.JCSwitch) node;
+
+        JCTree.JCExpression receiver = getUnwrapCallReceiver(jcSwitch.selector);
+        if (receiver != null) {
+            return new UnwrapCallLens(receiver, expr -> jcSwitch.selector = expr);
+        }
+
+        return scan(jcSwitch.selector, o);
+    }
 
     @Override
     public UnwrapCallLens visitTry(TryTree node, Object o) {

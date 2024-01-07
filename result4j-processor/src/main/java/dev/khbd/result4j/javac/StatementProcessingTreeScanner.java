@@ -1,10 +1,12 @@
 package dev.khbd.result4j.javac;
 
 import com.sun.source.tree.BlockTree;
+import com.sun.source.tree.CaseTree;
 import com.sun.source.tree.DoWhileLoopTree;
 import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.ForLoopTree;
 import com.sun.source.tree.IfTree;
+import com.sun.source.tree.SwitchTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.WhileLoopTree;
 import com.sun.source.util.TreeScanner;
@@ -39,18 +41,13 @@ class StatementProcessingTreeScanner extends TreeScanner<Boolean, Object> {
     public Boolean visitBlock(BlockTree node, Object o) {
         JCTree.JCBlock jcBlock = (JCTree.JCBlock) node;
 
-        List<JCTree.JCStatement> newStatements = List.nil();
-        boolean processed = false;
+        ProcessedStatement processed = processSeveralStatements(jcBlock.stats);
 
-        for (JCTree.JCStatement statement : jcBlock.stats) {
-            ProcessedStatement processedStatement = applyFirstProcessor(statement);
-            newStatements = newStatements.appendList(processedStatement.statements());
-            processed |= processedStatement.processed();
+        if (processed.processed()) {
+            jcBlock.stats = processed.statements();
         }
 
-        jcBlock.stats = newStatements;
-
-        return reduce(processed, super.visitBlock(node, o));
+        return reduce(processed.processed(), scan(jcBlock.stats, o));
     }
 
     @Override
@@ -87,6 +84,25 @@ class StatementProcessingTreeScanner extends TreeScanner<Boolean, Object> {
         );
     }
 
+    @Override
+    public Boolean visitSwitch(SwitchTree node, Object o) {
+        JCTree.JCSwitch jcSwitch = (JCTree.JCSwitch) node;
+        return scan(jcSwitch.cases, o);
+    }
+
+    @Override
+    public Boolean visitCase(CaseTree node, Object o) {
+        JCTree.JCCase jcCase = (JCTree.JCCase) node;
+
+        ProcessedStatement processed = processSeveralStatements(jcCase.stats);
+
+        if (processed.processed()) {
+            jcCase.stats = processed.statements();
+        }
+
+        return reduce(processed.processed(), scan(jcCase.stats, o));
+    }
+
     private Boolean processOneStatementBlock(JCTree.JCStatement statement,
                                              Consumer<JCTree.JCStatement> changedStatementApplier,
                                              Object o) {
@@ -110,6 +126,19 @@ class StatementProcessingTreeScanner extends TreeScanner<Boolean, Object> {
         changedStatementApplier.accept(changed);
 
         return Boolean.TRUE;
+    }
+
+    private ProcessedStatement processSeveralStatements(List<JCTree.JCStatement> statements) {
+        List<JCTree.JCStatement> newStatements = List.nil();
+        boolean processed = false;
+
+        for (JCTree.JCStatement statement : statements) {
+            ProcessedStatement processedStatement = applyFirstProcessor(statement);
+            newStatements = newStatements.appendList(processedStatement.statements());
+            processed |= processedStatement.processed();
+        }
+
+        return new ProcessedStatement(processed, newStatements);
     }
 
     private ProcessedStatement applyFirstProcessor(JCTree.JCStatement statement) {

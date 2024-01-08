@@ -8,6 +8,7 @@ import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -662,7 +663,7 @@ public interface Either<L, R> {
      * @param <R>   right value type
      * @return evaluated either
      */
-    static <R> Either<?, R> fromOption(Option<R> right) {
+    static <R> Either<NoSuchElementException, R> fromOption(Option<R> right) {
         return rightFromOption(right);
     }
 
@@ -673,10 +674,10 @@ public interface Either<L, R> {
      * @param <R>   right value type
      * @return evaluated either
      */
-    static <R> Either<?, R> rightFromOption(Option<R> right) {
+    static <R> Either<NoSuchElementException, R> rightFromOption(Option<R> right) {
         return right
-                .map(Either::right)
-                .getOrElse(() -> Either.left("Element is null"));
+                .map(Either::<NoSuchElementException, R>right)
+                .getOrElse(() -> Either.left(new NoSuchElementException("Option is empty")));
     }
 
     /**
@@ -686,10 +687,10 @@ public interface Either<L, R> {
      * @param <L>  right value type
      * @return evaluated either
      */
-    static <L> Either<L, ?> leftFromOption(Option<L> left) {
+    static <L> Either<L, NoSuchElementException> leftFromOption(Option<L> left) {
         return left
-                .map(Either::left)
-                .getOrElse(() -> Either.right("Element is null"));
+                .map(Either::<L, NoSuchElementException>left)
+                .getOrElse(() -> Either.right(new NoSuchElementException("Option is empty")));
     }
 
     /**

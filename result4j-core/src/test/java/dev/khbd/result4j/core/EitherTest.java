@@ -11,6 +11,7 @@ import static org.mockito.Mockito.verify;
 import org.testng.annotations.Test;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -57,14 +58,15 @@ public class EitherTest {
 
     @Test
     public void fromOption_valueIsEmpty_returnLeft() {
-        Either<?, String> either = Either.fromOption(Option.none());
+        Either<NoSuchElementException, String> either = Either.fromOption(Option.none());
 
         assertThat(either.isLeft()).isTrue();
+        assertThat(either.getLeft()).hasMessage("Option is empty");
     }
 
     @Test
     public void fromOption_valueIsNotEmpty_returnRight() {
-        Either<?, String> either = Either.fromOption(Option.some("hello"));
+        Either<NoSuchElementException, String> either = Either.fromOption(Option.some("hello"));
 
         assertThat(either.isRight()).isTrue();
         assertThat(either.getRight()).isEqualTo("hello");

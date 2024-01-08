@@ -1,5 +1,6 @@
 package dev.khbd.result4j.javac;
 
+import com.sun.source.tree.ArrayAccessTree;
 import com.sun.source.tree.AssignmentTree;
 import com.sun.source.tree.BinaryTree;
 import com.sun.source.tree.CompoundAssignmentTree;
@@ -183,6 +184,23 @@ class UnwrapCallSearcher implements EmptyTreeVisitor<UnwrapCallLens, Object> {
         }
 
         return visitExpressions(jcCall.args, replacement -> jcCall.args = replacement, o);
+    }
+
+    @Override
+    public UnwrapCallLens visitArrayAccess(ArrayAccessTree node, Object o) {
+        JCTree.JCArrayAccess jcAccess = (JCTree.JCArrayAccess) node;
+
+        JCTree.JCExpression instanceReceiver = getUnwrapCallReceiver(jcAccess.indexed);
+        if (instanceReceiver != null) {
+            return new UnwrapCallLens(instanceReceiver, expr -> jcAccess.indexed = expr);
+        }
+
+        JCTree.JCExpression indexReceiver = getUnwrapCallReceiver(jcAccess.index);
+        if (indexReceiver != null) {
+            return new UnwrapCallLens(indexReceiver, expr -> jcAccess.index = expr);
+        }
+
+        return reduce(visit(jcAccess.indexed, o), visit(jcAccess.index, o));
     }
 
     @Override

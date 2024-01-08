@@ -6,6 +6,7 @@ import dev.khbd.result4j.core.Option;
 import dev.khbd.result4j.javac.AbstractPluginTest;
 import org.testng.annotations.Test;
 
+import javax.tools.Diagnostic;
 import java.lang.reflect.Method;
 
 /**
@@ -51,5 +52,34 @@ public class AssignmentTest extends AbstractPluginTest {
         // invoke with false
         greet = (Option<String>) method.invoke(null,false);
         assertThat(greet.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void propagate_unwrapCallInLabeledAssignment() {
+        String source = """
+                package cases.assignment;
+                                
+                import dev.khbd.result4j.core.Option;
+                                
+                public class Main {
+                                
+                    public static Option<String> greet(boolean flag) {
+                        String name = null;
+                        label:
+                        name = name(flag).unwrap();
+                        return Option.some(name);
+                    }
+                                
+                    private static Option<String> name(boolean flag) {
+                        return flag ? Option.some("Alex") : Option.none();
+                    }
+                }
+                """;
+
+        CompilationResult result = compiler.compile(new PluginOptions(true), "cases/labeled/Main.java", source);
+
+        assertThat(result.isFail()).isTrue();
+        assertThat(result.getErrors()).extracting(Diagnostic::toString)
+                .anyMatch(msg -> msg.contains(" Unsupported position for unwrap method call"));
     }
 }

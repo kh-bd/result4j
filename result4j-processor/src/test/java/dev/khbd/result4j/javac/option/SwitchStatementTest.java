@@ -7,6 +7,7 @@ import dev.khbd.result4j.core.Option;
 import dev.khbd.result4j.javac.AbstractPluginTest;
 import org.testng.annotations.Test;
 
+import javax.tools.Diagnostic;
 import java.lang.reflect.Method;
 
 /**
@@ -53,6 +54,37 @@ public class SwitchStatementTest extends AbstractPluginTest {
         // invoke with false
         greet = (Option<String>) method.invoke(null, false);
         assertThat(greet.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void propagate_unwrapCallInLabeledReceiverExpression_fail() {
+        String source = """
+                package cases.switch_statement;
+                                
+                import dev.khbd.result4j.core.Option;
+                                
+                public class Main {
+                                
+                    public static Option<?> greet(boolean flag) {
+                        label:
+                        switch(toInteger(flag).unwrap()) {
+                            case 1:
+                            default:
+                                return Option.some("Alex");
+                        }
+                    }
+                    
+                    private static Option<Integer> toInteger(boolean flag) {
+                        return flag ? Option.some(1) : Option.none();
+                    }
+                }
+                """;
+
+        CompilationResult result = compiler.compile(new PluginOptions(true), "cases/labeled/Main.java", source);
+
+        assertThat(result.isFail()).isTrue();
+        assertThat(result.getErrors()).extracting(Diagnostic::toString)
+                .anyMatch(msg -> msg.contains(" Unsupported position for unwrap method call"));
     }
 
     @Test

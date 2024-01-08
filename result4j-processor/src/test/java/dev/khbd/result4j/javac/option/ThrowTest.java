@@ -7,6 +7,7 @@ import dev.khbd.result4j.core.Option;
 import dev.khbd.result4j.javac.AbstractPluginTest;
 import org.testng.annotations.Test;
 
+import javax.tools.Diagnostic;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -54,5 +55,35 @@ public class ThrowTest extends AbstractPluginTest {
 //      invoke with false
         Option<?> greet = (Option<?>) method.invoke(null, false);
         assertThat(greet.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void propagate_unwrapCallInLabeledThrowExpression() {
+        String source = """
+                package cases.throw_statement;
+                                
+                import dev.khbd.result4j.core.Option;
+                                
+                public class Main {
+                                
+                    public static Option<?> greet(boolean flag) {
+                        label:
+                        throw createThrow(flag).unwrap();
+                    }
+                                
+                    private static Option<RuntimeException> createThrow(boolean flag) {
+                        if (flag) {
+                            return Option.some(new RuntimeException());
+                        }
+                        return Option.none();
+                    }
+                }
+                """;
+
+        CompilationResult result = compiler.compile(new PluginOptions(true), "cases/throw_statement/Main.java", source);
+
+        assertThat(result.isFail()).isTrue();
+        assertThat(result.getErrors()).extracting(Diagnostic::toString)
+                .anyMatch(msg -> msg.contains(" Unsupported position for unwrap method call"));
     }
 }

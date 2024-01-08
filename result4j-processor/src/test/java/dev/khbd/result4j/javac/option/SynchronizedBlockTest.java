@@ -6,6 +6,7 @@ import dev.khbd.result4j.core.Option;
 import dev.khbd.result4j.javac.AbstractPluginTest;
 import org.testng.annotations.Test;
 
+import javax.tools.Diagnostic;
 import java.lang.reflect.Method;
 
 /**
@@ -86,5 +87,34 @@ public class SynchronizedBlockTest extends AbstractPluginTest {
 //      invoke with false
         Option<String> greet = (Option<String>) method.invoke(null, false);
         assertThat(greet.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void propagate_unwrapCallInLabeledSyncExpression() {
+        String source = """
+                package cases.sync_block;
+                                
+                import dev.khbd.result4j.core.Option;
+                                
+                public class Main {
+                                
+                    public static Option<String> greet(boolean flag) {
+                        label:
+                        synchronized (getName(flag).unwrap()) {
+                            return Option.none();
+                        }
+                    }
+                    
+                    private static Option<String> getName(boolean flag) {
+                        return flag ? Option.some("Alex") : Option.none();
+                    }
+                }
+                """;
+
+        CompilationResult result = compiler.compile(new PluginOptions(true), "cases/sync_block/Main.java", source);
+
+        assertThat(result.isFail()).isTrue();
+        assertThat(result.getErrors()).extracting(Diagnostic::toString)
+                .anyMatch(msg -> msg.contains(" Unsupported position for unwrap method call"));
     }
 }

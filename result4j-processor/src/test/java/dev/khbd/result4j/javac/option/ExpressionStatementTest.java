@@ -6,6 +6,7 @@ import dev.khbd.result4j.core.Option;
 import dev.khbd.result4j.javac.AbstractPluginTest;
 import org.testng.annotations.Test;
 
+import javax.tools.Diagnostic;
 import java.lang.reflect.Method;
 
 /**
@@ -53,5 +54,37 @@ public class ExpressionStatementTest extends AbstractPluginTest {
         greet = (Option<String>) method.invoke(null, 10);
         assertThat(greet.isEmpty()).isFalse();
         assertThat(greet.get()).isEqualTo("Alex");
+    }
+
+    @Test
+    public void propagate_unwrapCallOnLabeledExpressionStatement_fail() {
+        String source = """
+                package cases.expression_statement;
+                                
+                import dev.khbd.result4j.core.Option;
+                                
+                public class Main {
+                                
+                    public static Option<String> greet(int index) {
+                        // result is ignored
+                        label:
+                        name(index).unwrap();
+                        return Option.some("Alex");
+                    }
+                                
+                    private static Option<String> name(int index) {
+                        if (index == 0) {
+                            return Option.none();
+                        }
+                        return Option.some("Sergei");
+                    }
+                }
+                """;
+
+        CompilationResult result = compiler.compile(new PluginOptions(true), "cases/expression_statement/Main.java", source);
+
+        assertThat(result.isFail()).isTrue();
+        assertThat(result.getErrors()).extracting(Diagnostic::toString)
+                .anyMatch(msg -> msg.contains(" Unsupported position for unwrap method call"));
     }
 }

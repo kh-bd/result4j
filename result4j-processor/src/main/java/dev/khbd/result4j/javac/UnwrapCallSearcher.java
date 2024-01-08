@@ -7,6 +7,7 @@ import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.ExpressionStatementTree;
 import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.MethodInvocationTree;
+import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.ParenthesizedTree;
 import com.sun.source.tree.ReturnTree;
 import com.sun.source.tree.SwitchTree;
@@ -21,6 +22,7 @@ import com.sun.tools.javac.util.List;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Unwrap lens searcher.
@@ -180,19 +182,13 @@ class UnwrapCallSearcher implements EmptyTreeVisitor<UnwrapCallLens, Object> {
             return methLens;
         }
 
-        List<JCTree.JCExpression> args = jcCall.args;
-        for (JCTree.JCExpression arg : args) {
-            JCTree.JCExpression argReceiver = getUnwrapCallReceiver(arg);
-            if (Objects.nonNull(argReceiver)) {
-                return new UnwrapCallLens(argReceiver, expr -> jcCall.args = replace(args, arg, expr));
-            }
-            UnwrapCallLens argLens = visit(arg, o);
-            if (Objects.nonNull(argLens)) {
-                return argLens;
-            }
-        }
+        return visitExpressions(jcCall.args, replacement -> jcCall.args = replacement, o);
+    }
 
-        return null;
+    @Override
+    public UnwrapCallLens visitNewClass(NewClassTree node, Object o) {
+        JCTree.JCNewClass jcNew = (JCTree.JCNewClass) node;
+        return visitExpressions(jcNew.args, replacement -> jcNew.args = replacement, o);
     }
 
     @Override
@@ -219,6 +215,23 @@ class UnwrapCallSearcher implements EmptyTreeVisitor<UnwrapCallLens, Object> {
     public UnwrapCallLens reduce(UnwrapCallLens r1, UnwrapCallLens r2) {
         return Objects.nonNull(r1) ? r1 : r2;
     }
+
+    private UnwrapCallLens visitExpressions(List<JCTree.JCExpression> expressions,
+                                            Consumer<List<JCTree.JCExpression>> replaceF,
+                                            Object o) {
+        for (JCTree.JCExpression expression : expressions) {
+            JCTree.JCExpression argReceiver = getUnwrapCallReceiver(expression);
+            if (Objects.nonNull(argReceiver)) {
+                return new UnwrapCallLens(argReceiver, expr -> replaceF.accept(replace(expressions, expression, expr)));
+            }
+            UnwrapCallLens argLens = visit(expression, o);
+            if (Objects.nonNull(argLens)) {
+                return argLens;
+            }
+        }
+        return null;
+    }
+
 
     private static List<JCTree.JCExpression> replace(List<JCTree.JCExpression> list,
                                                      JCTree.JCExpression original,

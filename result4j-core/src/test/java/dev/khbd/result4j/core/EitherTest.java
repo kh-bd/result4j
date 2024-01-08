@@ -72,14 +72,16 @@ public class EitherTest {
 
     @Test
     public void fromNullable_valueIsNull_returnLeft() {
-        Either<?, String> either = Either.fromNullable(null);
+        Either<NullPointerException, String> either = Either.fromNullable(null);
 
         assertThat(either.isLeft()).isTrue();
+        assertThat(either.getLeft()).isInstanceOf(NullPointerException.class)
+                .hasMessage("Element is null");
     }
 
     @Test
     public void fromNullable_valueIsNotNull_returnRight() {
-        Either<?, String> either = Either.fromNullable("hello");
+        Either<NullPointerException, String> either = Either.fromNullable("hello");
 
         assertThat(either.isRight()).isTrue();
         assertThat(either.getRight()).isEqualTo("hello");

@@ -629,7 +629,7 @@ public interface Either<L, R> {
      * @param <R>   right value type
      * @return evaluated either
      */
-    static <R> Either<?, R> fromNullable(R right) {
+    static <R> Either<NullPointerException, R> fromNullable(R right) {
         return rightFromNullable(right);
     }
 
@@ -640,8 +640,8 @@ public interface Either<L, R> {
      * @param <R>   right value type
      * @return evaluated either
      */
-    static <R> Either<?, R> rightFromNullable(R right) {
-        return Objects.nonNull(right) ? Either.right(right) : Either.left("Element is null");
+    static <R> Either<NullPointerException, R> rightFromNullable(R right) {
+        return Objects.nonNull(right) ? Either.right(right) : Either.left(new NullPointerException("Element is null"));
     }
 
     /**
@@ -651,8 +651,8 @@ public interface Either<L, R> {
      * @param <L>  left value type
      * @return evaluated either
      */
-    static <L> Either<L, ?> leftFromNullable(L left) {
-        return Objects.nonNull(left) ? Either.left(left) : Either.right("Element is null");
+    static <L> Either<L, NullPointerException> leftFromNullable(L left) {
+        return Objects.nonNull(left) ? Either.left(left) : Either.right(new NullPointerException("Element is null"));
     }
 
     /**

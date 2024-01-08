@@ -68,4 +68,41 @@ public class OptionTest {
         assertThat(result.isEmpty()).isFalse();
         assertThat(result.get()).isEqualTo("Alex");
     }
+
+    @Test
+    public void fromNullable_valueIsNull_returnNone() {
+        Option<?> result = Option.fromNullable(null);
+
+        assertThat(result.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void fromNullable_valueIsNotNull_returnSome() {
+        Option<?> result = Option.fromNullable("Alex");
+
+        assertThat(result.isEmpty()).isFalse();
+        assertThat(result.get()).isEqualTo("Alex");
+    }
+
+    @Test
+    public void flatten_outerIsNone_returnEmpty() {
+        Option<String> result = Option.flatten(Option.none());
+
+        assertThat(result.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void flatten_innerInNone_returnEmpty() {
+        Option<String> result = Option.flatten(Option.some(Option.none()));
+
+        assertThat(result.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void flatten_bothIsSome_returnSome() {
+        Option<String> result = Option.flatten(Option.some(Option.some("Alex")));
+
+        assertThat(result.isEmpty()).isFalse();
+        assertThat(result.get()).isEqualTo("Alex");
+    }
 }

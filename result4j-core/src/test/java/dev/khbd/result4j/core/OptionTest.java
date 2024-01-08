@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.testng.annotations.Test;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * @author Sergei Khadanovich
@@ -101,6 +102,86 @@ public class OptionTest {
     @Test
     public void flatten_bothIsSome_returnSome() {
         Option<String> result = Option.flatten(Option.some(Option.some("Alex")));
+
+        assertThat(result.isEmpty()).isFalse();
+        assertThat(result.get()).isEqualTo("Alex");
+    }
+
+    @Test
+    public void map_valueIsNone_returnNone() {
+        Option<String> option = Option.none();
+
+        Option<Integer> result = option.map(String::length);
+
+        assertThat(result.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void map_valueIsSome_returnTransformedSome() {
+        Option<String> option = Option.some("Alex");
+
+        Option<Integer> result = option.map(String::length);
+
+        assertThat(result.isEmpty()).isFalse();
+        assertThat(result.get()).isEqualTo(4);
+    }
+
+    @Test
+    public void flatmap_valueIsNone_returnNone() {
+        Option<String> option = Option.none();
+
+        Option<Integer> result = option.flatMap(str -> Option.some(str.length()));
+
+        assertThat(result.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void flatmap_valueIsSomeAndFunctionReturnNone_returnNone() {
+        Option<String> option = Option.some("Alex");
+
+        Option<Integer> result = option.flatMap(str -> Option.none());
+
+        assertThat(result.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void flatmap_valueIsSomeAndFunctionReturnSome_returnSome() {
+        Option<String> option = Option.some("Alex");
+
+        Option<Integer> result = option.flatMap(str -> Option.some(str.length()));
+
+        assertThat(result.isEmpty()).isFalse();
+        assertThat(result.get()).isEqualTo(4);
+    }
+
+    @Test
+    public void toOptional_valueIsNone_returnEmptyOptional() {
+        Option<Object> option = Option.none();
+
+        Optional<Object> result = option.toOptional();
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void toOptional_valueIsSome_returnNotEmptyOptional() {
+        Option<String> option = Option.some("Alex");
+
+        Optional<String > result = option.toOptional();
+
+        assertThat(result).hasValue("Alex");
+    }
+
+    @Test
+    public void fromOptional_valueIsEmpty_returnNone() {
+        Option<Object> result = Option.fromOptional(Optional.empty());
+
+        assertThat(result.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void fromOptional_valueIsNotEmpty_returnSome() {
+        Option<String> result = Option.fromOptional(Optional.of("Alex"));
 
         assertThat(result.isEmpty()).isFalse();
         assertThat(result.get()).isEqualTo("Alex");

@@ -8,6 +8,7 @@ import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.ExpressionStatementTree;
 import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.MethodInvocationTree;
+import com.sun.source.tree.NewArrayTree;
 import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.ParenthesizedTree;
 import com.sun.source.tree.ReturnTree;
@@ -204,6 +205,18 @@ class UnwrapCallSearcher implements EmptyTreeVisitor<UnwrapCallLens, Object> {
     }
 
     @Override
+    public UnwrapCallLens visitNewArray(NewArrayTree node, Object o) {
+        JCTree.JCNewArray jcNew = (JCTree.JCNewArray) node;
+
+        UnwrapCallLens lens = visitExpressions(jcNew.dims, replacement -> jcNew.dims = replacement, o);
+        if (Objects.nonNull(lens)) {
+           return lens;
+        }
+
+        return visitExpressions(jcNew.elems, replacement -> jcNew.elems = replacement, o);
+    }
+
+    @Override
     public UnwrapCallLens visitNewClass(NewClassTree node, Object o) {
         JCTree.JCNewClass jcNew = (JCTree.JCNewClass) node;
         return visitExpressions(jcNew.args, replacement -> jcNew.args = replacement, o);
@@ -237,6 +250,9 @@ class UnwrapCallSearcher implements EmptyTreeVisitor<UnwrapCallLens, Object> {
     private UnwrapCallLens visitExpressions(List<JCTree.JCExpression> expressions,
                                             Consumer<List<JCTree.JCExpression>> replaceF,
                                             Object o) {
+        if (Objects.isNull(expressions)) {
+            return null;
+        }
         for (JCTree.JCExpression expression : expressions) {
             JCTree.JCExpression argReceiver = getUnwrapCallReceiver(expression);
             if (Objects.nonNull(argReceiver)) {

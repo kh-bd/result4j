@@ -7,18 +7,20 @@ import com.sun.source.util.TaskEvent;
 import com.sun.source.util.TaskListener;
 import com.sun.tools.javac.api.BasicJavacTask;
 import com.sun.tools.javac.code.Symbol;
-import com.sun.tools.javac.code.Symtab;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.JCDiagnostic;
 import com.sun.tools.javac.util.List;
 import com.sun.tools.javac.util.Log;
-import com.sun.tools.javac.util.Names;
 
 /**
  * @author Sergei_Khadanovich
  */
 public class ResultPropagatePlugin implements Plugin {
+
+    private static final List<ResultPropagateStrategy> STRATEGIES = List.of(
+            new OptionResultPropagateStrategy()
+    );
 
     @Override
     public String getName() {
@@ -29,8 +31,6 @@ public class ResultPropagatePlugin implements Plugin {
     public void init(JavacTask task, String... args) {
         Options options = new Options(args);
         PrettyPrinter printer = options.prettyPrintEnabled() ? new StdoutPrettyPrinter() : new NoOpsPrettyPrinter();
-
-        IdentNameStrategyFactory nameStrategyFactory = new IncrementIdentNameStrategyFactory();
 
         task.addTaskListener(new TaskListener() {
             @Override
@@ -45,17 +45,7 @@ public class ResultPropagatePlugin implements Plugin {
 
                 CompilationUnitTree unit = event.getCompilationUnit();
 
-                SupportedTypes supportedTypes = getSupportedTypes(context);
-
-                UnwrapCallReplacerStatementProcessor optionProcessor = new UnwrapCallReplacerStatementProcessor(
-                        new UnwrapCallSearcher(supportedTypes.option()),
-                        new OptionPropagateLogicBuilder(context, nameStrategyFactory)
-                );
-
-                StatementProcessingTreeScanner scanner = new StatementProcessingTreeScanner(List.of(
-                        optionProcessor
-                ), context);
-
+                StatementProcessingTreeScanner scanner = buildStatementProcessingTreeScanner(context);
                 ReAttributer attributer = new ReAttributer(context);
 
                 int times = 0;
@@ -69,25 +59,22 @@ public class ResultPropagatePlugin implements Plugin {
                 }
 
                 Logger logger = new Logger(Log.instance(context), JCDiagnostic.Factory.instance(context), unit.getSourceFile());
-                RemainedUnwrapCallAnnotator unwrapCallAnnotator = new RemainedUnwrapCallAnnotator(logger, supportedTypes.toList());
+                RemainedUnwrapCallAnnotator unwrapCallAnnotator =
+                        new RemainedUnwrapCallAnnotator(logger, getAllSupportedTypes(context));
                 unwrapCallAnnotator.scan(unit, null);
             }
         });
     }
 
-    private static SupportedTypes getSupportedTypes(Context context) {
-        Symtab symtab = Symtab.instance(context);
-        Names names = Names.instance(context);
-        return new SupportedTypes(
-                symtab.enterClass(symtab.unnamedModule, names.fromString("dev.khbd.result4j.core.Option"))
-        );
+    private static StatementProcessingTreeScanner buildStatementProcessingTreeScanner(Context context) {
+        List<StatementProcessor> processors =
+                STRATEGIES.map(strategy -> new UnwrapCallReplacerStatementProcessor(
+                        new UnwrapCallSearcher(strategy.type(context)), strategy.propagateLogicBuilder(context)));
+        return new StatementProcessingTreeScanner(processors, context);
     }
 
-    private record SupportedTypes(Symbol option) {
-
-        List<Symbol> toList() {
-            return List.of(option);
-        }
+    private static List<Symbol> getAllSupportedTypes(Context context) {
+        return STRATEGIES.map(strategy -> strategy.type(context));
     }
 
     @Override

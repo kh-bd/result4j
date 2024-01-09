@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.testng.annotations.Test;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * @author Sergei Khadanovich
@@ -185,5 +187,114 @@ public class OptionTest {
 
         assertThat(result.isEmpty()).isFalse();
         assertThat(result.get()).isEqualTo("Alex");
+    }
+
+    @Test
+    public void traverse_emptyList_returnSomeWithEmptyList() {
+        Option<List<Boolean>> result = Option.traverse(List.of(), __ -> Option.some(true));
+
+        assertThat(result.isEmpty()).isFalse();
+        assertThat(result.get()).isEmpty();
+    }
+
+    @Test
+    public void traverse_notEmptyListAndAllResultsAreSome_returnSome() {
+        Option<List<Integer>> result = Option.traverse(List.of("1", "2", "3"), str -> Option.some(Integer.parseInt(str)));
+
+        assertThat(result.isEmpty()).isFalse();
+        assertThat(result.get()).isEqualTo(List.of(1, 2, 3));
+    }
+
+    @Test
+    public void traverse_notEmptyListAndSomeValuesAreNone_returnNone() {
+        Option<List<Integer>> result = Option.traverse(List.of("1", "2", "3"), str -> {
+            if (str.equals("3")) {
+                return Option.none();
+            }
+            return Option.some(Integer.parseInt(str));
+        });
+
+        assertThat(result.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void sequence_emptyList_returnSomeWithEmptyList() {
+        Option<List<Boolean>> result = Option.sequence(List.of());
+
+        assertThat(result.isEmpty()).isFalse();
+        assertThat(result.get()).isEmpty();
+    }
+
+    @Test
+    public void sequence_notEmptyListAndAllValuesAreSome_returnSome() {
+        Option<List<Integer>> result = Option.sequence(List.of(Option.some(1), Option.some(2), Option.some(3)));
+
+        assertThat(result.isEmpty()).isFalse();
+        assertThat(result.get()).isEqualTo(List.of(1, 2, 3));
+    }
+
+    @Test
+    public void sequence_notEmptyListAndSomeValuesAreNone_returnNone() {
+        Option<List<Integer>> result = Option.sequence(List.of(Option.some(1), Option.none(), Option.some(3)));
+
+        assertThat(result.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void orElse_valueIsNone_returnOther() {
+        Option<String> option = Option.none();
+
+        Option<String> result = option.orElse(Option.some("Alex"));
+
+        assertThat(result.isEmpty()).isFalse();
+        assertThat(result.get()).isEqualTo("Alex");
+    }
+
+    @Test
+    public void orElse_valueIsSome_returnThis() {
+        Option<String> option = Option.some("Alex");
+
+        Option<String> result = option.orElse(Option.none());
+
+        assertThat(result.isEmpty()).isFalse();
+        assertThat(result.get()).isEqualTo("Alex");
+    }
+
+    @Test
+    public void orElseLazy_valueIsNone_returnOther() {
+        Option<String> option = Option.none();
+
+        Option<String> result = option.orElse(() -> Option.some("Alex"));
+
+        assertThat(result.isEmpty()).isFalse();
+        assertThat(result.get()).isEqualTo("Alex");
+    }
+
+    @Test
+    public void orElseLazy_valueIsSome_returnThis() {
+        Option<String> option = Option.some("Alex");
+
+        Option<String> result = option.orElse(Option::none);
+
+        assertThat(result.isEmpty()).isFalse();
+        assertThat(result.get()).isEqualTo("Alex");
+    }
+
+    @Test
+    public void toStream_optionIsEmpty_returnEmptyStream() {
+        Option<Object> option = Option.none();
+
+        Stream<Object> result = option.toStream();
+
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    public void toStream_optionIsNotEmpty_returnStreamOneElement() {
+        Option<String> option = Option.some("Alex");
+
+        Stream<String> result = option.toStream();
+
+        assertThat(result).containsExactly("Alex");
     }
 }

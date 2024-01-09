@@ -248,8 +248,7 @@ public interface Option<V> {
      */
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     static <V> Option<V> fromOptional(@NonNull Optional<V> value) {
-        return value.map(Option::some)
-                .orElseGet(Option::none);
+        return value.map(Option::some).orElseGet(Option::none);
     }
 
     /**
@@ -397,7 +396,7 @@ class Some<V> implements Option<V> {
 
     @Override
     public <R> Option<R> map(@NonNull Function<? super V, ? extends R> function) {
-        return Option.fromNullable(function.apply(value));
+        return Option.some(function.apply(value));
     }
 
     @Override

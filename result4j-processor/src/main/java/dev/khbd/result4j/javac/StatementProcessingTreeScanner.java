@@ -6,6 +6,7 @@ import com.sun.source.tree.DoWhileLoopTree;
 import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.ForLoopTree;
 import com.sun.source.tree.IfTree;
+import com.sun.source.tree.SwitchExpressionTree;
 import com.sun.source.tree.SwitchTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.WhileLoopTree;
@@ -82,6 +83,13 @@ class StatementProcessingTreeScanner extends TreeScanner<Boolean, Object> {
                 processOneStatementBlock(jcIf.thenpart, st -> jcIf.thenpart = st, o),
                 processOneStatementBlock(jcIf.elsepart, st -> jcIf.elsepart = st, o)
         );
+    }
+
+    @Override
+    public Boolean visitSwitchExpression(SwitchExpressionTree node, Object o) {
+        // do not analise switch expression deeply
+        // return statement is not allowed inside switch statement
+        return Boolean.FALSE;
     }
 
     @Override

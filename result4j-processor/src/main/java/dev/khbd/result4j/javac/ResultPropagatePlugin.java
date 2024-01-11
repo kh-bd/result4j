@@ -19,7 +19,9 @@ import com.sun.tools.javac.util.Log;
 public class ResultPropagatePlugin implements Plugin {
 
     private static final List<ResultPropagateStrategy> STRATEGIES = List.of(
-            new OptionResultPropagateStrategy()
+            new OptionResultPropagateStrategy(),
+            new TryResultPropagateStrategy(),
+            new EitherResultPropagateStrategy()
     );
 
     @Override

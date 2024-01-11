@@ -237,6 +237,56 @@ public interface Try<V> {
     }
 
     /**
+     * Unwrap call.
+     *
+     * <p>This is method with special support through compiler plugin.
+     * <p>Invocation of this method is replaced with special statements at compile time.
+     * <p>For example, we have a function which is able to divide integers
+     * <pre>{@code
+     *     Try<Integer> divide(Integer num, Integer den) {
+     *         if (den == 0) {
+     *              return Try.failure(new IllegalArgumentException("Division by zero));
+     *         }
+     *         return Try.success(num / den);
+     *     }
+     * }</pre>
+     * and we need to write a function which sums results of two divisions.
+     * Such function can be written with zip combinator.
+     * <pre>{@code
+     *     Try<Integer> sumDivide(Integer num1, Integer den1, Integer num2, Integer den2) {
+     *          Try<Integer> r1 = divide(num1, den1);
+     *          Try<Integer> r2 = divide(num2, den2);
+     *          return Try.zip(r1, r2, (v1, v2) -> v1 + v2);
+     *     }
+     * }</pre>
+     * This example is very simple but a bit complicated to read.
+     * The same code be written like this
+     * <pre>{@code
+     *     Try<Integer> sumDivide(Integer num1, Integer den1, Integer num2, Integer den2) {
+     *         Integer r1 = divide(num1, den1).unwrap();
+     *         Integer r2 = divide(num2, den2).unwrap();
+     *         return Try.success(r1 + r2);
+     *     }
+     * }</pre>
+     *
+     * <p>Unwrap call is transformed at compile time. Simplified code looks like this.
+     * <pre>{@code
+     *      // invocation like this
+     *      Integer result = divide(num, den).unwrap();
+     *
+     *      // is going to be transformed into several statements
+     *      Try<Integer> $$rev = divide(num, den);
+     *      if ($$rev.isFailure()) {
+     *          return Try.failure($$rev.getError());
+     *      }
+     *      Integer result = $$rev.get();
+     * }</pre>
+     */
+    default V unwrap() {
+        throw new UnsupportedOperationException("This is a method with special support at compile time");
+    }
+
+    /**
      * Wrap erroneous computation into {@code Try}.
      *
      * <p>Note: {@code code} will be evaluated eager.

@@ -458,6 +458,56 @@ public interface Either<L, R> {
     Either<L, R> leftFilter(Predicate<? super L> predicate, Supplier<? extends R> rightF);
 
     /**
+     * Unwrap call.
+     *
+     * <p>This is method with special support through compiler plugin.
+     * <p>Invocation of this method is replaced with special statements at compile time.
+     * <p>For example, we have a function which is able to divide integers
+     * <pre>{@code
+     *     Either<String, Integer> divide(Integer num, Integer den) {
+     *         if (den == 0) {
+     *              return Either.left("Division by zero");
+     *         }
+     *         return Either.right(num / den);
+     *     }
+     * }</pre>
+     * and we need to write a function which sums results of two divisions.
+     * Such function can be written with zip combinator.
+     * <pre>{@code
+     *     Either<String, Integer> sumDivide(Integer num1, Integer den1, Integer num2, Integer den2) {
+     *          Either<String, Integer> r1 = divide(num1, den1);
+     *          Either<String, Integer> r2 = divide(num2, den2);
+     *          return Either.zip(r1, r2, (v1, v2) -> v1 + v2);
+     *     }
+     * }</pre>
+     * This example is very simple but a bit complicated to read.
+     * The same code be written like this
+     * <pre>{@code
+     *     Either<String, Integer> sumDivide(Integer num1, Integer den1, Integer num2, Integer den2) {
+     *         Integer r1 = divide(num1, den1).unwrap();
+     *         Integer r2 = divide(num2, den2).unwrap();
+     *         return Either.right(r1 + r2);
+     *     }
+     * }</pre>
+     *
+     * <p>Unwrap call is transformed at compile time. Simplified code looks like this.
+     * <pre>{@code
+     *      // invocation like this
+     *      Integer result = divide(num, den).unwrap();
+     *
+     *      // is going to be transformed into several statements
+     *      Either<String, Integer> $$rev = divide(num, den);
+     *      if ($$rev.isLeft()) {
+     *          return Either.left($$rev.getLeft());
+     *      }
+     *      Integer result = $$rev.get();
+     * }</pre>
+     */
+    default R unwrap() {
+        throw new UnsupportedOperationException("This is a method with special support at compile time");
+    }
+
+    /**
      * Create left instance.
      *
      * @param left left value

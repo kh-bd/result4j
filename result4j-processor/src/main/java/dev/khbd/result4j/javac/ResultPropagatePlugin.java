@@ -20,7 +20,8 @@ public class ResultPropagatePlugin implements Plugin {
 
     private static final List<ResultPropagateStrategy> STRATEGIES = List.of(
             new OptionResultPropagateStrategy(),
-            new TryResultPropagateStrategy()
+            new TryResultPropagateStrategy(),
+            new EitherResultPropagateStrategy()
     );
 
     @Override

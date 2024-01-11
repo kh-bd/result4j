@@ -7,6 +7,7 @@ import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.ForLoopTree;
 import com.sun.source.tree.IfTree;
 import com.sun.source.tree.SwitchExpressionTree;
+import com.sun.source.tree.LambdaExpressionTree;
 import com.sun.source.tree.SwitchTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.WhileLoopTree;
@@ -36,6 +37,26 @@ class StatementProcessingTreeScanner extends TreeScanner<Boolean, Object> {
                                    Context context) {
         this.processors = processors;
         this.treeMaker = TreeMaker.instance(context);
+    }
+
+    @Override
+    public Boolean visitLambdaExpression(LambdaExpressionTree node, Object o) {
+        JCTree.JCLambda jcLambda = (JCTree.JCLambda) node;
+
+        if (jcLambda.getBodyKind() == LambdaExpressionTree.BodyKind.STATEMENT) {
+            return scan(jcLambda.body, o);
+        }
+
+        JCTree.JCReturn returnStatement = treeMaker.at(jcLambda.pos).Return((JCTree.JCExpression) jcLambda.body);
+
+        ProcessedStatement processed = applyFirstProcessor(returnStatement);
+        if (!processed.processed()) {
+            return Boolean.FALSE;
+        }
+
+        jcLambda.body = treeMaker.Block(0, processed.statements());
+
+        return Boolean.TRUE;
     }
 
     @Override

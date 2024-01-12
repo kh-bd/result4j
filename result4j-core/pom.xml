@@ -8,7 +8,7 @@
     <parent>
         <groupId>dev.khbd.result4j</groupId>
         <artifactId>result4j</artifactId>
-        <version>LATEST-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
 
     <artifactId>result4j-core</artifactId>

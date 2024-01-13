@@ -182,7 +182,9 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
+                            <source>21</source>
                             <additionalJOptions>
+                                <additionalJOption>--enable-preview</additionalJOption>
                                 <additionalJOption>--add-exports</additionalJOption>
                                 <additionalJOption>${open.tree}</additionalJOption>
                                 <additionalJOption>--add-exports</additionalJOption>

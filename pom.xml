@@ -118,11 +118,10 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <target>21</target>
-                    <source>21</source>
+                    <target>17</target>
+                    <source>17</source>
                     <fork>true</fork>
                     <compilerArgs>
-                        <arg>--enable-preview</arg>
                         <arg>--add-exports=${open.tree}</arg>
                         <arg>--add-exports=${open.util}</arg>
                         <arg>--add-exports=${open.api}</arg>
@@ -146,7 +145,7 @@
                     <includes>
                         <include>**/*Test.java</include>
                     </includes>
-                    <argLine>--enable-preview -Dfile.encoding=UTF-8 --add-exports=${open.tree} --add-exports=${open.util} --add-exports=${open.api} --add-exports=${open.parser} --add-exports=${open.code} --add-exports=${open.comp}</argLine>
+                    <argLine>-Dfile.encoding=UTF-8 --add-exports=${open.tree} --add-exports=${open.util} --add-exports=${open.api} --add-exports=${open.parser} --add-exports=${open.code} --add-exports=${open.comp}</argLine>
                     <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
@@ -182,9 +181,8 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
-                            <source>21</source>
+                            <source>17</source>
                             <additionalJOptions>
-                                <additionalJOption>--enable-preview</additionalJOption>
                                 <additionalJOption>--add-exports</additionalJOption>
                                 <additionalJOption>${open.tree}</additionalJOption>
                                 <additionalJOption>--add-exports</additionalJOption>

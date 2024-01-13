@@ -165,8 +165,7 @@ public abstract class AbstractPluginTest {
             arguments.add("-classpath");
             arguments.add(System.getProperty("java.class.path"));
             arguments.add(options.toString());
-            arguments.add("--release=21");
-            arguments.add("--enable-preview");
+            arguments.add("--release=17");
 
             JavaCompiler.CompilationTask task
                     = compiler.getTask(new StringWriter(), fileManager, diagnostic, arguments, null,

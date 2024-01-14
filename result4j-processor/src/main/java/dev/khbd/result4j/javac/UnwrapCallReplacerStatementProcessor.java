@@ -23,13 +23,13 @@ class UnwrapCallReplacerStatementProcessor implements StatementProcessor {
             return new ProcessedStatement(false, statement);
         }
 
-        PropagateLogic logic = propagateLogicBuilder.build(lens.receiver(), statement.pos);
+        PropagateLogic logic = propagateLogicBuilder.build(lens.getReceiver(), statement.pos);
 
-        lens.replaceF().accept(logic.ident());
+        lens.getReplaceF().accept(logic.getIdent());
 
         return new ProcessedStatement(true,
                 List.<JCTree.JCStatement>nil()
-                        .appendList(logic.statements())
+                        .appendList(logic.getStatements())
                         .append(statement)
         );
     }

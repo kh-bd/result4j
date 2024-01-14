@@ -1,5 +1,7 @@
 package dev.khbd.result4j.javac;
 
+import lombok.Value;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,25 +32,25 @@ class Options {
             if (Objects.isNull(description)) {
                 continue;
             }
-            params.put(description.key(), parseValueOrDefault(description, parts[1]));
+            params.put(description.getKey(), parseValueOrDefault(description, parts[1]));
         }
         for (OptionsDescription<?> description : DESCRIPTIONS) {
-            params.putIfAbsent(description.key(), description.defaultValue().get());
+            params.putIfAbsent(description.getKey(), description.getDefaultValue().get());
         }
     }
 
     private static OptionsDescription<?> findDescription(OptionsKey<?> key) {
         return DESCRIPTIONS.stream()
-                .filter(description -> description.key().equals(key))
+                .filter(description -> description.getKey().equals(key))
                 .findFirst()
                 .orElse(null);
     }
 
     private static Object parseValueOrDefault(OptionsDescription<?> description, String value) {
         try {
-            return description.parser().apply(value);
+            return description.getParser().apply(value);
         } catch (Exception e) {
-            return description.defaultValue().get();
+            return description.getDefaultValue().get();
         }
     }
 
@@ -64,13 +66,16 @@ class Options {
         return (T) params.get(key);
     }
 
-    private record OptionsKey<V>(String name) {
+    @Value
+    private static class OptionsKey<V> {
+        String name;
     }
 
-    private record OptionsDescription<V>(
-            OptionsKey<V> key,
-            Function<String, ? extends V> parser,
-            Supplier<? extends V> defaultValue) {
+    @Value
+    private static class OptionsDescription<V> {
+        OptionsKey<V> key;
+        Function<String, ? extends V> parser;
+        Supplier<? extends V> defaultValue;
     }
 
 }

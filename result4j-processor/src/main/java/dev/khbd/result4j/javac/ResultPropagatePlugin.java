@@ -79,8 +79,4 @@ public class ResultPropagatePlugin implements Plugin {
         return STRATEGIES.map(strategy -> strategy.type(context));
     }
 
-    @Override
-    public boolean autoStart() {
-        return true;
-    }
 }

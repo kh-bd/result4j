@@ -118,8 +118,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <target>21</target>
-                    <source>21</source>
+                    <target>11</target>
+                    <source>11</source>
                     <fork>true</fork>
                     <compilerArgs>
                         <arg>--enable-preview</arg>
@@ -182,7 +182,7 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
-                            <source>21</source>
+                            <source>11</source>
                             <additionalJOptions>
                                 <additionalJOption>--enable-preview</additionalJOption>
                                 <additionalJOption>--add-exports</additionalJOption>

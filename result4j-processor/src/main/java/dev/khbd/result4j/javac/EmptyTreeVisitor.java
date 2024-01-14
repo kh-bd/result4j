@@ -2,13 +2,11 @@ package dev.khbd.result4j.javac;
 
 import com.sun.source.tree.AnnotatedTypeTree;
 import com.sun.source.tree.AnnotationTree;
-import com.sun.source.tree.AnyPatternTree;
 import com.sun.source.tree.ArrayAccessTree;
 import com.sun.source.tree.ArrayTypeTree;
 import com.sun.source.tree.AssertTree;
 import com.sun.source.tree.AssignmentTree;
 import com.sun.source.tree.BinaryTree;
-import com.sun.source.tree.BindingPatternTree;
 import com.sun.source.tree.BlockTree;
 import com.sun.source.tree.BreakTree;
 import com.sun.source.tree.CaseTree;
@@ -17,10 +15,7 @@ import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.tree.CompoundAssignmentTree;
 import com.sun.source.tree.ConditionalExpressionTree;
-import com.sun.source.tree.ConstantCaseLabelTree;
 import com.sun.source.tree.ContinueTree;
-import com.sun.source.tree.DeconstructionPatternTree;
-import com.sun.source.tree.DefaultCaseLabelTree;
 import com.sun.source.tree.DoWhileLoopTree;
 import com.sun.source.tree.EmptyStatementTree;
 import com.sun.source.tree.EnhancedForLoopTree;
@@ -48,13 +43,10 @@ import com.sun.source.tree.OpensTree;
 import com.sun.source.tree.PackageTree;
 import com.sun.source.tree.ParameterizedTypeTree;
 import com.sun.source.tree.ParenthesizedTree;
-import com.sun.source.tree.PatternCaseLabelTree;
 import com.sun.source.tree.PrimitiveTypeTree;
 import com.sun.source.tree.ProvidesTree;
 import com.sun.source.tree.RequiresTree;
 import com.sun.source.tree.ReturnTree;
-import com.sun.source.tree.StringTemplateTree;
-import com.sun.source.tree.SwitchExpressionTree;
 import com.sun.source.tree.SwitchTree;
 import com.sun.source.tree.SynchronizedTree;
 import com.sun.source.tree.ThrowTree;
@@ -69,7 +61,6 @@ import com.sun.source.tree.UsesTree;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.tree.WhileLoopTree;
 import com.sun.source.tree.WildcardTree;
-import com.sun.source.tree.YieldTree;
 
 /**
  * Empty tree visitor.
@@ -243,41 +234,6 @@ interface EmptyTreeVisitor<R, P> extends TreeVisitor<R, P> {
     }
 
     @Override
-    default R visitStringTemplate(StringTemplateTree node, P p) {
-        return null;
-    }
-
-    @Override
-    default R visitAnyPattern(AnyPatternTree node, P p) {
-        return null;
-    }
-
-    @Override
-    default R visitBindingPattern(BindingPatternTree node, P p) {
-        return null;
-    }
-
-    @Override
-    default R visitDefaultCaseLabel(DefaultCaseLabelTree node, P p) {
-        return null;
-    }
-
-    @Override
-    default R visitConstantCaseLabel(ConstantCaseLabelTree node, P p) {
-        return null;
-    }
-
-    @Override
-    default R visitPatternCaseLabel(PatternCaseLabelTree node, P p) {
-        return null;
-    }
-
-    @Override
-    default R visitDeconstructionPattern(DeconstructionPatternTree node, P p) {
-        return null;
-    }
-
-    @Override
     default R visitMethod(MethodTree node, P p) {
         return null;
     }
@@ -334,11 +290,6 @@ interface EmptyTreeVisitor<R, P> extends TreeVisitor<R, P> {
 
     @Override
     default R visitSwitch(SwitchTree node, P p) {
-        return null;
-    }
-
-    @Override
-    default R visitSwitchExpression(SwitchExpressionTree node, P p) {
         return null;
     }
 
@@ -454,11 +405,6 @@ interface EmptyTreeVisitor<R, P> extends TreeVisitor<R, P> {
 
     @Override
     default R visitOther(Tree node, P p) {
-        return null;
-    }
-
-    @Override
-    default R visitYield(YieldTree node, P p) {
         return null;
     }
 }

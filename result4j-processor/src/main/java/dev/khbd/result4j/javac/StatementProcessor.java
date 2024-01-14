@@ -2,6 +2,8 @@ package dev.khbd.result4j.javac;
 
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.List;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Statement processor.
@@ -20,7 +22,12 @@ interface StatementProcessor {
     /**
      * Processed statement.
      */
-    record ProcessedStatement(boolean processed, List<JCTree.JCStatement> statements) {
+    @Getter
+    @RequiredArgsConstructor
+    class ProcessedStatement {
+
+        private final boolean processed;
+        private final List<JCTree.JCStatement> statements;
 
         ProcessedStatement(boolean processed, JCTree.JCStatement... statements) {
             this(processed, List.from(statements));

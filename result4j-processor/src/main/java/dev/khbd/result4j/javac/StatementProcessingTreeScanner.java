@@ -6,7 +6,6 @@ import com.sun.source.tree.DoWhileLoopTree;
 import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.ForLoopTree;
 import com.sun.source.tree.IfTree;
-import com.sun.source.tree.SwitchExpressionTree;
 import com.sun.source.tree.LambdaExpressionTree;
 import com.sun.source.tree.SwitchTree;
 import com.sun.source.tree.Tree;
@@ -50,11 +49,11 @@ class StatementProcessingTreeScanner extends TreeScanner<Boolean, Object> {
         JCTree.JCReturn returnStatement = treeMaker.at(jcLambda.pos).Return((JCTree.JCExpression) jcLambda.body);
 
         ProcessedStatement processed = applyFirstProcessor(returnStatement);
-        if (!processed.processed()) {
+        if (!processed.isProcessed()) {
             return Boolean.FALSE;
         }
 
-        jcLambda.body = treeMaker.Block(0, processed.statements());
+        jcLambda.body = treeMaker.Block(0, processed.getStatements());
 
         return Boolean.TRUE;
     }
@@ -65,11 +64,11 @@ class StatementProcessingTreeScanner extends TreeScanner<Boolean, Object> {
 
         ProcessedStatement processed = processSeveralStatements(jcBlock.stats);
 
-        if (processed.processed()) {
-            jcBlock.stats = processed.statements();
+        if (processed.isProcessed()) {
+            jcBlock.stats = processed.getStatements();
         }
 
-        return reduce(processed.processed(), scan(jcBlock.stats, o));
+        return reduce(processed.isProcessed(), scan(jcBlock.stats, o));
     }
 
     @Override
@@ -107,13 +106,6 @@ class StatementProcessingTreeScanner extends TreeScanner<Boolean, Object> {
     }
 
     @Override
-    public Boolean visitSwitchExpression(SwitchExpressionTree node, Object o) {
-        // do not analise switch expression deeply
-        // return statement is not allowed inside switch statement
-        return Boolean.FALSE;
-    }
-
-    @Override
     public Boolean visitSwitch(SwitchTree node, Object o) {
         JCTree.JCSwitch jcSwitch = (JCTree.JCSwitch) node;
         return scan(jcSwitch.cases, o);
@@ -125,11 +117,11 @@ class StatementProcessingTreeScanner extends TreeScanner<Boolean, Object> {
 
         ProcessedStatement processed = processSeveralStatements(jcCase.stats);
 
-        if (processed.processed()) {
-            jcCase.stats = processed.statements();
+        if (processed.isProcessed()) {
+            jcCase.stats = processed.getStatements();
         }
 
-        return reduce(processed.processed(), scan(jcCase.stats, o));
+        return reduce(processed.isProcessed(), scan(jcCase.stats, o));
     }
 
     private Boolean processOneStatementBlock(JCTree.JCStatement statement,
@@ -144,13 +136,13 @@ class StatementProcessingTreeScanner extends TreeScanner<Boolean, Object> {
         }
 
         ProcessedStatement processed = applyFirstProcessor(statement);
-        if (!processed.processed()) {
+        if (!processed.isProcessed()) {
             return Boolean.FALSE;
         }
 
-        JCTree.JCStatement changed = processed.statements().size() == 1
-                ? processed.statements().head
-                : treeMaker.at(statement.pos).Block(0, processed.statements());
+        JCTree.JCStatement changed = processed.getStatements().size() == 1
+                ? processed.getStatements().head
+                : treeMaker.at(statement.pos).Block(0, processed.getStatements());
 
         changedStatementApplier.accept(changed);
 
@@ -163,8 +155,8 @@ class StatementProcessingTreeScanner extends TreeScanner<Boolean, Object> {
 
         for (JCTree.JCStatement statement : statements) {
             ProcessedStatement processedStatement = applyFirstProcessor(statement);
-            newStatements = newStatements.appendList(processedStatement.statements());
-            processed |= processedStatement.processed();
+            newStatements = newStatements.appendList(processedStatement.getStatements());
+            processed |= processedStatement.isProcessed();
         }
 
         return new ProcessedStatement(processed, newStatements);
@@ -173,7 +165,7 @@ class StatementProcessingTreeScanner extends TreeScanner<Boolean, Object> {
     private ProcessedStatement applyFirstProcessor(JCTree.JCStatement statement) {
         for (var processor : processors) {
             ProcessedStatement processed = processor.process(statement);
-            if (processed.processed()) {
+            if (processed.isProcessed()) {
                 return processed;
             }
         }

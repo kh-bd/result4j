@@ -12,7 +12,6 @@ import com.sun.source.tree.NewArrayTree;
 import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.ParenthesizedTree;
 import com.sun.source.tree.ReturnTree;
-import com.sun.source.tree.SwitchExpressionTree;
 import com.sun.source.tree.SwitchTree;
 import com.sun.source.tree.SynchronizedTree;
 import com.sun.source.tree.ThrowTree;
@@ -93,18 +92,6 @@ class UnwrapCallSearcher implements EmptyTreeVisitor<UnwrapCallLens, Object> {
     @Override
     public UnwrapCallLens visitSwitch(SwitchTree node, Object o) {
         JCTree.JCSwitch jcSwitch = (JCTree.JCSwitch) node;
-
-        JCTree.JCExpression receiver = getUnwrapCallReceiver(jcSwitch.selector);
-        if (receiver != null) {
-            return new UnwrapCallLens(receiver, expr -> jcSwitch.selector = expr);
-        }
-
-        return visit(jcSwitch.selector, o);
-    }
-
-    @Override
-    public UnwrapCallLens visitSwitchExpression(SwitchExpressionTree node, Object o) {
-        JCTree.JCSwitchExpression jcSwitch = (JCTree.JCSwitchExpression) node;
 
         JCTree.JCExpression receiver = getUnwrapCallReceiver(jcSwitch.selector);
         if (receiver != null) {

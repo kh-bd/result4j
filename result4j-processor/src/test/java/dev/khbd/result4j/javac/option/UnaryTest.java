@@ -15,32 +15,30 @@ public class UnaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inUnaryNegationExpression() throws Exception {
-        String source = """
-                package cases.in_unary;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<String> getName(boolean flag) {
-                        var notFlag = !flag(flag).unwrap();
-                    
-                        if (notFlag) {
-                            return Option.none();
-                        }
-                        
-                        return Option.some("Alex");
-                    }
-                    
-                    public static Option<Boolean> flag(boolean flag) {
-                        return Option.some(flag);
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_unary;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> getName(boolean flag) {\n" +
+                "        var notFlag = !flag(flag).unwrap();\n" +
+                "\n" +
+                "        if (notFlag) {\n" +
+                "            return Option.none();\n" +
+                "        }\n" +
+                "\n" +
+                "        return Option.some(\"Alex\");\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Option<Boolean> flag(boolean flag) {\n" +
+                "        return Option.some(flag);\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_unary/Main.java", source);
 
-        System.out.println(result);
         assertThat(result.isSuccess()).isTrue();
 
         ClassLoader classLoader = result.classLoader();

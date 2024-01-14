@@ -15,27 +15,26 @@ public class LambdaTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLambdaBlock() throws Exception {
-        String source = """
-                package cases.in_lambda;
-                                
-                import dev.khbd.result4j.core.Option;
-                import java.util.concurrent.Callable;
-                                
-                public class Main {
-                                
-                    public static Option<String> getName(boolean flag) throws Exception {
-                        Callable<Option<String>> call = () -> {
-                            var name = name(flag).unwrap();
-                            return Option.some(name.toUpperCase());
-                        };
-                        return call.call();
-                    }
-                    
-                    public static Option<String> name(boolean flag) {
-                        return flag ? Option.some("Alex") : Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_lambda;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "import java.util.concurrent.Callable;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> getName(boolean flag) throws Exception {\n" +
+                "        Callable<Option<String>> call = () -> {\n" +
+                "            var name = name(flag).unwrap();\n" +
+                "            return Option.some(name.toUpperCase());\n" +
+                "        };\n" +
+                "        return call.call();\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Option<String> name(boolean flag) {\n" +
+                "        return flag ? Option.some(\"Alex\") : Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_lambda/Main.java", source);
 
@@ -58,24 +57,23 @@ public class LambdaTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLambdaExpression() throws Exception {
-        String source = """
-                package cases.in_lambda;
-                                
-                import dev.khbd.result4j.core.Option;
-                import java.util.concurrent.Callable;
-                                
-                public class Main {
-                                
-                    public static Option<String> getName(boolean flag) throws Exception {
-                        Callable<Option<String>> call = () -> Option.some(name(flag).unwrap().toUpperCase());
-                        return call.call();
-                    }
-                    
-                    public static Option<String> name(boolean flag) {
-                        return flag ? Option.some("Alex") : Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_lambda;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "import java.util.concurrent.Callable;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> getName(boolean flag) throws Exception {\n" +
+                "        Callable<Option<String>> call = () -> Option.some(name(flag).unwrap().toUpperCase());\n" +
+                "        return call.call();\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Option<String> name(boolean flag) {\n" +
+                "        return flag ? Option.some(\"Alex\") : Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_lambda/Main.java", source);
 

@@ -16,25 +16,24 @@ public class EnhancedForLoopTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInForLoopBody_propagate() throws Exception {
-        String source = """
-                package cases.in_for_loop;
-                                
-                import java.util.List;
-                import java.util.ArrayList;
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                
-                    public static <V> Option<List<V>> sequence(List<Option<V>> list) {
-                        var result = new ArrayList<V>();
-                        for(var option : list) {
-                            var value = option.unwrap();
-                            result.add(value);
-                        }
-                        return Option.some(result);
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_for_loop;\n" +
+                "\n" +
+                "import java.util.List;\n" +
+                "import java.util.ArrayList;\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static <V> Option<List<V>> sequence(List<Option<V>> list) {\n" +
+                "        var result = new ArrayList<V>();\n" +
+                "        for(var option : list) {\n" +
+                "            var value = option.unwrap();\n" +
+                "            result.add(value);\n" +
+                "        }\n" +
+                "        return Option.some(result);\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_for_loop/Main.java", source);
 
@@ -61,23 +60,22 @@ public class EnhancedForLoopTest extends AbstractPluginTest {
 
     @Test
     public void propagate_oneStatementBody_propagate() throws Exception {
-        String source = """
-                package cases.in_for_loop;
-                                
-                import java.util.List;
-                import java.util.ArrayList;
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                
-                    public static <V> Option<List<V>> sequence(List<Option<V>> list) {
-                        var result = new ArrayList<V>();
-                        for(var option : list)
-                            result.add(option.unwrap());
-                        return Option.some(result);
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_for_loop;\n" +
+                "\n" +
+                "import java.util.List;\n" +
+                "import java.util.ArrayList;\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static <V> Option<List<V>> sequence(List<Option<V>> list) {\n" +
+                "        var result = new ArrayList<V>();\n" +
+                "        for(var option : list)\n" +
+                "            result.add(option.unwrap());\n" +
+                "        return Option.some(result);\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_for_loop/Main.java", source);
 
@@ -104,25 +102,24 @@ public class EnhancedForLoopTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInForLoopSource_propagate() throws Exception {
-        String source = """
-                package cases.in_for_loop;
-                                
-                import java.util.List;
-                import java.util.ArrayList;
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                
-                    public static <V> Option<List<V>> sequence(Option<List<Option<V>>> mayBeList) {
-                        var result = new ArrayList<V>();
-                        for(var option : mayBeList.unwrap()) {
-                            var value = option.unwrap();
-                            result.add(value);
-                        }
-                        return Option.some(result);
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_for_loop;\n" +
+                "\n" +
+                "import java.util.List;\n" +
+                "import java.util.ArrayList;\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static <V> Option<List<V>> sequence(Option<List<Option<V>>> mayBeList) {\n" +
+                "        var result = new ArrayList<V>();\n" +
+                "        for(var option : mayBeList.unwrap()) {\n" +
+                "            var value = option.unwrap();\n" +
+                "            result.add(value);\n" +
+                "        }\n" +
+                "        return Option.some(result);\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_for_loop/Main.java", source);
 

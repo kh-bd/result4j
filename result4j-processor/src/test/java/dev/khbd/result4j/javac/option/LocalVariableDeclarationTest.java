@@ -15,26 +15,25 @@ public class LocalVariableDeclarationTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapOnLocalVarInitExpression_propagate() throws Exception {
-        String source = """
-                package cases.local_variable_declaration;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<String> greet(int index) {
-                        var name = name(index).unwrap();
-                        return Option.some(name.toUpperCase());
-                    }
-                                
-                    private static Option<String> name(int index) {
-                        if (index == 0) {
-                            return Option.none();
-                        }
-                        return Option.some(index < 0 ? "Alex" : "Sergei");
-                    }
-                }
-                """;
+        String source =
+                "package cases.local_variable_declaration;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> greet(int index) {\n" +
+                "        var name = name(index).unwrap();\n" +
+                "        return Option.some(name.toUpperCase());\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<String> name(int index) {\n" +
+                "        if (index == 0) {\n" +
+                "            return Option.none();\n" +
+                "        }\n" +
+                "        return Option.some(index < 0 ? \"Alex\" : \"Sergei\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/local_variable_declaration/Main.java", source);
 

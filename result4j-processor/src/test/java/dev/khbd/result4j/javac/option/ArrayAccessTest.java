@@ -15,23 +15,22 @@ public class ArrayAccessTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallAtInstancePosition() throws Exception {
-        String source = """
-                package cases.array_access;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                
-                    public static Option<String> greet(boolean flag) {
-                        var name = getArray(flag).unwrap()[0];
-                        return Option.some(name);
-                    }
-                    
-                    private static Option<String[]> getArray(boolean flag) {
-                        return flag ? Option.some(new String[] {"Alex"}) : Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.array_access;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> greet(boolean flag) {\n" +
+                "        var name = getArray(flag).unwrap()[0];\n" +
+                "        return Option.some(name);\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<String[]> getArray(boolean flag) {\n" +
+                "        return flag ? Option.some(new String[] {\"Alex\"}) : Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/array_access/Main.java", source);
 
@@ -53,24 +52,23 @@ public class ArrayAccessTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallAtIndexPosition() throws Exception {
-        String source = """
-                package cases.array_access;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                
-                    public static Option<String> greet(boolean flag) {
-                        var names = new String[] {"Alex"};
-                        var name = names[getIndex(flag).unwrap()];
-                        return Option.some(name);
-                    }
-                    
-                    private static Option<Integer> getIndex(boolean flag) {
-                        return flag ? Option.some(0) : Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.array_access;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> greet(boolean flag) {\n" +
+                "        var names = new String[] {\"Alex\"};\n" +
+                "        var name = names[getIndex(flag).unwrap()];\n" +
+                "        return Option.some(name);\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<Integer> getIndex(boolean flag) {\n" +
+                "        return flag ? Option.some(0) : Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/array_access/Main.java", source);
 
@@ -92,27 +90,26 @@ public class ArrayAccessTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallAtInstanceAndIndexPositions() throws Exception {
-        String source = """
-                package cases.array_access;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                
-                    public static Option<String> greet(boolean flag) {
-                        var name = getArray(flag).unwrap()[getIndex(flag).unwrap()];
-                        return Option.some(name);
-                    }
-                    
-                    private static Option<String[]> getArray(boolean flag) {
-                        return flag ? Option.some(new String[] {"Alex"}) : Option.none();
-                    }
-                    
-                    private static Option<Integer> getIndex(boolean flag) {
-                        return flag ? Option.some(0) : Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.array_access;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> greet(boolean flag) {\n" +
+                "        var name = getArray(flag).unwrap()[getIndex(flag).unwrap()];\n" +
+                "        return Option.some(name);\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<String[]> getArray(boolean flag) {\n" +
+                "        return flag ? Option.some(new String[] {\"Alex\"}) : Option.none();\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<Integer> getIndex(boolean flag) {\n" +
+                "        return flag ? Option.some(0) : Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/array_access/Main.java", source);
 

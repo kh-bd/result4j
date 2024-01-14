@@ -14,26 +14,25 @@ public class AssertTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInExpression() {
-        String source = """
-                package cases.assert_statement;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<?> greet(boolean flag) {
-                        assert getName(flag).unwrap().equals("Alex");
-                        return Option.none();
-                    }
-                    
-                    private static Option<String> getName(boolean flag) {
-                        if (flag) {
-                            return Option.some("Alex");
-                        }
-                        return Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.assert_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<?> greet(boolean flag) {\n" +
+                "        assert getName(flag).unwrap().equals(\"Alex\");\n" +
+                "        return Option.none();\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<String> getName(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Option.some(\"Alex\");\n" +
+                "        }\n" +
+                "        return Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/assert_statement/Main.java", source);
 
@@ -45,26 +44,25 @@ public class AssertTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInDetails() {
-        String source = """
-                package cases.assert_statement;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<?> greet(boolean flag) {
-                        assert 1 != 2 : getName(flag).unwrap();
-                        return Option.none();
-                    }
-                    
-                    private static Option<String> getName(boolean flag) {
-                        if (flag) {
-                            return Option.some("Alex");
-                        }
-                        return Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.assert_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<?> greet(boolean flag) {\n" +
+                "        assert 1 != 2 : getName(flag).unwrap();\n" +
+                "        return Option.none();\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<String> getName(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Option.some(\"Alex\");\n" +
+                "        }\n" +
+                "        return Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/assert_statement/Main.java", source);
 

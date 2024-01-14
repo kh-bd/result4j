@@ -15,23 +15,22 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inBinaryBoth() throws Exception {
-        String source = """
-                package cases.in_binary;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<Integer> getSum(boolean flag1, boolean flag2) {
-                        var result = getInt(flag1).unwrap() + getInt(flag2).unwrap();
-                        return Option.some(result);
-                    }
-                    
-                    public static Option<Integer> getInt(boolean flag) {
-                        return flag ? Option.some(10) : Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_binary;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<Integer> getSum(boolean flag1, boolean flag2) {\n" +
+                "        var result = getInt(flag1).unwrap() + getInt(flag2).unwrap();\n" +
+                "        return Option.some(result);\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Option<Integer> getInt(boolean flag) {\n" +
+                "        return flag ? Option.some(10) : Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 
@@ -59,23 +58,22 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inBinaryLeft() throws Exception {
-        String source = """
-                package cases.in_binary;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<Integer> getSum(boolean flag) {
-                        var result = getInt(flag).unwrap() + 1;
-                        return Option.some(result);
-                    }
-                    
-                    public static Option<Integer> getInt(boolean flag) {
-                        return flag ? Option.some(10) : Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_binary;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<Integer> getSum(boolean flag) {\n" +
+                "        var result = getInt(flag).unwrap() + 1;\n" +
+                "        return Option.some(result);\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Option<Integer> getInt(boolean flag) {\n" +
+                "        return flag ? Option.some(10) : Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 
@@ -97,23 +95,22 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inBinaryRight() throws Exception {
-        String source = """
-                package cases.in_binary;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<Integer> getSum(boolean flag) {
-                        var result = 1 + getInt(flag).unwrap();
-                        return Option.some(result);
-                    }
-                    
-                    public static Option<Integer> getInt(boolean flag) {
-                        return flag ? Option.some(10) : Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_binary;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<Integer> getSum(boolean flag) {\n" +
+                "        var result = 1 + getInt(flag).unwrap();\n" +
+                "        return Option.some(result);\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Option<Integer> getInt(boolean flag) {\n" +
+                "        return flag ? Option.some(10) : Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 
@@ -135,23 +132,22 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inComplexBinary() throws Exception {
-        String source = """
-                package cases.in_binary;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<Integer> getSum(boolean flag) {
-                        var result = (getInt(flag).unwrap() + getInt(flag).unwrap()) + getInt(flag).unwrap();
-                        return Option.some(result);
-                    }
-                    
-                    public static Option<Integer> getInt(boolean flag) {
-                        return flag ? Option.some(10) : Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_binary;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<Integer> getSum(boolean flag) {\n" +
+                "        var result = (getInt(flag).unwrap() + getInt(flag).unwrap()) + getInt(flag).unwrap();\n" +
+                "        return Option.some(result);\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Option<Integer> getInt(boolean flag) {\n" +
+                "        return flag ? Option.some(10) : Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 

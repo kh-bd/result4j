@@ -15,26 +15,25 @@ public class CompoundAssignmentTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInAssignment() throws Exception {
-        String source = """
-                package cases.compound_assignment;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<Integer> getSize(boolean flag) {
-                        int result = 0;
-                        
-                        result += baseSize(flag).unwrap();
-                        
-                        return Option.some(result);
-                    }
-                                
-                    private static Option<Integer> baseSize(boolean flag) {
-                        return flag ? Option.some(10) : Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.compound_assignment;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<Integer> getSize(boolean flag) {\n" +
+                "        int result = 0;\n" +
+                "\n" +
+                "        result += baseSize(flag).unwrap();\n" +
+                "\n" +
+                "        return Option.some(result);\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<Integer> baseSize(boolean flag) {\n" +
+                "        return flag ? Option.some(10) : Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/compound_assignment/Main.java", source);
 

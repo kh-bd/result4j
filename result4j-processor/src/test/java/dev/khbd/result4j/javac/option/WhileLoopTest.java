@@ -17,28 +17,27 @@ public class WhileLoopTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapInsideWhileLoopBlock() throws Exception {
-        String source = """
-                package cases.while_loop;
-                                
-                import java.util.Iterator;
-                import java.util.List;
-                import java.util.ArrayList;
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                    
-                    public static <V> Option<List<V>> sequence(List<Option<V>> list) {
-                        Iterator<Option<V>> iterator = list.iterator();
-                        
-                        var result = new ArrayList<V>();
-                        while(iterator.hasNext()) {
-                            result.add(iterator.next().unwrap());
-                        }
-                        
-                        return Option.some(result);
-                    }
-                }
-                """;
+        String source =
+                "package cases.while_loop;\n" +
+                "\n" +
+                "import java.util.Iterator;\n" +
+                "import java.util.List;\n" +
+                "import java.util.ArrayList;\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static <V> Option<List<V>> sequence(List<Option<V>> list) {\n" +
+                "        Iterator<Option<V>> iterator = list.iterator();\n" +
+                "\n" +
+                "        var result = new ArrayList<V>();\n" +
+                "        while(iterator.hasNext()) {\n" +
+                "            result.add(iterator.next().unwrap());\n" +
+                "        }\n" +
+                "\n" +
+                "        return Option.some(result);\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/while_loop/Main.java", source);
 
@@ -65,27 +64,26 @@ public class WhileLoopTest extends AbstractPluginTest {
 
     @Test
     public void propagate_oneStatementBlock() throws Exception {
-        String source = """
-                package cases.while_loop;
-                                
-                import java.util.Iterator;
-                import java.util.List;
-                import java.util.ArrayList;
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                    
-                    public static <V> Option<List<V>> sequence(List<Option<V>> list) {
-                        Iterator<Option<V>> iterator = list.iterator();
-                        
-                        var result = new ArrayList<V>();
-                        while(iterator.hasNext())
-                            result.add(iterator.next().unwrap());
-                        
-                        return Option.some(result);
-                    }
-                }
-                """;
+        String source =
+                "package cases.while_loop;\n" +
+                "\n" +
+                "import java.util.Iterator;\n" +
+                "import java.util.List;\n" +
+                "import java.util.ArrayList;\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static <V> Option<List<V>> sequence(List<Option<V>> list) {\n" +
+                "        Iterator<Option<V>> iterator = list.iterator();\n" +
+                "\n" +
+                "        var result = new ArrayList<V>();\n" +
+                "        while(iterator.hasNext())\n" +
+                "            result.add(iterator.next().unwrap());\n" +
+                "\n" +
+                "        return Option.some(result);\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/while_loop/Main.java", source);
 
@@ -112,34 +110,33 @@ public class WhileLoopTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inWhileCondition_failCompilation() {
-        String source = """
-                package cases.while_loop;
-                                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static int count() {
-                        var rnd = new Random();
-                        
-                        int count = 0;
-                        // fail to compile
-                        while (random(rnd).unwrap()) {
-                            count++;
-                        }
-                        
-                        return count;
-                    }
-                    
-                    public static Option<Boolean> random(Random rnd) {
-                        if (rnd.nextBoolean()) {
-                            return Option.some(rnd.nextBoolean());
-                        }
-                        return Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.while_loop;\n" +
+                "\n" +
+                "import java.util.Random;\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static int count() {\n" +
+                "        var rnd = new Random();\n" +
+                "\n" +
+                "        int count = 0;\n" +
+                "        // fail to compile\n" +
+                "        while (random(rnd).unwrap()) {\n" +
+                "            count++;\n" +
+                "        }\n" +
+                "\n" +
+                "        return count;\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Option<Boolean> random(Random rnd) {\n" +
+                "        if (rnd.nextBoolean()) {\n" +
+                "            return Option.some(rnd.nextBoolean());\n" +
+                "        }\n" +
+                "        return Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/while_loop/Main.java", source);
 

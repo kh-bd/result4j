@@ -15,27 +15,25 @@ public class NewArrayTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallAtIndexPosition() throws Exception {
-        String source = """
-                package cases.new_array;
-                                
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    public static Option<Integer> getArraySize(boolean flag) {
-                        var array = new String[getSize(flag).unwrap()][getSize(flag).unwrap()];
-                        return Option.some(array[0].length);
-                    }
-                    
-                    private static Option<Integer> getSize(boolean flag) {
-                        return flag ? Option.some(10) : Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.new_array;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<Integer> getArraySize(boolean flag) {\n" +
+                "        var array = new String[getSize(flag).unwrap()][getSize(flag).unwrap()];\n" +
+                "        return Option.some(array[0].length);\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<Integer> getSize(boolean flag) {\n" +
+                "        return flag ? Option.some(10) : Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/new_array/Main.java", source);
 
-        System.out.println(result);
         assertThat(result.isSuccess()).isTrue();
 
         ClassLoader classLoader = result.classLoader();
@@ -54,27 +52,25 @@ public class NewArrayTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallAtExpressionPosition() throws Exception {
-        String source = """
-                package cases.new_array;
-                                
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    public static Option<Integer> getArraySize(boolean flag) {
-                        var array = new Integer[] { getSize(flag).unwrap(), getSize(flag).unwrap() };
-                        return Option.some(array.length);
-                    }
-                    
-                    private static Option<Integer> getSize(boolean flag) {
-                        return flag ? Option.some(10) : Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.new_array;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<Integer> getArraySize(boolean flag) {\n" +
+                "        var array = new Integer[] { getSize(flag).unwrap(), getSize(flag).unwrap() };\n" +
+                "        return Option.some(array.length);\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<Integer> getSize(boolean flag) {\n" +
+                "        return flag ? Option.some(10) : Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/new_array/Main.java", source);
 
-        System.out.println(result);
         assertThat(result.isSuccess()).isTrue();
 
         ClassLoader classLoader = result.classLoader();

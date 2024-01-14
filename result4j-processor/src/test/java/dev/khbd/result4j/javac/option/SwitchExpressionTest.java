@@ -16,27 +16,26 @@ public class SwitchExpressionTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInReceiverExpression() throws Exception {
-        String source = """
-                package cases.switch_expression;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<?> greet(boolean flag) {
-                        return switch(toInteger(flag).unwrap()) {
-                            case 1 -> Option.some("Alex");
-                            default -> {
-                                yield Option.some("Alex");
-                            }
-                        };
-                    }
-                    
-                    private static Option<Integer> toInteger(boolean flag) {
-                        return flag ? Option.some(1) : Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.switch_expression;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<?> greet(boolean flag) {\n" +
+                "        return switch(toInteger(flag).unwrap()) {\n" +
+                "            case 1 -> Option.some(\"Alex\");\n" +
+                "            default -> {\n" +
+                "                yield Option.some(\"Alex\");\n" +
+                "            }\n" +
+                "        };\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<Integer> toInteger(boolean flag) {\n" +
+                "        return flag ? Option.some(1) : Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/switch_expression/Main.java", source);
 
@@ -58,28 +57,27 @@ public class SwitchExpressionTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLabeledReceiverExpression_fail() {
-        String source = """
-                package cases.switch_expression;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<?> greet(boolean flag) {
-                        label:
-                        return switch(toInteger(flag).unwrap()) {
-                            case 1 -> Option.some("Alex");
-                            default -> {
-                                yield Option.some("Alex");
-                            }
-                        };
-                    }
-                    
-                    private static Option<Integer> toInteger(boolean flag) {
-                        return flag ? Option.some(1) : Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.switch_expression;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<?> greet(boolean flag) {\n" +
+                "        label:\n" +
+                "        return switch(toInteger(flag).unwrap()) {\n" +
+                "            case 1 -> Option.some(\"Alex\");\n" +
+                "            default -> {\n" +
+                "                yield Option.some(\"Alex\");\n" +
+                "            }\n" +
+                "        };\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<Integer> toInteger(boolean flag) {\n" +
+                "        return flag ? Option.some(1) : Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/switch_expression/Main.java", source);
 
@@ -90,31 +88,30 @@ public class SwitchExpressionTest extends AbstractPluginTest {
 
     @Test
     public void propagate_ruleWithBlock_fail() {
-        String source = """
-                package cases.switch_expression;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<?> greet(boolean flag) {
-                        return switch(toInteger(flag)) {
-                            default -> {
-                                var name = getName().unwrap();
-                                yield Option.some(name.toUpperCase());
-                            }
-                        };
-                    }
-                    
-                    private static Option<String> getName() {
-                        return Option.some("Alex");
-                    }
-                    
-                    private static Integer toInteger(boolean flag) {
-                        return flag ? 1 : 0;
-                    }
-                }
-                """;
+        String source =
+                "package cases.switch_expression;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<?> greet(boolean flag) {\n" +
+                "        return switch(toInteger(flag)) {\n" +
+                "            default -> {\n" +
+                "                var name = getName().unwrap();\n" +
+                "                yield Option.some(name.toUpperCase());\n" +
+                "            }\n" +
+                "        };\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<String> getName() {\n" +
+                "        return Option.some(\"Alex\");\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Integer toInteger(boolean flag) {\n" +
+                "        return flag ? 1 : 0;\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/switch_expression/Main.java", source);
 
@@ -125,28 +122,27 @@ public class SwitchExpressionTest extends AbstractPluginTest {
 
     @Test
     public void propagate_ruleWithSingleExpression_fail() {
-        String source = """
-                package cases.switch_expression;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<?> greet(boolean flag) {
-                        return switch(toInteger(flag)) {
-                            default -> Option.some(getName().unwrap().toUpperCase());
-                        };
-                    }
-                    
-                    private static Option<String> getName() {
-                        return Option.some("Alex");
-                    }
-                    
-                    private static Integer toInteger(boolean flag) {
-                        return flag ? 1 : 0;
-                    }
-                }
-                """;
+        String source =
+                "package cases.switch_expression;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<?> greet(boolean flag) {\n" +
+                "        return switch(toInteger(flag)) {\n" +
+                "            default -> Option.some(getName().unwrap().toUpperCase());\n" +
+                "        };\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<String> getName() {\n" +
+                "        return Option.some(\"Alex\");\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Integer toInteger(boolean flag) {\n" +
+                "        return flag ? 1 : 0;\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/switch_expression/Main.java", source);
 
@@ -157,27 +153,26 @@ public class SwitchExpressionTest extends AbstractPluginTest {
 
     @Test
     public void propagate_statementCasesWithUnwrap_fail() {
-        String source = """
-                package cases.switch_expression;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<?> greet(boolean flag) {
-                        return switch(toInteger(flag)) {
-                            default : {
-                                var name = Option.some("Alex").unwrap();
-                                yield Option.some(name);
-                            }
-                        };
-                    }
-                    
-                    private static Integer toInteger(boolean flag) {
-                        return flag ? 1 : 0;
-                    }
-                }
-                """;
+        String source =
+                "package cases.switch_expression;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<?> greet(boolean flag) {\n" +
+                "        return switch(toInteger(flag)) {\n" +
+                "            default : {\n" +
+                "                var name = Option.some(\"Alex\").unwrap();\n" +
+                "                yield Option.some(name);\n" +
+                "            }\n" +
+                "        };\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Integer toInteger(boolean flag) {\n" +
+                "        return flag ? 1 : 0;\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/switch_expression/Main.java", source);
 

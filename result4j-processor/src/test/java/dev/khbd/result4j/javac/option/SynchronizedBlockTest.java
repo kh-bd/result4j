@@ -16,25 +16,24 @@ public class SynchronizedBlockTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInBlock() throws Exception {
-        String source = """
-                package cases.sync_block;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<String> greet(boolean flag) {
-                        synchronized (Main.class) {
-                            var name = getName(flag).unwrap();
-                            return Option.some(name.toUpperCase());
-                        }
-                    }
-                    
-                    private static Option<String> getName(boolean flag) {
-                        return flag ? Option.some("Alex") : Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.sync_block;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> greet(boolean flag) {\n" +
+                "        synchronized (Main.class) {\n" +
+                "            var name = getName(flag).unwrap();\n" +
+                "            return Option.some(name.toUpperCase());\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<String> getName(boolean flag) {\n" +
+                "        return flag ? Option.some(\"Alex\") : Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/sync_block/Main.java", source);
 
@@ -56,24 +55,23 @@ public class SynchronizedBlockTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInSyncExpression() throws Exception {
-        String source = """
-                package cases.sync_block;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<String> greet(boolean flag) {
-                        synchronized (getName(flag).unwrap()) {
-                            return Option.none();
-                        }
-                    }
-                    
-                    private static Option<String> getName(boolean flag) {
-                        return flag ? Option.some("Alex") : Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.sync_block;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> greet(boolean flag) {\n" +
+                "        synchronized (getName(flag).unwrap()) {\n" +
+                "            return Option.none();\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<String> getName(boolean flag) {\n" +
+                "        return flag ? Option.some(\"Alex\") : Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/sync_block/Main.java", source);
 
@@ -91,25 +89,24 @@ public class SynchronizedBlockTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLabeledSyncExpression() {
-        String source = """
-                package cases.sync_block;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<String> greet(boolean flag) {
-                        label:
-                        synchronized (getName(flag).unwrap()) {
-                            return Option.none();
-                        }
-                    }
-                    
-                    private static Option<String> getName(boolean flag) {
-                        return flag ? Option.some("Alex") : Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.sync_block;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> greet(boolean flag) {\n" +
+                "        label:\n" +
+                "        synchronized (getName(flag).unwrap()) {\n" +
+                "            return Option.none();\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<String> getName(boolean flag) {\n" +
+                "        return flag ? Option.some(\"Alex\") : Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/sync_block/Main.java", source);
 

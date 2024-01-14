@@ -16,27 +16,26 @@ public class ExpressionStatementTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallOnExpressionStatement_propagate() throws Exception {
-        String source = """
-                package cases.expression_statement;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<String> greet(int index) {
-                        // result is ignored
-                        name(index).unwrap();
-                        return Option.some("Alex");
-                    }
-                                
-                    private static Option<String> name(int index) {
-                        if (index == 0) {
-                            return Option.none();
-                        }
-                        return Option.some("Sergei");
-                    }
-                }
-                """;
+        String source =
+                "package cases.expression_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> greet(int index) {\n" +
+                "        // result is ignored\n" +
+                "        name(index).unwrap();\n" +
+                "        return Option.some(\"Alex\");\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<String> name(int index) {\n" +
+                "        if (index == 0) {\n" +
+                "            return Option.none();\n" +
+                "        }\n" +
+                "        return Option.some(\"Sergei\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/expression_statement/Main.java", source);
 
@@ -58,28 +57,27 @@ public class ExpressionStatementTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallOnLabeledExpressionStatement_fail() {
-        String source = """
-                package cases.expression_statement;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<String> greet(int index) {
-                        // result is ignored
-                        label:
-                        name(index).unwrap();
-                        return Option.some("Alex");
-                    }
-                                
-                    private static Option<String> name(int index) {
-                        if (index == 0) {
-                            return Option.none();
-                        }
-                        return Option.some("Sergei");
-                    }
-                }
-                """;
+        String source =
+                "package cases.expression_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> greet(int index) {\n" +
+                "        // result is ignored\n" +
+                "        label:\n" +
+                "        name(index).unwrap();\n" +
+                "        return Option.some(\"Alex\");\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<String> name(int index) {\n" +
+                "        if (index == 0) {\n" +
+                "            return Option.none();\n" +
+                "        }\n" +
+                "        return Option.some(\"Sergei\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/expression_statement/Main.java", source);
 

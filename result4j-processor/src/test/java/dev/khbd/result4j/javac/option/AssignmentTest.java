@@ -16,24 +16,23 @@ public class AssignmentTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInAssignment() throws Exception {
-        String source = """
-                package cases.assignment;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<String> greet(boolean flag) {
-                        String name = null;
-                        name = name(flag).unwrap();
-                        return Option.some(name);
-                    }
-                                
-                    private static Option<String> name(boolean flag) {
-                        return flag ? Option.some("Alex") : Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.assignment;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> greet(boolean flag) {\n" +
+                "        String name = null;\n" +
+                "        name = name(flag).unwrap();\n" +
+                "        return Option.some(name);\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<String> name(boolean flag) {\n" +
+                "        return flag ? Option.some(\"Alex\") : Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/assignment/Main.java", source);
 
@@ -50,31 +49,30 @@ public class AssignmentTest extends AbstractPluginTest {
         assertThat(greet.get()).isEqualTo("Alex");
 
         // invoke with false
-        greet = (Option<String>) method.invoke(null,false);
+        greet = (Option<String>) method.invoke(null, false);
         assertThat(greet.isEmpty()).isTrue();
     }
 
     @Test
     public void propagate_unwrapCallInLabeledAssignment() {
-        String source = """
-                package cases.assignment;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<String> greet(boolean flag) {
-                        String name = null;
-                        label:
-                        name = name(flag).unwrap();
-                        return Option.some(name);
-                    }
-                                
-                    private static Option<String> name(boolean flag) {
-                        return flag ? Option.some("Alex") : Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.assignment;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> greet(boolean flag) {\n" +
+                "        String name = null;\n" +
+                "        label:\n" +
+                "        name = name(flag).unwrap();\n" +
+                "        return Option.some(name);\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<String> name(boolean flag) {\n" +
+                "        return flag ? Option.some(\"Alex\") : Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/labeled/Main.java", source);
 

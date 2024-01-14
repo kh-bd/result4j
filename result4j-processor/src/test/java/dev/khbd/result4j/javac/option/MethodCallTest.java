@@ -15,26 +15,25 @@ public class MethodCallTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallAtReceiverPosition_propagate() throws Exception {
-        String source = """
-                package cases.method_call;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<String> greet(int index) {
-                        var name = name(index).unwrap().toUpperCase();
-                        return Option.some(name);
-                    }
-                                
-                    private static Option<String> name(int index) {
-                        if (index == 0) {
-                            return Option.none();
-                        }
-                        return Option.some(index < 0 ? "Alex" : "Sergei");
-                    }
-                }
-                """;
+        String source =
+                "package cases.method_call;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> greet(int index) {\n" +
+                "        var name = name(index).unwrap().toUpperCase();\n" +
+                "        return Option.some(name);\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<String> name(int index) {\n" +
+                "        if (index == 0) {\n" +
+                "            return Option.none();\n" +
+                "        }\n" +
+                "        return Option.some(index < 0 ? \"Alex\" : \"Sergei\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/method_call/Main.java", source);
 
@@ -61,26 +60,25 @@ public class MethodCallTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallAtArgumentPosition_propagate() throws Exception {
-        String source = """
-                package cases.method_call;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<String> greet(int index) {
-                        var result = Option.some(name(index).unwrap());
-                        return result;
-                    }
-                                
-                    private static Option<String> name(int index) {
-                        if (index == 0) {
-                            return Option.none();
-                        }
-                        return Option.some(index < 0 ? "Alex" : "Sergei");
-                    }
-                }
-                """;
+        String source =
+                "package cases.method_call;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> greet(int index) {\n" +
+                "        var result = Option.some(name(index).unwrap());\n" +
+                "        return result;\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<String> name(int index) {\n" +
+                "        if (index == 0) {\n" +
+                "            return Option.none();\n" +
+                "        }\n" +
+                "        return Option.some(index < 0 ? \"Alex\" : \"Sergei\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/method_call/Main.java", source);
 

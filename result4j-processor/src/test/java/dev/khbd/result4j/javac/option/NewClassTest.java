@@ -15,34 +15,33 @@ public class NewClassTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallAtArgumentPosition_propagate() throws Exception {
-        String source = """
-                package cases.new_class;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<String> greet(int index) {
-                        var name = new Name(getName(index).unwrap(), getName(index).unwrap());
-                        return Option.some(name.name);
-                    }
-                                
-                    private static Option<String> getName(int index) {
-                        if (index == 0) {
-                            return Option.none();
-                        }
-                        return Option.some(index < 0 ? "Alex" : "Sergei");
-                    }
-                    
-                    static class Name {
-                        String name;
-                        
-                        Name(String name1, String ignore) {
-                            this.name = name1;
-                        }
-                    }
-                }
-                """;
+        String source =
+                "package cases.new_class;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> greet(int index) {\n" +
+                "        var name = new Name(getName(index).unwrap(), getName(index).unwrap());\n" +
+                "        return Option.some(name.name);\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Option<String> getName(int index) {\n" +
+                "        if (index == 0) {\n" +
+                "            return Option.none();\n" +
+                "        }\n" +
+                "        return Option.some(index < 0 ? \"Alex\" : \"Sergei\");\n" +
+                "    }\n" +
+                "\n" +
+                "    static class Name {\n" +
+                "        String name;\n" +
+                "\n" +
+                "        Name(String name1, String ignore) {\n" +
+                "            this.name = name1;\n" +
+                "        }\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/new_class/Main.java", source);
 

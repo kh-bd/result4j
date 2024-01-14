@@ -16,31 +16,30 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inCondition_failCompilation() {
-        String source = """
-                package cases.if_statement;
-                                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<String> getName() {
-                        if (random().unwrap().booleanValue()) {
-                            return Option.some("Alex");
-                        } else {
-                            return Option.none();
-                        }
-                    }
-                    
-                    public static Option<Boolean> random() {
-                        var rnd = new Random();
-                        if (rnd.nextBoolean()) {
-                            return Option.some(rnd.nextBoolean());
-                        }
-                        return Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.if_statement;\n" +
+                "\n" +
+                "import java.util.Random;\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> getName() {\n" +
+                "        if (random().unwrap().booleanValue()) {\n" +
+                "            return Option.some(\"Alex\");\n" +
+                "        } else {\n" +
+                "            return Option.none();\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Option<Boolean> random() {\n" +
+                "        var rnd = new Random();\n" +
+                "        if (rnd.nextBoolean()) {\n" +
+                "            return Option.some(rnd.nextBoolean());\n" +
+                "        }\n" +
+                "        return Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -52,33 +51,32 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inElseIfCondition_failCompilation() {
-        String source = """
-                package cases.if_statement;
-                                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<String> getName() {
-                        if (false) {
-                            return Option.some("Alex");
-                        } else if (random().unwrap().booleanValue()) {
-                            return Option.some("Sergei");
-                        } else {
-                            return Option.none();
-                        }
-                    }
-                    
-                    public static Option<Boolean> random() {
-                        var rnd = new Random();
-                        if (rnd.nextBoolean()) {
-                            return Option.some(rnd.nextBoolean());
-                        }
-                        return Option.none();
-                    }
-                }
-                """;
+        String source =
+                "package cases.if_statement;\n" +
+                "\n" +
+                "import java.util.Random;\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> getName() {\n" +
+                "        if (false) {\n" +
+                "            return Option.some(\"Alex\");\n" +
+                "        } else if (random().unwrap().booleanValue()) {\n" +
+                "            return Option.some(\"Sergei\");\n" +
+                "        } else {\n" +
+                "            return Option.none();\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Option<Boolean> random() {\n" +
+                "        var rnd = new Random();\n" +
+                "        if (rnd.nextBoolean()) {\n" +
+                "            return Option.some(rnd.nextBoolean());\n" +
+                "        }\n" +
+                "        return Option.none();\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -89,26 +87,25 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inThenBlock_success() throws Exception {
-        String source = """
-                package cases.if_statement;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<String> getName(boolean flag) {
-                        if (flag) {
-                            return Option.some(getName().unwrap().toUpperCase());
-                        } else {
-                            return Option.none();
-                        }
-                    }
-                                
-                    public static Option<String> getName() {
-                        return Option.some("Alex");
-                    }
-                }
-                """;
+        String source =
+                "package cases.if_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> getName(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Option.some(getName().unwrap().toUpperCase());\n" +
+                "        } else {\n" +
+                "            return Option.none();\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Option<String> getName() {\n" +
+                "        return Option.some(\"Alex\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -130,26 +127,25 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inElseBlock_success() throws Exception {
-        String source = """
-                package cases.if_statement;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<String> getName(boolean flag) {
-                        if (flag) {
-                            return Option.none();
-                        } else {
-                            return Option.some(getName().unwrap().toUpperCase());
-                        }
-                    }
-                                
-                    public static Option<String> getName() {
-                        return Option.some("Alex");
-                    }
-                }
-                """;
+        String source =
+                "package cases.if_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> getName(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Option.none();\n" +
+                "        } else {\n" +
+                "            return Option.some(getName().unwrap().toUpperCase());\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Option<String> getName() {\n" +
+                "        return Option.some(\"Alex\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -171,23 +167,22 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inThenStatement_success() throws Exception {
-        String source = """
-                package cases.if_statement;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<String> getName(boolean flag) {
-                        if (flag) return Option.some(getName().unwrap().toUpperCase());
-                        else return Option.none();
-                    }
-                                
-                    public static Option<String> getName() {
-                        return Option.some("Alex");
-                    }
-                }
-                """;
+        String source =
+                "package cases.if_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> getName(boolean flag) {\n" +
+                "        if (flag) return Option.some(getName().unwrap().toUpperCase());\n" +
+                "        else return Option.none();\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Option<String> getName() {\n" +
+                "        return Option.some(\"Alex\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -209,23 +204,22 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inElseStatement_success() throws Exception {
-        String source = """
-                package cases.if_statement;
-                                
-                import dev.khbd.result4j.core.Option;
-                                
-                public class Main {
-                                
-                    public static Option<String> getName(boolean flag) {
-                        if (flag) return Option.none();
-                        else return Option.some(getName().unwrap().toUpperCase());
-                    }
-                                
-                    public static Option<String> getName() {
-                        return Option.some("Alex");
-                    }
-                }
-                """;
+        String source =
+                "package cases.if_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Option;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Option<String> getName(boolean flag) {\n" +
+                "        if (flag) return Option.none();\n" +
+                "        else return Option.some(getName().unwrap().toUpperCase());\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Option<String> getName() {\n" +
+                "        return Option.some(\"Alex\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 

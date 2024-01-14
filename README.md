@@ -72,7 +72,7 @@ class SignService {
     Either<GenericError, DocumentDto> sign(UUID id) {
         Document document = repository.findById(id).unwrap();
         Document signed = doSignDocument(document).uwwrap();
-        return mapper.toDto(repository.save(signed));
+        return Either.right(mapper.toDto(repository.save(signed)));
     }
 }
 

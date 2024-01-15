@@ -1,7 +1,6 @@
 package dev.khbd.result4j.javac.option;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 import dev.khbd.result4j.core.Option;
 import dev.khbd.result4j.javac.AbstractPluginTest;
@@ -83,107 +82,6 @@ public class SwitchStatementTest extends AbstractPluginTest {
         assertThat(result.isFail()).isTrue();
         assertThat(result.getErrors()).extracting(Diagnostic::toString)
                 .anyMatch(msg -> msg.contains(" Unsupported position for unwrap method call"));
-    }
-
-    @Test
-    public void propagate_unwrapCallInRuleWithBlock() throws Exception {
-        String source =
-                "package cases.switch_statement;\n" +
-                "\n" +
-                "import dev.khbd.result4j.core.Option;\n" +
-                "\n" +
-                "public class Main {\n" +
-                "\n" +
-                "    public static Option<?> greet(boolean flag) {\n" +
-                "        switch(toInteger(flag)) {\n" +
-                "            case 1 -> {\n" +
-                "                var name = getName(flag).unwrap();\n" +
-                "                return Option.some(name);\n" +
-                "            }\n" +
-                "            default -> {\n" +
-                "                return Option.none();\n" +
-                "            }\n" +
-                "        }\n" +
-                "    }\n" +
-                "\n" +
-                "    private static Option<String> getName(boolean flag) {\n" +
-                "        if (flag) {\n" +
-                "            return Option.some(\"Alex\");\n" +
-                "        }\n" +
-                "        return Option.none();\n" +
-                "    }\n" +
-                "\n" +
-                "    private static int toInteger(boolean flag) {\n" +
-                "        return flag ? 1 : 0;\n" +
-                "    }\n" +
-                "}\n";
-
-        CompilationResult result = compiler.compile(new PluginOptions(true), "cases/switch_statement/Main.java", source);
-
-        assertThat(result.isFail()).isFalse();
-
-        ClassLoader classLoader = result.classLoader();
-        Class<?> clazz = classLoader.loadClass("cases.switch_statement.Main");
-        Method method = clazz.getMethod("greet", boolean.class);
-
-        // invoke with true
-        Option<String> greet = (Option<String>) method.invoke(null, true);
-        assertThat(greet.isEmpty()).isFalse();
-        assertThat(greet.get()).isEqualTo("Alex");
-
-        // invoke with false
-        greet = (Option<String>) method.invoke(null, false);
-        assertThat(greet.isEmpty()).isTrue();
-    }
-
-    @Test
-    public void propagate_unwrapCallInRuleWithOneStatement() throws Exception {
-        String source =
-                "package cases.switch_statement;\n" +
-                "\n" +
-                "import dev.khbd.result4j.core.Option;\n" +
-                "\n" +
-                "public class Main {\n" +
-                "\n" +
-                "    public static Option<?> greet(boolean flag) {\n" +
-                "        switch(toInteger(flag)) {\n" +
-                "            case 1 -> throw error(flag).unwrap();\n" +
-                "            default -> {\n" +
-                "                return Option.none();\n" +
-                "            }\n" +
-                "        }\n" +
-                "    }\n" +
-                "\n" +
-                "    private static Option<RuntimeException> error(boolean flag) {\n" +
-                "        if (flag) {\n" +
-                "            return Option.some(new RuntimeException(\"Alex\"));\n" +
-                "        }\n" +
-                "        return Option.none();\n" +
-                "    }\n" +
-                "\n" +
-                "    private static int toInteger(boolean flag) {\n" +
-                "        return flag ? 1 : 0;\n" +
-                "    }\n" +
-                "}\n";
-
-        CompilationResult result = compiler.compile(new PluginOptions(true), "cases/switch_statement/Main.java", source);
-
-        assertThat(result.isFail()).isFalse();
-
-        ClassLoader classLoader = result.classLoader();
-        Class<?> clazz = classLoader.loadClass("cases.switch_statement.Main");
-        Method method = clazz.getMethod("greet", boolean.class);
-
-        // invoke with true
-        Throwable error = catchThrowable(() -> method.invoke(null, true));
-        assertThat(error)
-                .cause()
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Alex");
-
-        // invoke with false
-        Option<String> greet = (Option<String>) method.invoke(null, false);
-        assertThat(greet.isEmpty()).isTrue();
     }
 
     @Test

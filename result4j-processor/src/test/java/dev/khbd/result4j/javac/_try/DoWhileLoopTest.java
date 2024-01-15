@@ -43,7 +43,7 @@ public class DoWhileLoopTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.do_while_loop.Main");
         Method method = clazz.getMethod("sequenceNotEmpty", List.class);
 
@@ -88,7 +88,7 @@ public class DoWhileLoopTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.do_while_loop.Main");
         Method method = clazz.getMethod("sequenceNotEmpty", List.class);
 

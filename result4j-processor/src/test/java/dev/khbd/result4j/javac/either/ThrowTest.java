@@ -41,7 +41,7 @@ public class ThrowTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.throw_statement.Main");
         Method method = clazz.getMethod("greet", boolean.class);
 

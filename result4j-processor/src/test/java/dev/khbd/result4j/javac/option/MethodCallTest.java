@@ -39,7 +39,7 @@ public class MethodCallTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.method_call.Main");
         Method method = clazz.getMethod("greet", int.class);
 
@@ -84,7 +84,7 @@ public class MethodCallTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.method_call.Main");
         Method method = clazz.getMethod("greet", int.class);
 

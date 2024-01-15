@@ -39,7 +39,7 @@ public class ReturnTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.in_return.Main");
         Method method = clazz.getMethod("greet", int.class);
 

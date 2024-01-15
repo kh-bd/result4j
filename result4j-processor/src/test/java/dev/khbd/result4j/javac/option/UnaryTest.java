@@ -41,7 +41,7 @@ public class UnaryTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.in_unary.Main");
         Method method = clazz.getMethod("getName", boolean.class);
 

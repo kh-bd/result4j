@@ -88,7 +88,7 @@ public class TryTest extends AbstractPluginTest {
 
         assertThat(result.isFail()).isFalse();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.try_statement.Main");
         Method method = clazz.getMethod("greet", boolean.class);
 
@@ -132,7 +132,7 @@ public class TryTest extends AbstractPluginTest {
 
         assertThat(result.isFail()).isFalse();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.try_statement.Main");
         Method method = clazz.getMethod("greet", boolean.class);
 
@@ -177,7 +177,7 @@ public class TryTest extends AbstractPluginTest {
 
         assertThat(result.isFail()).isFalse();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.try_statement.Main");
         Method method = clazz.getMethod("greet", boolean.class);
 

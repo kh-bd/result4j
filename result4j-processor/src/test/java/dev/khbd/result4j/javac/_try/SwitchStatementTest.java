@@ -1,7 +1,6 @@
 package dev.khbd.result4j.javac._try;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 import dev.khbd.result4j.core.Try;
 import dev.khbd.result4j.javac.AbstractPluginTest;
@@ -41,7 +40,7 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
         assertThat(result.isFail()).isFalse();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.switch_statement.Main");
         Method method = clazz.getMethod("greet", boolean.class);
 
@@ -122,7 +121,7 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
         assertThat(result.isFail()).isFalse();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.switch_statement.Main");
         Method method = clazz.getMethod("greet", boolean.class);
 
@@ -172,7 +171,7 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
         assertThat(result.isFail()).isFalse();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.switch_statement.Main");
         Method method = clazz.getMethod("greet", boolean.class);
 
@@ -224,7 +223,7 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
         assertThat(result.isFail()).isFalse();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.switch_statement.Main");
         Method method = clazz.getMethod("greet", boolean.class);
 

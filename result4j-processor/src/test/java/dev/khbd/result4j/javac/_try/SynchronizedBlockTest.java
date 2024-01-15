@@ -39,7 +39,7 @@ public class SynchronizedBlockTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.sync_block.Main");
         Method method = clazz.getMethod("greet", boolean.class);
 
@@ -79,7 +79,7 @@ public class SynchronizedBlockTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.sync_block.Main");
         Method method = clazz.getMethod("greet", boolean.class);
 

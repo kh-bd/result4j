@@ -36,7 +36,7 @@ public class ArrayAccessTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.array_access.Main");
         Method method = clazz.getMethod("greet", boolean.class);
 
@@ -74,7 +74,7 @@ public class ArrayAccessTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.array_access.Main");
         Method method = clazz.getMethod("greet", boolean.class);
 
@@ -115,7 +115,7 @@ public class ArrayAccessTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.array_access.Main");
         Method method = clazz.getMethod("greet", boolean.class);
 

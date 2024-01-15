@@ -41,7 +41,7 @@ public class ExpressionStatementTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.expression_statement.Main");
         Method method = clazz.getMethod("greet", int.class);
 

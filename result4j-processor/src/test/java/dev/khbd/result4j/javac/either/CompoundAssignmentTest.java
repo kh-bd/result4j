@@ -39,7 +39,7 @@ public class CompoundAssignmentTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.compound_assignment.Main");
         Method method = clazz.getMethod("getSize", boolean.class);
 

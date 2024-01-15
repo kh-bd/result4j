@@ -41,7 +41,7 @@ public class ForLoopTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.in_for_loop.Main");
         Method method = clazz.getMethod("sequence", List.class);
 
@@ -89,7 +89,7 @@ public class ForLoopTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.in_for_loop.Main");
         Method method = clazz.getMethod("sequence", List.class);
 

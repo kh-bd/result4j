@@ -40,7 +40,7 @@ public class LambdaTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.in_lambda.Main");
         Method method = clazz.getMethod("getName", boolean.class);
 
@@ -80,7 +80,7 @@ public class LambdaTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.in_lambda.Main");
         Method method = clazz.getMethod("getName", boolean.class);
 

@@ -2,6 +2,7 @@ package dev.khbd.result4j.javac;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import javax.tools.Diagnostic;
 import javax.tools.FileObject;
@@ -165,7 +166,7 @@ public abstract class AbstractPluginTest {
             arguments.add("-classpath");
             arguments.add(System.getProperty("java.class.path"));
             arguments.add(options.toString());
-            arguments.add("--release=21");
+            arguments.add("--release=11");
             arguments.add("--enable-preview");
 
             JavaCompiler.CompilationTask task
@@ -186,7 +187,11 @@ public abstract class AbstractPluginTest {
         }
     }
 
-    public record PluginOptions(boolean prettyPrint) {
+    @Getter
+    @RequiredArgsConstructor
+    public static class PluginOptions {
+
+        private final boolean prettyPrint;
 
         @Override
         public String toString() {
@@ -194,7 +199,13 @@ public abstract class AbstractPluginTest {
         }
     }
 
-    public record CompilationResult(ClassLoader classLoader, List<Diagnostic<? extends JavaFileObject>> diagnostics) {
+    @Getter
+    @RequiredArgsConstructor
+    @ToString(of = "diagnostics")
+    public static class CompilationResult {
+
+        private final ClassLoader classLoader;
+        private final List<Diagnostic<? extends JavaFileObject>> diagnostics;
 
         public boolean isSuccess() {
             return diagnostics.stream()

@@ -111,7 +111,7 @@ public class IfTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.if_statement.Main");
         Method method = clazz.getMethod("getName", boolean.class);
 
@@ -153,7 +153,7 @@ public class IfTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.if_statement.Main");
         Method method = clazz.getMethod("getName", boolean.class);
 
@@ -192,7 +192,7 @@ public class IfTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.if_statement.Main");
         Method method = clazz.getMethod("getName", boolean.class);
 
@@ -231,7 +231,7 @@ public class IfTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.if_statement.Main");
         Method method = clazz.getMethod("getName", boolean.class);
 

@@ -43,7 +43,7 @@ public class WhileLoopTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.while_loop.Main");
         Method method = clazz.getMethod("sequence", List.class);
 
@@ -89,7 +89,7 @@ public class WhileLoopTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.while_loop.Main");
         Method method = clazz.getMethod("sequence", List.class);
 

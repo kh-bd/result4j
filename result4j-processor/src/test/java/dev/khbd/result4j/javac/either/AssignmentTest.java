@@ -38,7 +38,7 @@ public class AssignmentTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.assignment.Main");
         Method method = clazz.getMethod("greet", boolean.class);
 

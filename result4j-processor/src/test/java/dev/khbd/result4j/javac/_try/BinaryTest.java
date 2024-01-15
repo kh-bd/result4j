@@ -36,7 +36,7 @@ public class BinaryTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.in_binary.Main");
         Method method = clazz.getMethod("getSum", boolean.class, boolean.class);
 
@@ -87,7 +87,7 @@ public class BinaryTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.in_binary.Main");
         Method method = clazz.getMethod("getSum", boolean.class);
 
@@ -126,7 +126,7 @@ public class BinaryTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.in_binary.Main");
         Method method = clazz.getMethod("getSum", boolean.class);
 
@@ -165,7 +165,7 @@ public class BinaryTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.in_binary.Main");
         Method method = clazz.getMethod("getSum", boolean.class);
 

@@ -36,7 +36,7 @@ public class NewArrayTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.new_array.Main");
         Method method = clazz.getMethod("getArraySize", boolean.class);
 
@@ -73,7 +73,7 @@ public class NewArrayTest extends AbstractPluginTest {
 
         assertThat(result.isSuccess()).isTrue();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.new_array.Main");
         Method method = clazz.getMethod("getArraySize", boolean.class);
 

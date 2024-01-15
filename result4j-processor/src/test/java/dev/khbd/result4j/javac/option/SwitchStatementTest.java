@@ -40,7 +40,7 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
         assertThat(result.isFail()).isFalse();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.switch_statement.Main");
         Method method = clazz.getMethod("greet", boolean.class);
 
@@ -119,7 +119,7 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
         assertThat(result.isFail()).isFalse();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.switch_statement.Main");
         Method method = clazz.getMethod("greet", boolean.class);
 
@@ -167,7 +167,7 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
         assertThat(result.isFail()).isFalse();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.switch_statement.Main");
         Method method = clazz.getMethod("greet", boolean.class);
 
@@ -217,7 +217,7 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
         assertThat(result.isFail()).isFalse();
 
-        ClassLoader classLoader = result.classLoader();
+        ClassLoader classLoader = result.getClassLoader();
         Class<?> clazz = classLoader.loadClass("cases.switch_statement.Main");
         Method method = clazz.getMethod("greet", boolean.class);
 

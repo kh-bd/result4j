@@ -130,21 +130,6 @@ public class TryTest {
     }
 
     @Test
-    public void successNullable_valueIsNull_returnSuccess() {
-        Try<?> result = Try.successNullable(null);
-
-        assertThat(result.isSuccess()).isTrue();
-    }
-
-    @Test
-    public void successNullable_valueIsNotNull_returnSuccess() {
-        Try<Integer> result = Try.successNullable(1);
-
-        assertThat(result.isSuccess()).isTrue();
-        assertThat(result.get()).isEqualTo(1);
-    }
-
-    @Test
     public void toStream_valueIsFailure_returnEmpty() {
         Stream<Integer> result = Try.success(1).toStream();
 
@@ -173,47 +158,10 @@ public class TryTest {
     }
 
     @Test
-    public void ofNullable_codeReturnNull_returnSuccess() {
-        Try<Object> result = Try.ofNullable(() -> null);
+    public void of_codeReturnNull_throwNPE() {
+        Try<?> tr = Try.of(() -> null);
 
-        assertThat(result.isSuccess()).isTrue();
-        assertThat(result.get()).isNull();
-    }
-
-    @Test
-    public void ofNullable_codeReturnValue_returnSuccess() {
-        Try<String> result = Try.ofNullable(() -> "value");
-
-        assertThat(result.isSuccess()).isTrue();
-        assertThat(result.get()).isEqualTo("value");
-    }
-
-    @Test
-    public void ofNullable_codeThrowNotFatalError_errorWasCaught() {
-        RuntimeException error = new RuntimeException("error");
-
-        Try<String> tr = Try.ofNullable(() -> {
-            throw error;
-        });
-
-        assertThat(tr.isFailure()).isTrue();
-        assertThat(tr.getError()).isEqualTo(error);
-    }
-
-    @Test
-    public void ofNullable_codeThrowFatalError_propagateError() {
-        Throwable error = catchThrowable(() -> Try.ofNullable(() -> {
-            throw new OutOfMemoryError("error");
-        }));
-
-        assertThat(error).isInstanceOf(OutOfMemoryError.class);
-    }
-
-    @Test
-    public void of_codeReturnNull_returnFailure() {
-        Try<Object> result = Try.of(() -> null);
-
-        assertThat(result.isFailure()).isTrue();
+        assertThat(tr.getError()).isInstanceOf(NullPointerException.class);
     }
 
     @Test

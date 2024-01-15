@@ -10,7 +10,6 @@ import lombok.experimental.UtilityClass;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -302,26 +301,6 @@ public interface Try<V> {
      * @param <T>  value type
      * @return try wrapper for erroneous computation
      */
-    static <T> Try<T> ofNullable(@NonNull Supplier<? extends T> code) {
-        try {
-            return Try.successNullable(code.get());
-        } catch (Throwable e) {
-            if (Failure.FatalErrorChecker.isFatal(e)) {
-                throw e;
-            }
-            return new Failure<>(e);
-        }
-    }
-
-    /**
-     * Wrap erroneous computation into {@code Try}.
-     *
-     * <p>Note: {@code code} will be evaluated eager.
-     *
-     * @param code erroneous computation
-     * @param <T>  value type
-     * @return try wrapper for erroneous computation
-     */
     static <T> Try<T> of(@NonNull Supplier<? extends T> code) {
         try {
             return Try.success(code.get());
@@ -350,27 +329,13 @@ public interface Try<V> {
     /**
      * Create fake try wrapper from computed value.
      *
-     * <p>Value can be null.
+     * <p>Value can not be null.
      *
      * @param value value
      * @param <T>   value type
      * @return try wrapper
      */
-    static <T> Try<T> success(T value) {
-        if (Objects.nonNull(value)) {
-            return new Success<>(value);
-        }
-        return new Failure<>(new NullPointerException("Value should not be null"));
-    }
-
-    /**
-     * Create fake try wrapper from computed value.
-     *
-     * @param value value
-     * @param <T>   value type
-     * @return try wrapper
-     */
-    static <T> Try<T> successNullable(T value) {
+    static <T> Try<T> success(@NonNull T value) {
         return new Success<>(value);
     }
 

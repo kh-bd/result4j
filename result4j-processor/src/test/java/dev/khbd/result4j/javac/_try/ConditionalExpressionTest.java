@@ -14,27 +14,26 @@ public class ConditionalExpressionTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInCondition_failCompilation() {
-        String source = """
-                package cases.conditional_expression;
-                                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<String> getName() {
-                        return random().unwrap() ? Try.success("Alex") : Try.success("Sergei");
-                    }
-                    
-                    public static Try<Boolean> random() {
-                        var rnd = new Random();
-                        if (rnd.nextBoolean()) {
-                            return Try.success(rnd.nextBoolean());
-                        }
-                        return Try.failure(new RuntimeException("error"));
-                    }
-                }
-                """;
+        String source =
+                "package cases.conditional_expression;\n" +
+                "\n" +
+                "import java.util.Random;\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<String> getName() {\n" +
+                "        return random().unwrap() ? Try.success(\"Alex\") : Try.success(\"Sergei\");\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Try<Boolean> random() {\n" +
+                "        var rnd = new Random();\n" +
+                "        if (rnd.nextBoolean()) {\n" +
+                "            return Try.success(rnd.nextBoolean());\n" +
+                "        }\n" +
+                "        return Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/conditional_expression/Main.java", source);
 
@@ -45,28 +44,27 @@ public class ConditionalExpressionTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInThen_failCompilation() {
-        String source = """
-                package cases.conditional_expression;
-                                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<String> getName() {
-                        return condition() ? Try.success(nameInternal().unwrap().toUpperCase()) : Try.failure(new RuntimeException("error"));
-                    }
-                    
-                    public static boolean condition() {
-                        var rnd = new Random();
-                        return rnd.nextBoolean();
-                    }
-                    
-                    public static Try<String> nameInternal() {
-                        return Try.success("Alex");
-                    }
-                }
-                """;
+        String source =
+                "package cases.conditional_expression;\n" +
+                "\n" +
+                "import java.util.Random;\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<String> getName() {\n" +
+                "        return condition() ? Try.success(nameInternal().unwrap().toUpperCase()) : Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "\n" +
+                "    public static boolean condition() {\n" +
+                "        var rnd = new Random();\n" +
+                "        return rnd.nextBoolean();\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Try<String> nameInternal() {\n" +
+                "        return Try.success(\"Alex\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/conditional_expression/Main.java", source);
 
@@ -77,28 +75,27 @@ public class ConditionalExpressionTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInElse_failCompilation() {
-        String source = """
-                package cases.conditional_expression;
-                                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<String> getName() {
-                        return condition() ?  Try.none() : Try.success(nameInternal().unwrap().toUpperCase());
-                    }
-                    
-                    public static boolean condition() {
-                        var rnd = new Random();
-                        return rnd.nextBoolean();
-                    }
-                    
-                    public static Try<String> nameInternal() {
-                        return Try.success("Alex");
-                    }
-                }
-                """;
+        String source =
+                "package cases.conditional_expression;\n" +
+                "\n" +
+                "import java.util.Random;\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<String> getName() {\n" +
+                "        return condition() ?  Try.none() : Try.success(nameInternal().unwrap().toUpperCase());\n" +
+                "    }\n" +
+                "\n" +
+                "    public static boolean condition() {\n" +
+                "        var rnd = new Random();\n" +
+                "        return rnd.nextBoolean();\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Try<String> nameInternal() {\n" +
+                "        return Try.success(\"Alex\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/conditional_expression/Main.java", source);
 

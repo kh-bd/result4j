@@ -17,26 +17,25 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInReceiverExpression() throws Exception {
-        String source = """
-                package cases.switch_statement;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<?> greet(boolean flag) {
-                        switch(toInteger(flag).unwrap()) {
-                            case 1:
-                            default:
-                                return Try.success("Alex");
-                        }
-                    }
-                    
-                    private static Try<Integer> toInteger(boolean flag) {
-                        return flag ? Try.success(1) : Try.failure(new RuntimeException("error"));
-                    }
-                }
-                """;
+        String source =
+                "package cases.switch_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<?> greet(boolean flag) {\n" +
+                "        switch(toInteger(flag).unwrap()) {\n" +
+                "            case 1:\n" +
+                "            default:\n" +
+                "                return Try.success(\"Alex\");\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Try<Integer> toInteger(boolean flag) {\n" +
+                "        return flag ? Try.success(1) : Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/switch_statement/Main.java", source);
 
@@ -60,27 +59,26 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLabeledReceiverExpression_fail() {
-        String source = """
-                package cases.switch_statement;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<?> greet(boolean flag) {
-                        label:
-                        switch(toInteger(flag).unwrap()) {
-                            case 1:
-                            default:
-                                return Try.success("Alex");
-                        }
-                    }
-                    
-                    private static Try<Integer> toInteger(boolean flag) {
-                        return flag ? Try.success(1) : Try.failure(new RuntimeException("error"));
-                    }
-                }
-                """;
+        String source =
+                "package cases.switch_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<?> greet(boolean flag) {\n" +
+                "        label:\n" +
+                "        switch(toInteger(flag).unwrap()) {\n" +
+                "            case 1:\n" +
+                "            default:\n" +
+                "                return Try.success(\"Alex\");\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Try<Integer> toInteger(boolean flag) {\n" +
+                "        return flag ? Try.success(1) : Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/labeled/Main.java", source);
 
@@ -91,37 +89,36 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInRuleWithBlock() throws Exception {
-        String source = """
-                package cases.switch_statement;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<?> greet(boolean flag) {
-                        switch(toInteger(flag)) {
-                            case 1 -> {
-                                var name = getName(flag).unwrap();
-                                return Try.success(name);
-                            }
-                            default -> {
-                                return Try.failure(new RuntimeException("error"));
-                            }
-                        }
-                    }
-                    
-                    private static Try<String> getName(boolean flag) {
-                        if (flag) {
-                            return Try.success("Alex");
-                        }
-                        return Try.failure(new RuntimeException("error"));
-                    }
-                    
-                    private static int toInteger(boolean flag) {
-                        return flag ? 1 : 0;
-                    }
-                }
-                """;
+        String source =
+                "package cases.switch_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<?> greet(boolean flag) {\n" +
+                "        switch(toInteger(flag)) {\n" +
+                "            case 1 -> {\n" +
+                "                var name = getName(flag).unwrap();\n" +
+                "                return Try.success(name);\n" +
+                "            }\n" +
+                "            default -> {\n" +
+                "                return Try.failure(new RuntimeException(\"error\"));\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Try<String> getName(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Try.success(\"Alex\");\n" +
+                "        }\n" +
+                "        return Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "\n" +
+                "    private static int toInteger(boolean flag) {\n" +
+                "        return flag ? 1 : 0;\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/switch_statement/Main.java", source);
 
@@ -145,34 +142,33 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInRuleWithOneStatement() throws Exception {
-        String source = """
-                package cases.switch_statement;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<?> greet(boolean flag) {
-                        switch(toInteger(flag)) {
-                            case 1 -> throw error(flag).unwrap();
-                            default -> {
-                                return Try.failure(new RuntimeException("error"));
-                            }
-                        }
-                    }
-                    
-                    private static Try<RuntimeException> error(boolean flag) {
-                        if (flag) {
-                            return Try.success(new RuntimeException("Alex"));
-                        }
-                        return Try.failure(new RuntimeException("error"));
-                    }
-                    
-                    private static int toInteger(boolean flag) {
-                        return flag ? 1 : 0;
-                    }
-                }
-                """;
+        String source =
+                "package cases.switch_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<?> greet(boolean flag) {\n" +
+                "        switch(toInteger(flag)) {\n" +
+                "            case 1 -> throw error(flag).unwrap();\n" +
+                "            default -> {\n" +
+                "                return Try.failure(new RuntimeException(\"error\"));\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Try<RuntimeException> error(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Try.success(new RuntimeException(\"Alex\"));\n" +
+                "        }\n" +
+                "        return Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "\n" +
+                "    private static int toInteger(boolean flag) {\n" +
+                "        return flag ? 1 : 0;\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/switch_statement/Main.java", source);
 
@@ -198,35 +194,34 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInStatementCaseWithoutBlock() throws Exception {
-        String source = """
-                package cases.switch_statement;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<?> greet(boolean flag) {
-                        switch(toInteger(flag)) {
-                            case 1:
-                                var name1 = getName(flag).unwrap();
-                                return Try.success(name1);
-                            default:
-                                return Try.failure(new RuntimeException("error"));
-                        }
-                    }
-                    
-                    private static Try<String> getName(boolean flag) {
-                        if (flag) {
-                            return Try.success("Alex");
-                        }
-                        return Try.failure(new RuntimeException("error"));
-                    }
-                    
-                    private static int toInteger(boolean flag) {
-                        return flag ? 1 : 0;
-                    }
-                }
-                """;
+        String source =
+                "package cases.switch_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<?> greet(boolean flag) {\n" +
+                "        switch(toInteger(flag)) {\n" +
+                "            case 1:\n" +
+                "                var name1 = getName(flag).unwrap();\n" +
+                "                return Try.success(name1);\n" +
+                "            default:\n" +
+                "                return Try.failure(new RuntimeException(\"error\"));\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Try<String> getName(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Try.success(\"Alex\");\n" +
+                "        }\n" +
+                "        return Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "\n" +
+                "    private static int toInteger(boolean flag) {\n" +
+                "        return flag ? 1 : 0;\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/switch_statement/Main.java", source);
 
@@ -250,34 +245,33 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInCaseStatementWithoutBlock() throws Exception {
-        String source = """
-                package cases.switch_statement;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<?> greet(boolean flag) {
-                        switch(toInteger(flag)) {
-                            case 1:
-                                return Try.success(getName(flag).unwrap());
-                            default:
-                                return Try.failure(new RuntimeException("error"));
-                        }
-                    }
-                    
-                    private static Try<String> getName(boolean flag) {
-                        if (flag) {
-                            return Try.success("Alex");
-                        }
-                        return Try.failure(new RuntimeException("error"));
-                    }
-                    
-                    private static int toInteger(boolean flag) {
-                        return flag ? 1 : 0;
-                    }
-                }
-                """;
+        String source =
+                "package cases.switch_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<?> greet(boolean flag) {\n" +
+                "        switch(toInteger(flag)) {\n" +
+                "            case 1:\n" +
+                "                return Try.success(getName(flag).unwrap());\n" +
+                "            default:\n" +
+                "                return Try.failure(new RuntimeException(\"error\"));\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Try<String> getName(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Try.success(\"Alex\");\n" +
+                "        }\n" +
+                "        return Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "\n" +
+                "    private static int toInteger(boolean flag) {\n" +
+                "        return flag ? 1 : 0;\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/switch_statement/Main.java", source);
 
@@ -301,36 +295,35 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInStatementCaseWithBlock() throws Exception {
-        String source = """
-                package cases.switch_statement;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<?> greet(boolean flag) {
-                        switch(toInteger(flag)) {
-                            case 1: {
-                                var name1 = getName(flag).unwrap();
-                                return Try.success(name1);
-                            }
-                            default:
-                                return Try.failure(new RuntimeException("error"));
-                        }
-                    }
-                    
-                    private static Try<String> getName(boolean flag) {
-                        if (flag) {
-                            return Try.success("Alex");
-                        }
-                        return Try.failure(new RuntimeException("error"));
-                    }
-                    
-                    private static int toInteger(boolean flag) {
-                        return flag ? 1 : 0;
-                    }
-                }
-                """;
+        String source =
+                "package cases.switch_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<?> greet(boolean flag) {\n" +
+                "        switch(toInteger(flag)) {\n" +
+                "            case 1: {\n" +
+                "                var name1 = getName(flag).unwrap();\n" +
+                "                return Try.success(name1);\n" +
+                "            }\n" +
+                "            default:\n" +
+                "                return Try.failure(new RuntimeException(\"error\"));\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Try<String> getName(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Try.success(\"Alex\");\n" +
+                "        }\n" +
+                "        return Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "\n" +
+                "    private static int toInteger(boolean flag) {\n" +
+                "        return flag ? 1 : 0;\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/switch_statement/Main.java", source);
 

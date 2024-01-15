@@ -15,31 +15,29 @@ public class LambdaTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLambdaBlock() throws Exception {
-        String source = """
-                package cases.in_lambda;
-                                
-                import dev.khbd.result4j.core.Try;
-                import java.util.concurrent.Callable;
-                                
-                public class Main {
-                                
-                    public static Try<String> getName(boolean flag) throws Exception {
-                        Callable<Try<String>> call = () -> {
-                            var name = name(flag).unwrap();
-                            return Try.success(name.toUpperCase());
-                        };
-                        return call.call();
-                    }
-                    
-                    public static Try<String> name(boolean flag) {
-                        return flag ? Try.success("Alex") : Try.failure(new RuntimeException("error"));
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_lambda;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "import java.util.concurrent.Callable;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<String> getName(boolean flag) throws Exception {\n" +
+                "        Callable<Try<String>> call = () -> {\n" +
+                "            var name = name(flag).unwrap();\n" +
+                "            return Try.success(name.toUpperCase());\n" +
+                "        };\n" +
+                "        return call.call();\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Try<String> name(boolean flag) {\n" +
+                "        return flag ? Try.success(\"Alex\") : Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_lambda/Main.java", source);
 
-        System.out.println(result);
         assertThat(result.isSuccess()).isTrue();
 
         ClassLoader classLoader = result.classLoader();
@@ -60,24 +58,23 @@ public class LambdaTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLambdaExpression() throws Exception {
-        String source = """
-                package cases.in_lambda;
-                                
-                import dev.khbd.result4j.core.Try;
-                import java.util.concurrent.Callable;
-                                
-                public class Main {
-                                
-                    public static Try<String> getName(boolean flag) throws Exception {
-                        Callable<Try<String>> call = () -> Try.success(name(flag).unwrap().toUpperCase());
-                        return call.call();
-                    }
-                    
-                    public static Try<String> name(boolean flag) {
-                        return flag ? Try.success("Alex") : Try.failure(new RuntimeException("error"));
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_lambda;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "import java.util.concurrent.Callable;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<String> getName(boolean flag) throws Exception {\n" +
+                "        Callable<Try<String>> call = () -> Try.success(name(flag).unwrap().toUpperCase());\n" +
+                "        return call.call();\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Try<String> name(boolean flag) {\n" +
+                "        return flag ? Try.success(\"Alex\") : Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_lambda/Main.java", source);
 

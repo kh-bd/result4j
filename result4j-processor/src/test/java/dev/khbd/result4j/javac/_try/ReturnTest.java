@@ -16,25 +16,24 @@ public class ReturnTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInReturn_propagate() throws Exception {
-        String source = """
-                package cases.in_return;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<String> greet(int index) {
-                        return Try.success(name(index).unwrap());
-                    }
-                                
-                    private static Try<String> name(int index) {
-                        if (index == 0) {
-                            return Try.failure(new RuntimeException("error"));
-                        }
-                        return Try.success(index < 0 ? "Alex" : "Sergei");
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_return;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<String> greet(int index) {\n" +
+                "        return Try.success(name(index).unwrap());\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Try<String> name(int index) {\n" +
+                "        if (index == 0) {\n" +
+                "            return Try.failure(new RuntimeException(\"error\"));\n" +
+                "        }\n" +
+                "        return Try.success(index < 0 ? \"Alex\" : \"Sergei\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_return/Main.java", source);
 
@@ -63,26 +62,25 @@ public class ReturnTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLabeledReturn_propagate() {
-        String source = """
-                package cases.in_return;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<String> greet(int index) {
-                        label:
-                        return Try.success(name(index).unwrap());
-                    }
-                                
-                    private static Try<String> name(int index) {
-                        if (index == 0) {
-                            return Try.failure(new RuntimeException("error"));
-                        }
-                        return Try.success(index < 0 ? "Alex" : "Sergei");
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_return;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<String> greet(int index) {\n" +
+                "        label:\n" +
+                "        return Try.success(name(index).unwrap());\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Try<String> name(int index) {\n" +
+                "        if (index == 0) {\n" +
+                "            return Try.failure(new RuntimeException(\"error\"));\n" +
+                "        }\n" +
+                "        return Try.success(index < 0 ? \"Alex\" : \"Sergei\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_return/Main.java", source);
 

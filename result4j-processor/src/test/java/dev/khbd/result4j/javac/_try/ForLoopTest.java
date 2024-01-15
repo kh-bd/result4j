@@ -17,26 +17,25 @@ public class ForLoopTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInForLoopBody_propagate() throws Exception {
-        String source = """
-                package cases.in_for_loop;
-                                
-                import java.util.List;
-                import java.util.ArrayList;
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static <V> Try<List<V>> sequence(List<Try<V>> list) {
-                        var result = new ArrayList<V>();
-                        
-                        for(var iterator = list.iterator(); iterator.hasNext(); ) {
-                            result.add(iterator.next().unwrap());
-                        }
-                        
-                        return Try.success(result);
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_for_loop;\n" +
+                "\n" +
+                "import java.util.List;\n" +
+                "import java.util.ArrayList;\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static <V> Try<List<V>> sequence(List<Try<V>> list) {\n" +
+                "        var result = new ArrayList<V>();\n" +
+                "\n" +
+                "        for(var iterator = list.iterator(); iterator.hasNext(); ) {\n" +
+                "            result.add(iterator.next().unwrap());\n" +
+                "        }\n" +
+                "\n" +
+                "        return Try.success(result);\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_for_loop/Main.java", source);
 
@@ -67,25 +66,24 @@ public class ForLoopTest extends AbstractPluginTest {
 
     @Test
     public void propagate_oneStatementBody_propagate() throws Exception {
-        String source = """
-                package cases.in_for_loop;
-                                
-                import java.util.List;
-                import java.util.ArrayList;
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static <V> Try<List<V>> sequence(List<Try<V>> list) {
-                        var result = new ArrayList<V>();
-                        
-                        for(var iterator = list.iterator(); iterator.hasNext(); )
-                            result.add(iterator.next().unwrap());
-                        
-                        return Try.success(result);
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_for_loop;\n" +
+                "\n" +
+                "import java.util.List;\n" +
+                "import java.util.ArrayList;\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static <V> Try<List<V>> sequence(List<Try<V>> list) {\n" +
+                "        var result = new ArrayList<V>();\n" +
+                "\n" +
+                "        for(var iterator = list.iterator(); iterator.hasNext(); )\n" +
+                "            result.add(iterator.next().unwrap());\n" +
+                "\n" +
+                "        return Try.success(result);\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_for_loop/Main.java", source);
 
@@ -116,29 +114,28 @@ public class ForLoopTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInForLoopInitializer_failCompilation() {
-        String source = """
-                package cases.in_for_loop;
-                                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static void print() {
-                        for (int i = random().unwrap(); i < 10; i++) {
-                            System.out.println("Hello there!!!");
-                        }
-                    }
-                    
-                    public static Try<Integer> random() {
-                        var rnd = new Random();
-                        if (rnd.nextBoolean()) {
-                            return Try.success(rnd.nextInt());
-                        }
-                        return Try.failure(new RuntimeException("error"));
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_for_loop;\n" +
+                "\n" +
+                "import java.util.Random;\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static void print() {\n" +
+                "        for (int i = random().unwrap(); i < 10; i++) {\n" +
+                "            System.out.println(\"Hello there!!!\");\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Try<Integer> random() {\n" +
+                "        var rnd = new Random();\n" +
+                "        if (rnd.nextBoolean()) {\n" +
+                "            return Try.success(rnd.nextInt());\n" +
+                "        }\n" +
+                "        return Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_for_loop/Main.java", source);
 
@@ -149,29 +146,28 @@ public class ForLoopTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInForLoopCondition_failCompilation() {
-        String source = """
-                package cases.in_for_loop;
-                                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static void print() {
-                        for (int i = 0; i < random().unwrap(); i++) {
-                            System.out.println("Hello there!!!");
-                        }
-                    }
-                    
-                    public static Try<Integer> random() {
-                        var rnd = new Random();
-                        if (rnd.nextBoolean()) {
-                            return Try.success(rnd.nextInt());
-                        }
-                        return Try.failure(new RuntimeException("error"));
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_for_loop;\n" +
+                "\n" +
+                "import java.util.Random;\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static void print() {\n" +
+                "        for (int i = 0; i < random().unwrap(); i++) {\n" +
+                "            System.out.println(\"Hello there!!!\");\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Try<Integer> random() {\n" +
+                "        var rnd = new Random();\n" +
+                "        if (rnd.nextBoolean()) {\n" +
+                "            return Try.success(rnd.nextInt());\n" +
+                "        }\n" +
+                "        return Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_for_loop/Main.java", source);
 
@@ -182,29 +178,28 @@ public class ForLoopTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInForLoopUpdateStatements_failCompilation() {
-        String source = """
-                package cases.in_for_loop;
-                                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static void print() {
-                        for (int i = 0; i < 10; i += random().unwrap()) {
-                            System.out.println("Hello there!!!");
-                        }
-                    }
-                    
-                    public static Try<Integer> random() {
-                        var rnd = new Random();
-                        if (rnd.nextBoolean()) {
-                            return Try.success(rnd.nextInt());
-                        }
-                        return Try.failure(new RuntimeException("error"));
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_for_loop;\n" +
+                "\n" +
+                "import java.util.Random;\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static void print() {\n" +
+                "        for (int i = 0; i < 10; i += random().unwrap()) {\n" +
+                "            System.out.println(\"Hello there!!!\");\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Try<Integer> random() {\n" +
+                "        var rnd = new Random();\n" +
+                "        if (rnd.nextBoolean()) {\n" +
+                "            return Try.success(rnd.nextInt());\n" +
+                "        }\n" +
+                "        return Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_for_loop/Main.java", source);
 

@@ -16,25 +16,24 @@ public class EnhancedForLoopTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInForLoopBody_propagate() throws Exception {
-        String source = """
-                package cases.in_for_loop;
-                                
-                import java.util.List;
-                import java.util.ArrayList;
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                
-                    public static <V> Try<List<V>> sequence(List<Try<V>> list) {
-                        var result = new ArrayList<V>();
-                        for(var _try : list) {
-                            var value = _try.unwrap();
-                            result.add(value);
-                        }
-                        return Try.success(result);
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_for_loop;\n" +
+                "\n" +
+                "import java.util.List;\n" +
+                "import java.util.ArrayList;\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static <V> Try<List<V>> sequence(List<Try<V>> list) {\n" +
+                "        var result = new ArrayList<V>();\n" +
+                "        for(var _try : list) {\n" +
+                "            var value = _try.unwrap();\n" +
+                "            result.add(value);\n" +
+                "        }\n" +
+                "        return Try.success(result);\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_for_loop/Main.java", source);
 
@@ -65,23 +64,22 @@ public class EnhancedForLoopTest extends AbstractPluginTest {
 
     @Test
     public void propagate_oneStatementBody_propagate() throws Exception {
-        String source = """
-                package cases.in_for_loop;
-                                
-                import java.util.List;
-                import java.util.ArrayList;
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                
-                    public static <V> Try<List<V>> sequence(List<Try<V>> list) {
-                        var result = new ArrayList<V>();
-                        for(var _try : list)
-                            result.add(_try.unwrap());
-                        return Try.success(result);
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_for_loop;\n" +
+                "\n" +
+                "import java.util.List;\n" +
+                "import java.util.ArrayList;\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static <V> Try<List<V>> sequence(List<Try<V>> list) {\n" +
+                "        var result = new ArrayList<V>();\n" +
+                "        for(var _try : list)\n" +
+                "            result.add(_try.unwrap());\n" +
+                "        return Try.success(result);\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_for_loop/Main.java", source);
 
@@ -112,25 +110,24 @@ public class EnhancedForLoopTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInForLoopSource_propagate() throws Exception {
-        String source = """
-                package cases.in_for_loop;
-                                
-                import java.util.List;
-                import java.util.ArrayList;
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                
-                    public static <V> Try<List<V>> sequence(Try<List<Try<V>>> mayBeList) {
-                        var result = new ArrayList<V>();
-                        for(var _try : mayBeList.unwrap()) {
-                            var value = _try.unwrap();
-                            result.add(value);
-                        }
-                        return Try.success(result);
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_for_loop;\n" +
+                "\n" +
+                "import java.util.List;\n" +
+                "import java.util.ArrayList;\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static <V> Try<List<V>> sequence(Try<List<Try<V>>> mayBeList) {\n" +
+                "        var result = new ArrayList<V>();\n" +
+                "        for(var _try : mayBeList.unwrap()) {\n" +
+                "            var value = _try.unwrap();\n" +
+                "            result.add(value);\n" +
+                "        }\n" +
+                "        return Try.success(result);\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_for_loop/Main.java", source);
 

@@ -16,31 +16,30 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inCondition_failCompilation() {
-        String source = """
-                package cases.if_statement;
-                                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<String> getName() {
-                        if (random().unwrap().booleanValue()) {
-                            return Try.success("Alex");
-                        } else {
-                            return Try.failure(new RuntimeException("error"));
-                        }
-                    }
-                    
-                    public static Try<Boolean> random() {
-                        var rnd = new Random();
-                        if (rnd.nextBoolean()) {
-                            return Try.success(rnd.nextBoolean());
-                        }
-                        return Try.failure(new RuntimeException("error"));
-                    }
-                }
-                """;
+        String source =
+                "package cases.if_statement;\n" +
+                "\n" +
+                "import java.util.Random;\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<String> getName() {\n" +
+                "        if (random().unwrap().booleanValue()) {\n" +
+                "            return Try.success(\"Alex\");\n" +
+                "        } else {\n" +
+                "            return Try.failure(new RuntimeException(\"error\"));\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Try<Boolean> random() {\n" +
+                "        var rnd = new Random();\n" +
+                "        if (rnd.nextBoolean()) {\n" +
+                "            return Try.success(rnd.nextBoolean());\n" +
+                "        }\n" +
+                "        return Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -52,33 +51,32 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inElseIfCondition_failCompilation() {
-        String source = """
-                package cases.if_statement;
-                                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<String> getName() {
-                        if (false) {
-                            return Try.success("Alex");
-                        } else if (random().unwrap().booleanValue()) {
-                            return Try.success("Sergei");
-                        } else {
-                            return Try.failure(new RuntimeException("error"));
-                        }
-                    }
-                    
-                    public static Try<Boolean> random() {
-                        var rnd = new Random();
-                        if (rnd.nextBoolean()) {
-                            return Try.success(rnd.nextBoolean());
-                        }
-                        return Try.failure(new RuntimeException("error"));
-                    }
-                }
-                """;
+        String source =
+                "package cases.if_statement;\n" +
+                "\n" +
+                "import java.util.Random;\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<String> getName() {\n" +
+                "        if (false) {\n" +
+                "            return Try.success(\"Alex\");\n" +
+                "        } else if (random().unwrap().booleanValue()) {\n" +
+                "            return Try.success(\"Sergei\");\n" +
+                "        } else {\n" +
+                "            return Try.failure(new RuntimeException(\"error\"));\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Try<Boolean> random() {\n" +
+                "        var rnd = new Random();\n" +
+                "        if (rnd.nextBoolean()) {\n" +
+                "            return Try.success(rnd.nextBoolean());\n" +
+                "        }\n" +
+                "        return Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -89,26 +87,25 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inThenBlock_success() throws Exception {
-        String source = """
-                package cases.if_statement;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<String> getName(boolean flag) {
-                        if (flag) {
-                            return Try.success(getName().unwrap().toUpperCase());
-                        } else {
-                            return Try.failure(new RuntimeException("error"));
-                        }
-                    }
-                                
-                    public static Try<String> getName() {
-                        return Try.success("Alex");
-                    }
-                }
-                """;
+        String source =
+                "package cases.if_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<String> getName(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Try.success(getName().unwrap().toUpperCase());\n" +
+                "        } else {\n" +
+                "            return Try.failure(new RuntimeException(\"error\"));\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Try<String> getName() {\n" +
+                "        return Try.success(\"Alex\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -132,26 +129,25 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inElseBlock_success() throws Exception {
-        String source = """
-                package cases.if_statement;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<String> getName(boolean flag) {
-                        if (flag) {
-                            return Try.failure(new RuntimeException("error"));
-                        } else {
-                            return Try.success(getName().unwrap().toUpperCase());
-                        }
-                    }
-                                
-                    public static Try<String> getName() {
-                        return Try.success("Alex");
-                    }
-                }
-                """;
+        String source =
+                "package cases.if_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<String> getName(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Try.failure(new RuntimeException(\"error\"));\n" +
+                "        } else {\n" +
+                "            return Try.success(getName().unwrap().toUpperCase());\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Try<String> getName() {\n" +
+                "        return Try.success(\"Alex\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -175,23 +171,22 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inThenStatement_success() throws Exception {
-        String source = """
-                package cases.if_statement;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<String> getName(boolean flag) {
-                        if (flag) return Try.success(getName().unwrap().toUpperCase());
-                        else return Try.failure(new RuntimeException("error"));
-                    }
-                                
-                    public static Try<String> getName() {
-                        return Try.success("Alex");
-                    }
-                }
-                """;
+        String source =
+                "package cases.if_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<String> getName(boolean flag) {\n" +
+                "        if (flag) return Try.success(getName().unwrap().toUpperCase());\n" +
+                "        else return Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Try<String> getName() {\n" +
+                "        return Try.success(\"Alex\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -215,23 +210,22 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inElseStatement_success() throws Exception {
-        String source = """
-                package cases.if_statement;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<String> getName(boolean flag) {
-                        if (flag) return Try.failure(new RuntimeException("error"));
-                        else return Try.success(getName().unwrap().toUpperCase());
-                    }
-                                
-                    public static Try<String> getName() {
-                        return Try.success("Alex");
-                    }
-                }
-                """;
+        String source =
+                "package cases.if_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<String> getName(boolean flag) {\n" +
+                "        if (flag) return Try.failure(new RuntimeException(\"error\"));\n" +
+                "        else return Try.success(getName().unwrap().toUpperCase());\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Try<String> getName() {\n" +
+                "        return Try.success(\"Alex\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 

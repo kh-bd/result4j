@@ -17,28 +17,27 @@ public class DoWhileLoopTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapInsideDoWhileLoopBlock() throws Exception {
-        String source = """
-                package cases.do_while_loop;
-                                
-                import java.util.Iterator;
-                import java.util.List;
-                import java.util.ArrayList;
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                    
-                    public static <V> Try<List<V>> sequenceNotEmpty(List<Try<V>> list) {
-                        var result = new ArrayList<V>();
-                        
-                        Iterator<Try<V>> iterator = list.iterator();
-                        do {
-                            result.add(iterator.next().unwrap());
-                        } while(iterator.hasNext());
-                        
-                        return Try.success(result);
-                    }
-                }
-                """;
+        String source =
+                "package cases.do_while_loop;\n" +
+                "\n" +
+                "import java.util.Iterator;\n" +
+                "import java.util.List;\n" +
+                "import java.util.ArrayList;\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static <V> Try<List<V>> sequenceNotEmpty(List<Try<V>> list) {\n" +
+                "        var result = new ArrayList<V>();\n" +
+                "\n" +
+                "        Iterator<Try<V>> iterator = list.iterator();\n" +
+                "        do {\n" +
+                "            result.add(iterator.next().unwrap());\n" +
+                "        } while(iterator.hasNext());\n" +
+                "\n" +
+                "        return Try.success(result);\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/do_while_loop/Main.java", source);
 
@@ -64,27 +63,26 @@ public class DoWhileLoopTest extends AbstractPluginTest {
 
     @Test
     public void propagate_oneStatementBlock() throws Exception {
-        String source = """
-                package cases.do_while_loop;
-                                
-                import java.util.Iterator;
-                import java.util.List;
-                import java.util.ArrayList;
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                    
-                    public static <V> Try<List<V>> sequenceNotEmpty(List<Try<V>> list) {
-                        var result = new ArrayList<V>();
-                        
-                        Iterator<Try<V>> iterator = list.iterator();
-                        do result.add(iterator.next().unwrap());
-                        while(iterator.hasNext());
-                        
-                        return Try.success(result);
-                    }
-                }
-                """;
+        String source =
+                "package cases.do_while_loop;\n" +
+                "\n" +
+                "import java.util.Iterator;\n" +
+                "import java.util.List;\n" +
+                "import java.util.ArrayList;\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static <V> Try<List<V>> sequenceNotEmpty(List<Try<V>> list) {\n" +
+                "        var result = new ArrayList<V>();\n" +
+                "\n" +
+                "        Iterator<Try<V>> iterator = list.iterator();\n" +
+                "        do result.add(iterator.next().unwrap());\n" +
+                "        while(iterator.hasNext());\n" +
+                "\n" +
+                "        return Try.success(result);\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/do_while_loop/Main.java", source);
 
@@ -110,35 +108,34 @@ public class DoWhileLoopTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapInDoWhileCondition() {
-        String source = """
-                package cases.do_while_loop;
-                                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static int count() {
-                        var rnd = new Random();
-                        
-                        int count = 0;
-                        
-                        do {
-                            count++;
-                            // fail to compile
-                        } while(random(rnd).unwrap());
-                        
-                        return count;
-                    }
-                    
-                    public static Try<Boolean> random(Random rnd) {
-                        if (rnd.nextBoolean()) {
-                            return Try.success(rnd.nextBoolean());
-                        }
-                        return Try.failure(new RuntimeException("error"));
-                    }
-                }
-                """;
+        String source =
+                "package cases.do_while_loop;\n" +
+                "\n" +
+                "import java.util.Random;\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static int count() {\n" +
+                "        var rnd = new Random();\n" +
+                "\n" +
+                "        int count = 0;\n" +
+                "\n" +
+                "        do {\n" +
+                "            count++;\n" +
+                "            // fail to compile\n" +
+                "        } while(random(rnd).unwrap());\n" +
+                "\n" +
+                "        return count;\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Try<Boolean> random(Random rnd) {\n" +
+                "        if (rnd.nextBoolean()) {\n" +
+                "            return Try.success(rnd.nextBoolean());\n" +
+                "        }\n" +
+                "        return Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/do_while_loop/Main.java", source);
 

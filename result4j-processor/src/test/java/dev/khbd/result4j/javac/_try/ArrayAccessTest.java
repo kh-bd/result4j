@@ -15,23 +15,22 @@ public class ArrayAccessTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallAtInstancePosition() throws Exception {
-        String source = """
-                package cases.array_access;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                
-                    public static Try<String> greet(boolean flag) {
-                        var name = getArray(flag).unwrap()[0];
-                        return Try.success(name);
-                    }
-                    
-                    private static Try<String[]> getArray(boolean flag) {
-                        return flag ? Try.success(new String[] {"Alex"}) : Try.failure(new RuntimeException());
-                    }
-                }
-                """;
+        String source =
+                "package cases.array_access;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<String> greet(boolean flag) {\n" +
+                "        var name = getArray(flag).unwrap()[0];\n" +
+                "        return Try.success(name);\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Try<String[]> getArray(boolean flag) {\n" +
+                "        return flag ? Try.success(new String[] {\"Alex\"}) : Try.failure(new RuntimeException());\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/array_access/Main.java", source);
 
@@ -54,24 +53,23 @@ public class ArrayAccessTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallAtIndexPosition() throws Exception {
-        String source = """
-                package cases.array_access;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                
-                    public static Try<String> greet(boolean flag) {
-                        var names = new String[] {"Alex"};
-                        var name = names[getIndex(flag).unwrap()];
-                        return Try.success(name);
-                    }
-                    
-                    private static Try<Integer> getIndex(boolean flag) {
-                        return flag ? Try.success(0) : Try.failure(new RuntimeException());
-                    }
-                }
-                """;
+        String source =
+                "package cases.array_access;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<String> greet(boolean flag) {\n" +
+                "        var names = new String[] {\"Alex\"};\n" +
+                "        var name = names[getIndex(flag).unwrap()];\n" +
+                "        return Try.success(name);\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Try<Integer> getIndex(boolean flag) {\n" +
+                "        return flag ? Try.success(0) : Try.failure(new RuntimeException());\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/array_access/Main.java", source);
 
@@ -94,27 +92,26 @@ public class ArrayAccessTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallAtInstanceAndIndexPositions() throws Exception {
-        String source = """
-                package cases.array_access;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                
-                    public static Try<String> greet(boolean flag) {
-                        var name = getArray(flag).unwrap()[getIndex(flag).unwrap()];
-                        return Try.success(name);
-                    }
-                    
-                    private static Try<String[]> getArray(boolean flag) {
-                        return flag ? Try.success(new String[] {"Alex"}) : Try.failure(new RuntimeException());
-                    }
-                    
-                    private static Try<Integer> getIndex(boolean flag) {
-                        return flag ? Try.success(0) : Try.failure(new RuntimeException());
-                    }
-                }
-                """;
+        String source =
+                "package cases.array_access;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<String> greet(boolean flag) {\n" +
+                "        var name = getArray(flag).unwrap()[getIndex(flag).unwrap()];\n" +
+                "        return Try.success(name);\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Try<String[]> getArray(boolean flag) {\n" +
+                "        return flag ? Try.success(new String[] {\"Alex\"}) : Try.failure(new RuntimeException());\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Try<Integer> getIndex(boolean flag) {\n" +
+                "        return flag ? Try.success(0) : Try.failure(new RuntimeException());\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/array_access/Main.java", source);
 

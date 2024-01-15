@@ -15,28 +15,27 @@ public class UnaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inUnaryNegationExpression() throws Exception {
-        String source = """
-                package cases.in_unary;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<String> getName(boolean flag) {
-                        var notFlag = !flag(flag).unwrap();
-                    
-                        if (notFlag) {
-                            return Try.failure(new RuntimeException("error"));
-                        }
-                        
-                        return Try.success("Alex");
-                    }
-                    
-                    public static Try<Boolean> flag(boolean flag) {
-                        return Try.success(flag);
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_unary;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<String> getName(boolean flag) {\n" +
+                "        var notFlag = !flag(flag).unwrap();\n" +
+                "\n" +
+                "        if (notFlag) {\n" +
+                "            return Try.failure(new RuntimeException(\"error\"));\n" +
+                "        }\n" +
+                "\n" +
+                "        return Try.success(\"Alex\");\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Try<Boolean> flag(boolean flag) {\n" +
+                "        return Try.success(flag);\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_unary/Main.java", source);
 

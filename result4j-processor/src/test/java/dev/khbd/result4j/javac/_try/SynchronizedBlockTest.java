@@ -16,25 +16,24 @@ public class SynchronizedBlockTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInBlock() throws Exception {
-        String source = """
-                package cases.sync_block;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<String> greet(boolean flag) {
-                        synchronized (Main.class) {
-                            var name = getName(flag).unwrap();
-                            return Try.success(name.toUpperCase());
-                        }
-                    }
-                    
-                    private static Try<String> getName(boolean flag) {
-                        return flag ? Try.success("Alex") : Try.failure(new RuntimeException("error"));
-                    }
-                }
-                """;
+        String source =
+                "package cases.sync_block;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<String> greet(boolean flag) {\n" +
+                "        synchronized (Main.class) {\n" +
+                "            var name = getName(flag).unwrap();\n" +
+                "            return Try.success(name.toUpperCase());\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Try<String> getName(boolean flag) {\n" +
+                "        return flag ? Try.success(\"Alex\") : Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/sync_block/Main.java", source);
 
@@ -58,28 +57,26 @@ public class SynchronizedBlockTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInSyncExpression() throws Exception {
-        String source = """
-                package cases.sync_block;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<String> greet(boolean flag) {
-                        synchronized (getName(flag).unwrap()) {
-                            return Try.failure(new RuntimeException("error"));
-                        }
-                    }
-                    
-                    private static Try<String> getName(boolean flag) {
-                        return flag ? Try.success("Alex") : Try.failure(new RuntimeException("error"));
-                    }
-                }
-                """;
+        String source =
+                "package cases.sync_block;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<String> greet(boolean flag) {\n" +
+                "        synchronized (getName(flag).unwrap()) {\n" +
+                "            return Try.failure(new RuntimeException(\"error\"));\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Try<String> getName(boolean flag) {\n" +
+                "        return flag ? Try.success(\"Alex\") : Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/sync_block/Main.java", source);
 
-        System.out.println(result);
         assertThat(result.isSuccess()).isTrue();
 
         ClassLoader classLoader = result.classLoader();
@@ -95,25 +92,24 @@ public class SynchronizedBlockTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLabeledSyncExpression() {
-        String source = """
-                package cases.sync_block;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<String> greet(boolean flag) {
-                        label:
-                        synchronized (getName(flag).unwrap()) {
-                            return Try.failure(new RuntimeException("error"));
-                        }
-                    }
-                    
-                    private static Try<String> getName(boolean flag) {
-                        return flag ? Try.success("Alex") : Try.failure(new RuntimeException("error"));
-                    }
-                }
-                """;
+        String source =
+                "package cases.sync_block;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<String> greet(boolean flag) {\n" +
+                "        label:\n" +
+                "        synchronized (getName(flag).unwrap()) {\n" +
+                "            return Try.failure(new RuntimeException(\"error\"));\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Try<String> getName(boolean flag) {\n" +
+                "        return flag ? Try.success(\"Alex\") : Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/sync_block/Main.java", source);
 

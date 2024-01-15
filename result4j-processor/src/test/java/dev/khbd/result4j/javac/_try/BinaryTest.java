@@ -15,23 +15,22 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inBinaryBoth() throws Exception {
-        String source = """
-                package cases.in_binary;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<Integer> getSum(boolean flag1, boolean flag2) {
-                        var result = getInt(flag1).unwrap() + getInt(flag2).unwrap();
-                        return Try.success(result);
-                    }
-                    
-                    public static Try<Integer> getInt(boolean flag) {
-                        return flag ? Try.success(10) : Try.failure(new RuntimeException("error"));
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_binary;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<Integer> getSum(boolean flag1, boolean flag2) {\n" +
+                "        var result = getInt(flag1).unwrap() + getInt(flag2).unwrap();\n" +
+                "        return Try.success(result);\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Try<Integer> getInt(boolean flag) {\n" +
+                "        return flag ? Try.success(10) : Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 
@@ -67,23 +66,22 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inBinaryLeft() throws Exception {
-        String source = """
-                package cases.in_binary;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<Integer> getSum(boolean flag) {
-                        var result = getInt(flag).unwrap() + 1;
-                        return Try.success(result);
-                    }
-                    
-                    public static Try<Integer> getInt(boolean flag) {
-                        return flag ? Try.success(10) : Try.failure(new RuntimeException("error"));
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_binary;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<Integer> getSum(boolean flag) {\n" +
+                "        var result = getInt(flag).unwrap() + 1;\n" +
+                "        return Try.success(result);\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Try<Integer> getInt(boolean flag) {\n" +
+                "        return flag ? Try.success(10) : Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 
@@ -107,23 +105,22 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inBinaryRight() throws Exception {
-        String source = """
-                package cases.in_binary;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<Integer> getSum(boolean flag) {
-                        var result = 1 + getInt(flag).unwrap();
-                        return Try.success(result);
-                    }
-                    
-                    public static Try<Integer> getInt(boolean flag) {
-                        return flag ? Try.success(10) : Try.failure(new RuntimeException("error"));
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_binary;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<Integer> getSum(boolean flag) {\n" +
+                "        var result = 1 + getInt(flag).unwrap();\n" +
+                "        return Try.success(result);\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Try<Integer> getInt(boolean flag) {\n" +
+                "        return flag ? Try.success(10) : Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 
@@ -147,23 +144,22 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inComplexBinary() throws Exception {
-        String source = """
-                package cases.in_binary;
-                                
-                import dev.khbd.result4j.core.Try;
-                                
-                public class Main {
-                                
-                    public static Try<Integer> getSum(boolean flag) {
-                        var result = (getInt(flag).unwrap() + getInt(flag).unwrap()) + getInt(flag).unwrap();
-                        return Try.success(result);
-                    }
-                    
-                    public static Try<Integer> getInt(boolean flag) {
-                        return flag ? Try.success(10) : Try.failure(new RuntimeException("error"));
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_binary;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Try;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Try<Integer> getSum(boolean flag) {\n" +
+                "        var result = (getInt(flag).unwrap() + getInt(flag).unwrap()) + getInt(flag).unwrap();\n" +
+                "        return Try.success(result);\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Try<Integer> getInt(boolean flag) {\n" +
+                "        return flag ? Try.success(10) : Try.failure(new RuntimeException(\"error\"));\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 

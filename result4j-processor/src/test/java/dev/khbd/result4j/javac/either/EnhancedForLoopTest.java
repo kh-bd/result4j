@@ -16,25 +16,24 @@ public class EnhancedForLoopTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInForLoopBody_propagate() throws Exception {
-        String source = """
-                package cases.in_for_loop;
-                                
-                import java.util.List;
-                import java.util.ArrayList;
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                
-                    public static <V> Either<String, List<V>> sequence(List<Either<String, V>> list) {
-                        var result = new ArrayList<V>();
-                        for(var option : list) {
-                            var value = option.unwrap();
-                            result.add(value);
-                        }
-                        return Either.right(result);
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_for_loop;\n" +
+                "\n" +
+                "import java.util.List;\n" +
+                "import java.util.ArrayList;\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static <V> Either<String, List<V>> sequence(List<Either<String, V>> list) {\n" +
+                "        var result = new ArrayList<V>();\n" +
+                "        for(var option : list) {\n" +
+                "            var value = option.unwrap();\n" +
+                "            result.add(value);\n" +
+                "        }\n" +
+                "        return Either.right(result);\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_for_loop/Main.java", source);
 
@@ -62,23 +61,22 @@ public class EnhancedForLoopTest extends AbstractPluginTest {
 
     @Test
     public void propagate_oneStatementBody_propagate() throws Exception {
-        String source = """
-                package cases.in_for_loop;
-                                
-                import java.util.List;
-                import java.util.ArrayList;
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                
-                    public static <V> Either<String, List<V>> sequence(List<Either<String, V>> list) {
-                        var result = new ArrayList<V>();
-                        for(var option : list)
-                            result.add(option.unwrap());
-                        return Either.right(result);
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_for_loop;\n" +
+                "\n" +
+                "import java.util.List;\n" +
+                "import java.util.ArrayList;\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static <V> Either<String, List<V>> sequence(List<Either<String, V>> list) {\n" +
+                "        var result = new ArrayList<V>();\n" +
+                "        for(var option : list)\n" +
+                "            result.add(option.unwrap());\n" +
+                "        return Either.right(result);\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_for_loop/Main.java", source);
 
@@ -106,25 +104,24 @@ public class EnhancedForLoopTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInForLoopSource_propagate() throws Exception {
-        String source = """
-                package cases.in_for_loop;
-                                
-                import java.util.List;
-                import java.util.ArrayList;
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                
-                    public static <V> Either<String, List<V>> sequence(Either<String, List<Either<String, V>>> mayBeList) {
-                        var result = new ArrayList<V>();
-                        for(var option : mayBeList.unwrap()) {
-                            var value = option.unwrap();
-                            result.add(value);
-                        }
-                        return Either.right(result);
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_for_loop;\n" +
+                "\n" +
+                "import java.util.List;\n" +
+                "import java.util.ArrayList;\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static <V> Either<String, List<V>> sequence(Either<String, List<Either<String, V>>> mayBeList) {\n" +
+                "        var result = new ArrayList<V>();\n" +
+                "        for(var option : mayBeList.unwrap()) {\n" +
+                "            var value = option.unwrap();\n" +
+                "            result.add(value);\n" +
+                "        }\n" +
+                "        return Either.right(result);\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_for_loop/Main.java", source);
 

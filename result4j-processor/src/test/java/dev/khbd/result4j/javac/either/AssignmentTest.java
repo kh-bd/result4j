@@ -16,28 +16,26 @@ public class AssignmentTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInAssignment() throws Exception {
-        String source = """
-                package cases.assignment;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> greet(boolean flag) {
-                        String name = null;
-                        name = name(flag).unwrap();
-                        return Either.right(name);
-                    }
-                                
-                    private static Either<String, String> name(boolean flag) {
-                        return flag ? Either.right("Alex") : Either.left("error");
-                    }
-                }
-                """;
+        String source =
+                "package cases.assignment;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> greet(boolean flag) {\n" +
+                "        String name = null;\n" +
+                "        name = name(flag).unwrap();\n" +
+                "        return Either.right(name);\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<String, String> name(boolean flag) {\n" +
+                "        return flag ? Either.right(\"Alex\") : Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/assignment/Main.java", source);
 
-        System.out.println(result);
         assertThat(result.isSuccess()).isTrue();
 
         ClassLoader classLoader = result.classLoader();
@@ -57,25 +55,24 @@ public class AssignmentTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLabeledAssignment() {
-        String source = """
-                package cases.assignment;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> greet(boolean flag) {
-                        String name = null;
-                        label:
-                        name = name(flag).unwrap();
-                        return Either.right(name);
-                    }
-                                
-                    private static Either<String, String> name(boolean flag) {
-                        return flag ? Either.right("Alex") : Either.left("error");
-                    }
-                }
-                """;
+        String source =
+                "package cases.assignment;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> greet(boolean flag) {\n" +
+                "        String name = null;\n" +
+                "        label:\n" +
+                "        name = name(flag).unwrap();\n" +
+                "        return Either.right(name);\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<String, String> name(boolean flag) {\n" +
+                "        return flag ? Either.right(\"Alex\") : Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/labeled/Main.java", source);
 

@@ -15,31 +15,29 @@ public class LambdaTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLambdaBlock() throws Exception {
-        String source = """
-                package cases.in_lambda;
-                                
-                import dev.khbd.result4j.core.Either;
-                import java.util.concurrent.Callable;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> getName(boolean flag) throws Exception {
-                        Callable<Either<String, String>> call = () -> {
-                            var name = name(flag).unwrap();
-                            return Either.right(name.toUpperCase());
-                        };
-                        return call.call();
-                    }
-                    
-                    public static Either<String, String> name(boolean flag) {
-                        return flag ? Either.right("Alex") : Either.left("error");
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_lambda;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "import java.util.concurrent.Callable;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> getName(boolean flag) throws Exception {\n" +
+                "        Callable<Either<String, String>> call = () -> {\n" +
+                "            var name = name(flag).unwrap();\n" +
+                "            return Either.right(name.toUpperCase());\n" +
+                "        };\n" +
+                "        return call.call();\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Either<String, String> name(boolean flag) {\n" +
+                "        return flag ? Either.right(\"Alex\") : Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_lambda/Main.java", source);
 
-        System.out.println(result);
         assertThat(result.isSuccess()).isTrue();
 
         ClassLoader classLoader = result.classLoader();
@@ -59,24 +57,23 @@ public class LambdaTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLambdaExpression() throws Exception {
-        String source = """
-                package cases.in_lambda;
-                                
-                import dev.khbd.result4j.core.Either;
-                import java.util.concurrent.Callable;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> getName(boolean flag) throws Exception {
-                        Callable<Either<String, String>> call = () -> Either.right(name(flag).unwrap().toUpperCase());
-                        return call.call();
-                    }
-                    
-                    public static Either<String, String> name(boolean flag) {
-                        return flag ? Either.right("Alex") : Either.left("error");
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_lambda;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "import java.util.concurrent.Callable;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> getName(boolean flag) throws Exception {\n" +
+                "        Callable<Either<String, String>> call = () -> Either.right(name(flag).unwrap().toUpperCase());\n" +
+                "        return call.call();\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Either<String, String> name(boolean flag) {\n" +
+                "        return flag ? Either.right(\"Alex\") : Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_lambda/Main.java", source);
 

@@ -15,32 +15,30 @@ public class UnaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inUnaryNegationExpression() throws Exception {
-        String source = """
-                package cases.in_unary;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> getName(boolean flag) {
-                        var notFlag = !flag(flag).unwrap();
-                    
-                        if (notFlag) {
-                            return Either.left("error");
-                        }
-                        
-                        return Either.right("Alex");
-                    }
-                    
-                    public static Either<String, Boolean> flag(boolean flag) {
-                        return Either.right(flag);
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_unary;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> getName(boolean flag) {\n" +
+                "        var notFlag = !flag(flag).unwrap();\n" +
+                "\n" +
+                "        if (notFlag) {\n" +
+                "            return Either.left(\"error\");\n" +
+                "        }\n" +
+                "\n" +
+                "        return Either.right(\"Alex\");\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Either<String, Boolean> flag(boolean flag) {\n" +
+                "        return Either.right(flag);\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_unary/Main.java", source);
 
-        System.out.println(result);
         assertThat(result.isSuccess()).isTrue();
 
         ClassLoader classLoader = result.classLoader();

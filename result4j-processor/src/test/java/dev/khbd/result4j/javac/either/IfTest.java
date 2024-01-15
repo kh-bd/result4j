@@ -16,31 +16,30 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inCondition_failCompilation() {
-        String source = """
-                package cases.if_statement;
-                                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> getName() {
-                        if (random().unwrap().booleanValue()) {
-                            return Either.right("Alex");
-                        } else {
-                            return Either.left("error");
-                        }
-                    }
-                    
-                    public static Either<String, Boolean> random() {
-                        var rnd = new Random();
-                        if (rnd.nextBoolean()) {
-                            return Either.right(rnd.nextBoolean());
-                        }
-                        return Either.left("error");
-                    }
-                }
-                """;
+        String source =
+                "package cases.if_statement;\n" +
+                "\n" +
+                "import java.util.Random;\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> getName() {\n" +
+                "        if (random().unwrap().booleanValue()) {\n" +
+                "            return Either.right(\"Alex\");\n" +
+                "        } else {\n" +
+                "            return Either.left(\"error\");\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Either<String, Boolean> random() {\n" +
+                "        var rnd = new Random();\n" +
+                "        if (rnd.nextBoolean()) {\n" +
+                "            return Either.right(rnd.nextBoolean());\n" +
+                "        }\n" +
+                "        return Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -52,33 +51,32 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inElseIfCondition_failCompilation() {
-        String source = """
-                package cases.if_statement;
-                                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> getName() {
-                        if (false) {
-                            return Either.right("Alex");
-                        } else if (random().unwrap().booleanValue()) {
-                            return Either.right("Sergei");
-                        } else {
-                            return Either.left("error");
-                        }
-                    }
-                    
-                    public static Either<String, Boolean> random() {
-                        var rnd = new Random();
-                        if (rnd.nextBoolean()) {
-                            return Either.right(rnd.nextBoolean());
-                        }
-                        return Either.left("error");
-                    }
-                }
-                """;
+        String source =
+                "package cases.if_statement;\n" +
+                "\n" +
+                "import java.util.Random;\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> getName() {\n" +
+                "        if (false) {\n" +
+                "            return Either.right(\"Alex\");\n" +
+                "        } else if (random().unwrap().booleanValue()) {\n" +
+                "            return Either.right(\"Sergei\");\n" +
+                "        } else {\n" +
+                "            return Either.left(\"error\");\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Either<String, Boolean> random() {\n" +
+                "        var rnd = new Random();\n" +
+                "        if (rnd.nextBoolean()) {\n" +
+                "            return Either.right(rnd.nextBoolean());\n" +
+                "        }\n" +
+                "        return Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -89,26 +87,25 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inThenBlock_success() throws Exception {
-        String source = """
-                package cases.if_statement;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> getName(boolean flag) {
-                        if (flag) {
-                            return Either.right(getName().unwrap().toUpperCase());
-                        } else {
-                            return Either.left("error");
-                        }
-                    }
-                                
-                    public static Either<String, String> getName() {
-                        return Either.right("Alex");
-                    }
-                }
-                """;
+        String source =
+                "package cases.if_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> getName(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Either.right(getName().unwrap().toUpperCase());\n" +
+                "        } else {\n" +
+                "            return Either.left(\"error\");\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Either<String, String> getName() {\n" +
+                "        return Either.right(\"Alex\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -131,26 +128,25 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inElseBlock_success() throws Exception {
-        String source = """
-                package cases.if_statement;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> getName(boolean flag) {
-                        if (flag) {
-                            return Either.left("error");
-                        } else {
-                            return Either.right(getName().unwrap().toUpperCase());
-                        }
-                    }
-                                
-                    public static Either<String, String> getName() {
-                        return Either.right("Alex");
-                    }
-                }
-                """;
+        String source =
+                "package cases.if_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> getName(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Either.left(\"error\");\n" +
+                "        } else {\n" +
+                "            return Either.right(getName().unwrap().toUpperCase());\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Either<String, String> getName() {\n" +
+                "        return Either.right(\"Alex\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -173,23 +169,22 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inThenStatement_success() throws Exception {
-        String source = """
-                package cases.if_statement;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> getName(boolean flag) {
-                        if (flag) return Either.right(getName().unwrap().toUpperCase());
-                        else return Either.left("error");
-                    }
-                                
-                    public static Either<String, String> getName() {
-                        return Either.right("Alex");
-                    }
-                }
-                """;
+        String source =
+                "package cases.if_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> getName(boolean flag) {\n" +
+                "        if (flag) return Either.right(getName().unwrap().toUpperCase());\n" +
+                "        else return Either.left(\"error\");\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Either<String, String> getName() {\n" +
+                "        return Either.right(\"Alex\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -212,23 +207,22 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inElseStatement_success() throws Exception {
-        String source = """
-                package cases.if_statement;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> getName(boolean flag) {
-                        if (flag) return Either.left("error");
-                        else return Either.right(getName().unwrap().toUpperCase());
-                    }
-                                
-                    public static Either<String, String> getName() {
-                        return Either.right("Alex");
-                    }
-                }
-                """;
+        String source =
+                "package cases.if_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> getName(boolean flag) {\n" +
+                "        if (flag) return Either.left(\"error\");\n" +
+                "        else return Either.right(getName().unwrap().toUpperCase());\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Either<String, String> getName() {\n" +
+                "        return Either.right(\"Alex\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 

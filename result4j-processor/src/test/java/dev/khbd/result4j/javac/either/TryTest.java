@@ -16,39 +16,38 @@ public class TryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInResources_failToCompile() {
-        String source = """
-                package cases.try_statement;
-                                
-                import dev.khbd.result4j.core.Either;
-                import java.lang.AutoCloseable;
-                
-                                
-                public class Main {
-                                
-                    public static Either<String, ?> greet(boolean flag) {
-                        try (var name = getName(flag).unwrap()) {
-                            return Either.right(name.name);
-                        }
-                    }
-                    
-                    private static Either<String, Name> getName(boolean flag) {
-                        if (flag) {
-                            return Either.right(new Name("Alex"));
-                        }
-                        return Either.left("error");
-                    }
-                }
-                
-                class Name implements AutoCloseable {
-                    String name;
-                    
-                    Name(String name) {
-                        this.name = name;
-                    }
-                    
-                    public void close() {}
-                }
-                """;
+        String source =
+                "package cases.try_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "import java.lang.AutoCloseable;\n" +
+                "\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, ?> greet(boolean flag) {\n" +
+                "        try (var name = getName(flag).unwrap()) {\n" +
+                "            return Either.right(name.name);\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<String, Name> getName(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Either.right(new Name(\"Alex\"));\n" +
+                "        }\n" +
+                "        return Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n" +
+                "\n" +
+                "class Name implements AutoCloseable {\n" +
+                "    String name;\n" +
+                "\n" +
+                "    Name(String name) {\n" +
+                "        this.name = name;\n" +
+                "    }\n" +
+                "\n" +
+                "    public void close() {}\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/try_statement/Main.java", source);
 
@@ -59,36 +58,34 @@ public class TryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInTryBlock() throws Exception {
-        String source = """
-                package cases.try_statement;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> greet(boolean flag) {
-                        try {
-                            var name = getName(flag).unwrap();
-                            return Either.right(name);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            return Either.left("error");
-                        }
-                    }
-                    
-                    private static Either<String, String> getName(boolean flag) {
-                        if (flag) {
-                            return Either.right("Alex");
-                        }
-                        return Either.left("error");
-                    }
-                }
-                
-                """;
+        String source =
+                "package cases.try_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> greet(boolean flag) {\n" +
+                "        try {\n" +
+                "            var name = getName(flag).unwrap();\n" +
+                "            return Either.right(name);\n" +
+                "        } catch (Exception e) {\n" +
+                "            e.printStackTrace();\n" +
+                "            return Either.left(\"error\");\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<String, String> getName(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Either.right(\"Alex\");\n" +
+                "        }\n" +
+                "        return Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n" +
+                "\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/try_statement/Main.java", source);
 
-        System.out.println(result);
         assertThat(result.isFail()).isFalse();
 
         ClassLoader classLoader = result.classLoader();
@@ -108,34 +105,32 @@ public class TryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInCatchBlock() throws Exception {
-        String source = """
-                package cases.try_statement;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> greet(boolean flag) {
-                        try {
-                            throw new RuntimeException();
-                        } catch (Exception e) {
-                            return Either.right(getName(flag).unwrap());
-                        }
-                    }
-                    
-                    private static Either<String, String> getName(boolean flag) {
-                        if (flag) {
-                            return Either.right("Alex");
-                        }
-                        return Either.left("error");
-                    }
-                }
-                
-                """;
+        String source =
+                "package cases.try_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> greet(boolean flag) {\n" +
+                "        try {\n" +
+                "            throw new RuntimeException();\n" +
+                "        } catch (Exception e) {\n" +
+                "            return Either.right(getName(flag).unwrap());\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<String, String> getName(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Either.right(\"Alex\");\n" +
+                "        }\n" +
+                "        return Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n" +
+                "\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/try_statement/Main.java", source);
 
-        System.out.println(result);
         assertThat(result.isFail()).isFalse();
 
         ClassLoader classLoader = result.classLoader();
@@ -155,31 +150,30 @@ public class TryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInFinallyBlock() throws Exception {
-        String source = """
-                package cases.try_statement;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> greet(boolean flag) {
-                        try {
-                            throw new RuntimeException();
-                        } finally {
-                            var name = getName(flag).unwrap();
-                            return Either.right(name);
-                        }
-                    }
-                    
-                    private static Either<String, String> getName(boolean flag) {
-                        if (flag) {
-                            return Either.right("Alex");
-                        }
-                        return Either.left("error");
-                    }
-                }
-                
-                """;
+        String source =
+                "package cases.try_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> greet(boolean flag) {\n" +
+                "        try {\n" +
+                "            throw new RuntimeException();\n" +
+                "        } finally {\n" +
+                "            var name = getName(flag).unwrap();\n" +
+                "            return Either.right(name);\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<String, String> getName(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Either.right(\"Alex\");\n" +
+                "        }\n" +
+                "        return Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n" +
+                "\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/try_statement/Main.java", source);
 

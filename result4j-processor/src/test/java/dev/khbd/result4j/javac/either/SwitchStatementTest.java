@@ -17,26 +17,25 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInReceiverExpression() throws Exception {
-        String source = """
-                package cases.switch_statement;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, ?> greet(boolean flag) {
-                        switch(toInteger(flag).unwrap()) {
-                            case 1:
-                            default:
-                                return Either.right("Alex");
-                        }
-                    }
-                    
-                    private static Either<String, Integer> toInteger(boolean flag) {
-                        return flag ? Either.right(1) : Either.left("error");
-                    }
-                }
-                """;
+        String source =
+                "package cases.switch_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, ?> greet(boolean flag) {\n" +
+                "        switch(toInteger(flag).unwrap()) {\n" +
+                "            case 1:\n" +
+                "            default:\n" +
+                "                return Either.right(\"Alex\");\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<String, Integer> toInteger(boolean flag) {\n" +
+                "        return flag ? Either.right(1) : Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/switch_statement/Main.java", source);
 
@@ -59,27 +58,26 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLabeledReceiverExpression_fail() {
-        String source = """
-                package cases.switch_statement;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, ?> greet(boolean flag) {
-                        label:
-                        switch(toInteger(flag).unwrap()) {
-                            case 1:
-                            default:
-                                return Either.right("Alex");
-                        }
-                    }
-                    
-                    private static Either<String, Integer> toInteger(boolean flag) {
-                        return flag ? Either.right(1) : Either.left("error");
-                    }
-                }
-                """;
+        String source =
+                "package cases.switch_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, ?> greet(boolean flag) {\n" +
+                "        label:\n" +
+                "        switch(toInteger(flag).unwrap()) {\n" +
+                "            case 1:\n" +
+                "            default:\n" +
+                "                return Either.right(\"Alex\");\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<String, Integer> toInteger(boolean flag) {\n" +
+                "        return flag ? Either.right(1) : Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/labeled/Main.java", source);
 
@@ -90,37 +88,36 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInRuleWithBlock() throws Exception {
-        String source = """
-                package cases.switch_statement;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, ?> greet(boolean flag) {
-                        switch(toInteger(flag)) {
-                            case 1 -> {
-                                var name = getName(flag).unwrap();
-                                return Either.right(name);
-                            }
-                            default -> {
-                                return Either.left("error");
-                            }
-                        }
-                    }
-                    
-                    private static Either<String, String> getName(boolean flag) {
-                        if (flag) {
-                            return Either.right("Alex");
-                        }
-                        return Either.left("error");
-                    }
-                    
-                    private static int toInteger(boolean flag) {
-                        return flag ? 1 : 0;
-                    }
-                }
-                """;
+        String source =
+                "package cases.switch_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, ?> greet(boolean flag) {\n" +
+                "        switch(toInteger(flag)) {\n" +
+                "            case 1 -> {\n" +
+                "                var name = getName(flag).unwrap();\n" +
+                "                return Either.right(name);\n" +
+                "            }\n" +
+                "            default -> {\n" +
+                "                return Either.left(\"error\");\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<String, String> getName(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Either.right(\"Alex\");\n" +
+                "        }\n" +
+                "        return Either.left(\"error\");\n" +
+                "    }\n" +
+                "\n" +
+                "    private static int toInteger(boolean flag) {\n" +
+                "        return flag ? 1 : 0;\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/switch_statement/Main.java", source);
 
@@ -143,34 +140,33 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInRuleWithOneStatement() throws Exception {
-        String source = """
-                package cases.switch_statement;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, ?> greet(boolean flag) {
-                        switch(toInteger(flag)) {
-                            case 1 -> throw error(flag).unwrap();
-                            default -> {
-                                return Either.left("error");
-                            }
-                        }
-                    }
-                    
-                    private static Either<String, RuntimeException> error(boolean flag) {
-                        if (flag) {
-                            return Either.right(new RuntimeException("Alex"));
-                        }
-                        return Either.left("error");
-                    }
-                    
-                    private static int toInteger(boolean flag) {
-                        return flag ? 1 : 0;
-                    }
-                }
-                """;
+        String source =
+                "package cases.switch_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, ?> greet(boolean flag) {\n" +
+                "        switch(toInteger(flag)) {\n" +
+                "            case 1 -> throw error(flag).unwrap();\n" +
+                "            default -> {\n" +
+                "                return Either.left(\"error\");\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<String, RuntimeException> error(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Either.right(new RuntimeException(\"Alex\"));\n" +
+                "        }\n" +
+                "        return Either.left(\"error\");\n" +
+                "    }\n" +
+                "\n" +
+                "    private static int toInteger(boolean flag) {\n" +
+                "        return flag ? 1 : 0;\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/switch_statement/Main.java", source);
 
@@ -195,35 +191,34 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInStatementCaseWithoutBlock() throws Exception {
-        String source = """
-                package cases.switch_statement;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, ?> greet(boolean flag) {
-                        switch(toInteger(flag)) {
-                            case 1:
-                                var name1 = getName(flag).unwrap();
-                                return Either.right(name1);
-                            default:
-                                return Either.left("error");
-                        }
-                    }
-                    
-                    private static Either<String, String> getName(boolean flag) {
-                        if (flag) {
-                            return Either.right("Alex");
-                        }
-                        return Either.left("error");
-                    }
-                    
-                    private static int toInteger(boolean flag) {
-                        return flag ? 1 : 0;
-                    }
-                }
-                """;
+        String source =
+                "package cases.switch_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, ?> greet(boolean flag) {\n" +
+                "        switch(toInteger(flag)) {\n" +
+                "            case 1:\n" +
+                "                var name1 = getName(flag).unwrap();\n" +
+                "                return Either.right(name1);\n" +
+                "            default:\n" +
+                "                return Either.left(\"error\");\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<String, String> getName(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Either.right(\"Alex\");\n" +
+                "        }\n" +
+                "        return Either.left(\"error\");\n" +
+                "    }\n" +
+                "\n" +
+                "    private static int toInteger(boolean flag) {\n" +
+                "        return flag ? 1 : 0;\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/switch_statement/Main.java", source);
 
@@ -246,34 +241,33 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInCaseStatementWithoutBlock() throws Exception {
-        String source = """
-                package cases.switch_statement;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, ?> greet(boolean flag) {
-                        switch(toInteger(flag)) {
-                            case 1:
-                                return Either.right(getName(flag).unwrap());
-                            default:
-                                return Either.left("error");
-                        }
-                    }
-                    
-                    private static Either<String, String> getName(boolean flag) {
-                        if (flag) {
-                            return Either.right("Alex");
-                        }
-                        return Either.left("error");
-                    }
-                    
-                    private static int toInteger(boolean flag) {
-                        return flag ? 1 : 0;
-                    }
-                }
-                """;
+        String source =
+                "package cases.switch_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, ?> greet(boolean flag) {\n" +
+                "        switch(toInteger(flag)) {\n" +
+                "            case 1:\n" +
+                "                return Either.right(getName(flag).unwrap());\n" +
+                "            default:\n" +
+                "                return Either.left(\"error\");\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<String, String> getName(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Either.right(\"Alex\");\n" +
+                "        }\n" +
+                "        return Either.left(\"error\");\n" +
+                "    }\n" +
+                "\n" +
+                "    private static int toInteger(boolean flag) {\n" +
+                "        return flag ? 1 : 0;\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/switch_statement/Main.java", source);
 
@@ -296,36 +290,35 @@ public class SwitchStatementTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInStatementCaseWithBlock() throws Exception {
-        String source = """
-                package cases.switch_statement;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, ?> greet(boolean flag) {
-                        switch(toInteger(flag)) {
-                            case 1: {
-                                var name1 = getName(flag).unwrap();
-                                return Either.right(name1);
-                            }
-                            default:
-                                return Either.left("error");
-                        }
-                    }
-                    
-                    private static Either<String, String> getName(boolean flag) {
-                        if (flag) {
-                            return Either.right("Alex");
-                        }
-                        return Either.left("error");
-                    }
-                    
-                    private static int toInteger(boolean flag) {
-                        return flag ? 1 : 0;
-                    }
-                }
-                """;
+        String source =
+                "package cases.switch_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, ?> greet(boolean flag) {\n" +
+                "        switch(toInteger(flag)) {\n" +
+                "            case 1: {\n" +
+                "                var name1 = getName(flag).unwrap();\n" +
+                "                return Either.right(name1);\n" +
+                "            }\n" +
+                "            default:\n" +
+                "                return Either.left(\"error\");\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<String, String> getName(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Either.right(\"Alex\");\n" +
+                "        }\n" +
+                "        return Either.left(\"error\");\n" +
+                "    }\n" +
+                "\n" +
+                "    private static int toInteger(boolean flag) {\n" +
+                "        return flag ? 1 : 0;\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/switch_statement/Main.java", source);
 

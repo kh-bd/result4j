@@ -16,25 +16,24 @@ public class ReturnTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInReturn_propagate() throws Exception {
-        String source = """
-                package cases.in_return;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<RuntimeException, String> greet(int index) {
-                        return Either.right(name(index).unwrap());
-                    }
-                                
-                    private static Either<RuntimeException, String> name(int index) {
-                        if (index == 0) {
-                            return Either.left(new RuntimeException("error"));
-                        }
-                        return Either.right(index < 0 ? "Alex" : "Sergei");
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_return;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<RuntimeException, String> greet(int index) {\n" +
+                "        return Either.right(name(index).unwrap());\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<RuntimeException, String> name(int index) {\n" +
+                "        if (index == 0) {\n" +
+                "            return Either.left(new RuntimeException(\"error\"));\n" +
+                "        }\n" +
+                "        return Either.right(index < 0 ? \"Alex\" : \"Sergei\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_return/Main.java", source);
 
@@ -63,26 +62,25 @@ public class ReturnTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLabeledReturn_propagate() {
-        String source = """
-                package cases.in_return;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<RuntimeException, String> greet(int index) {
-                        label:
-                        return Either.right(name(index).unwrap());
-                    }
-                                
-                    private static Either<RuntimeException, String> name(int index) {
-                        if (index == 0) {
-                            return Either.left(new RuntimeException("error"));
-                        }
-                        return Either.right(index < 0 ? "Alex" : "Sergei");
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_return;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<RuntimeException, String> greet(int index) {\n" +
+                "        label:\n" +
+                "        return Either.right(name(index).unwrap());\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<RuntimeException, String> name(int index) {\n" +
+                "        if (index == 0) {\n" +
+                "            return Either.left(new RuntimeException(\"error\"));\n" +
+                "        }\n" +
+                "        return Either.right(index < 0 ? \"Alex\" : \"Sergei\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_return/Main.java", source);
 

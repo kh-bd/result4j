@@ -16,27 +16,26 @@ public class ExpressionStatementTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallOnExpressionStatement_propagate() throws Exception {
-        String source = """
-                package cases.expression_statement;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> greet(int index) {
-                        // result is ignored
-                        name(index).unwrap();
-                        return Either.right("Alex");
-                    }
-                                
-                    private static Either<String, String> name(int index) {
-                        if (index == 0) {
-                            return Either.left("error");
-                        }
-                        return Either.right("Sergei");
-                    }
-                }
-                """;
+        String source =
+                "package cases.expression_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> greet(int index) {\n" +
+                "        // result is ignored\n" +
+                "        name(index).unwrap();\n" +
+                "        return Either.right(\"Alex\");\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<String, String> name(int index) {\n" +
+                "        if (index == 0) {\n" +
+                "            return Either.left(\"error\");\n" +
+                "        }\n" +
+                "        return Either.right(\"Sergei\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/expression_statement/Main.java", source);
 
@@ -59,28 +58,27 @@ public class ExpressionStatementTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallOnLabeledExpressionStatement_fail() {
-        String source = """
-                package cases.expression_statement;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> greet(int index) {
-                        // result is ignored
-                        label:
-                        name(index).unwrap();
-                        return Either.right("Alex");
-                    }
-                                
-                    private static Either<String, String> name(int index) {
-                        if (index == 0) {
-                            return Either.left("error");
-                        }
-                        return Either.right("Sergei");
-                    }
-                }
-                """;
+        String source =
+                "package cases.expression_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> greet(int index) {\n" +
+                "        // result is ignored\n" +
+                "        label:\n" +
+                "        name(index).unwrap();\n" +
+                "        return Either.right(\"Alex\");\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<String, String> name(int index) {\n" +
+                "        if (index == 0) {\n" +
+                "            return Either.left(\"error\");\n" +
+                "        }\n" +
+                "        return Either.right(\"Sergei\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/expression_statement/Main.java", source);
 

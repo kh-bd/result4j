@@ -16,25 +16,24 @@ public class SynchronizedBlockTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInBlock() throws Exception {
-        String source = """
-                package cases.sync_block;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> greet(boolean flag) {
-                        synchronized (Main.class) {
-                            var name = getName(flag).unwrap();
-                            return Either.right(name.toUpperCase());
-                        }
-                    }
-                    
-                    private static Either<String, String> getName(boolean flag) {
-                        return flag ? Either.right("Alex") : Either.left("error");
-                    }
-                }
-                """;
+        String source =
+                "package cases.sync_block;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> greet(boolean flag) {\n" +
+                "        synchronized (Main.class) {\n" +
+                "            var name = getName(flag).unwrap();\n" +
+                "            return Either.right(name.toUpperCase());\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<String, String> getName(boolean flag) {\n" +
+                "        return flag ? Either.right(\"Alex\") : Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/sync_block/Main.java", source);
 
@@ -57,28 +56,26 @@ public class SynchronizedBlockTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInSyncExpression() throws Exception {
-        String source = """
-                package cases.sync_block;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> greet(boolean flag) {
-                        synchronized (getName(flag).unwrap()) {
-                            return Either.left("error");
-                        }
-                    }
-                    
-                    private static Either<String, String> getName(boolean flag) {
-                        return flag ? Either.right("Alex") : Either.left("error");
-                    }
-                }
-                """;
+        String source =
+                "package cases.sync_block;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> greet(boolean flag) {\n" +
+                "        synchronized (getName(flag).unwrap()) {\n" +
+                "            return Either.left(\"error\");\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<String, String> getName(boolean flag) {\n" +
+                "        return flag ? Either.right(\"Alex\") : Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/sync_block/Main.java", source);
 
-        System.out.println(result);
         assertThat(result.isSuccess()).isTrue();
 
         ClassLoader classLoader = result.classLoader();
@@ -93,25 +90,24 @@ public class SynchronizedBlockTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLabeledSyncExpression() {
-        String source = """
-                package cases.sync_block;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> greet(boolean flag) {
-                        label:
-                        synchronized (getName(flag).unwrap()) {
-                            return Either.left("error");
-                        }
-                    }
-                    
-                    private static Either<String, String> getName(boolean flag) {
-                        return flag ? Either.right("Alex") : Either.left("error");
-                    }
-                }
-                """;
+        String source =
+                "package cases.sync_block;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> greet(boolean flag) {\n" +
+                "        label:\n" +
+                "        synchronized (getName(flag).unwrap()) {\n" +
+                "            return Either.left(\"error\");\n" +
+                "        }\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<String, String> getName(boolean flag) {\n" +
+                "        return flag ? Either.right(\"Alex\") : Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/sync_block/Main.java", source);
 

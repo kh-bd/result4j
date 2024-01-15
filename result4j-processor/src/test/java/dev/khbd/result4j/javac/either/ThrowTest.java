@@ -18,29 +18,27 @@ public class ThrowTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInThrowExpression() throws Exception {
-        String source = """
-                package cases.throw_statement;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, ?> greet(boolean flag) {
-                        throw createThrow(flag).unwrap();
-                    }
-                                
-                    private static Either<String, RuntimeException> createThrow(boolean flag) {
-                        if (flag) {
-                            return Either.right(new RuntimeException());
-                        }
-                        return Either.left("error");
-                    }
-                }
-                """;
+        String source =
+                "package cases.throw_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, ?> greet(boolean flag) {\n" +
+                "        throw createThrow(flag).unwrap();\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<String, RuntimeException> createThrow(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Either.right(new RuntimeException());\n" +
+                "        }\n" +
+                "        return Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/throw_statement/Main.java", source);
 
-        System.out.println(result);
         assertThat(result.isSuccess()).isTrue();
 
         ClassLoader classLoader = result.classLoader();
@@ -60,26 +58,25 @@ public class ThrowTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLabeledThrowExpression() {
-        String source = """
-                package cases.throw_statement;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, ?> greet(boolean flag) {
-                        label:
-                        throw createThrow(flag).unwrap();
-                    }
-                                
-                    private static Either<String, RuntimeException> createThrow(boolean flag) {
-                        if (flag) {
-                            return Either.right(new RuntimeException());
-                        }
-                        return Either.left("error");
-                    }
-                }
-                """;
+        String source =
+                "package cases.throw_statement;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, ?> greet(boolean flag) {\n" +
+                "        label:\n" +
+                "        throw createThrow(flag).unwrap();\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<String, RuntimeException> createThrow(boolean flag) {\n" +
+                "        if (flag) {\n" +
+                "            return Either.right(new RuntimeException());\n" +
+                "        }\n" +
+                "        return Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/throw_statement/Main.java", source);
 

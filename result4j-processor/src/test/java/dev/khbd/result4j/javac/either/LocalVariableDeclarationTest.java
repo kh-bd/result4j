@@ -15,26 +15,25 @@ public class LocalVariableDeclarationTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapOnLocalVarInitExpression_propagate() throws Exception {
-        String source = """
-                package cases.local_variable_declaration;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<Exception, String> greet(int index) {
-                        var name = name(index).unwrap();
-                        return Either.right(name.toUpperCase());
-                    }
-                                
-                    private static Either<Exception, String> name(int index) {
-                        if (index == 0) {
-                            return Either.left(new RuntimeException("ERROR"));
-                        }
-                        return Either.right(index < 0 ? "Alex" : "Sergei");
-                    }
-                }
-                """;
+        String source =
+                "package cases.local_variable_declaration;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<Exception, String> greet(int index) {\n" +
+                "        var name = name(index).unwrap();\n" +
+                "        return Either.right(name.toUpperCase());\n" +
+                "    }\n" +
+                "\n" +
+                "    private static Either<Exception, String> name(int index) {\n" +
+                "        if (index == 0) {\n" +
+                "            return Either.left(new RuntimeException(\"ERROR\"));\n" +
+                "        }\n" +
+                "        return Either.right(index < 0 ? \"Alex\" : \"Sergei\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/local_variable_declaration/Main.java", source);
 

@@ -14,27 +14,26 @@ public class ConditionalExpressionTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInCondition_failCompilation() {
-        String source = """
-                package cases.conditional_expression;
-                                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> getName() {
-                        return random().unwrap() ? Either.right("Alex") : Either.right("Sergei");
-                    }
-                    
-                    public static Either<String, Boolean> random() {
-                        var rnd = new Random();
-                        if (rnd.nextBoolean()) {
-                            return Either.right(rnd.nextBoolean());
-                        }
-                        return Either.left("error");
-                    }
-                }
-                """;
+        String source =
+                "package cases.conditional_expression;\n" +
+                "\n" +
+                "import java.util.Random;\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> getName() {\n" +
+                "        return random().unwrap() ? Either.right(\"Alex\") : Either.right(\"Sergei\");\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Either<String, Boolean> random() {\n" +
+                "        var rnd = new Random();\n" +
+                "        if (rnd.nextBoolean()) {\n" +
+                "            return Either.right(rnd.nextBoolean());\n" +
+                "        }\n" +
+                "        return Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/conditional_expression/Main.java", source);
 
@@ -45,28 +44,27 @@ public class ConditionalExpressionTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInThen_failCompilation() {
-        String source = """
-                package cases.conditional_expression;
-                                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> getName() {
-                        return condition() ? Either.right(nameInternal().unwrap().toUpperCase()) : Either.left("error");
-                    }
-                    
-                    public static boolean condition() {
-                        var rnd = new Random();
-                        return rnd.nextBoolean();
-                    }
-                    
-                    public static Either<String, String> nameInternal() {
-                        return Either.right("Alex");
-                    }
-                }
-                """;
+        String source =
+                "package cases.conditional_expression;\n" +
+                "\n" +
+                "import java.util.Random;\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> getName() {\n" +
+                "        return condition() ? Either.right(nameInternal().unwrap().toUpperCase()) : Either.left(\"error\");\n" +
+                "    }\n" +
+                "\n" +
+                "    public static boolean condition() {\n" +
+                "        var rnd = new Random();\n" +
+                "        return rnd.nextBoolean();\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Either<String, String> nameInternal() {\n" +
+                "        return Either.right(\"Alex\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/conditional_expression/Main.java", source);
 
@@ -77,28 +75,27 @@ public class ConditionalExpressionTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInElse_failCompilation() {
-        String source = """
-                package cases.conditional_expression;
-                                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, String> getName() {
-                        return condition() ?  Option.none() : Either.right(nameInternal().unwrap().toUpperCase());
-                    }
-                    
-                    public static boolean condition() {
-                        var rnd = new Random();
-                        return rnd.nextBoolean();
-                    }
-                    
-                    public static Either<String, String> nameInternal() {
-                        return Either.right("Alex");
-                    }
-                }
-                """;
+        String source =
+                "package cases.conditional_expression;\n" +
+                "\n" +
+                "import java.util.Random;\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, String> getName() {\n" +
+                "        return condition() ?  Option.none() : Either.right(nameInternal().unwrap().toUpperCase());\n" +
+                "    }\n" +
+                "\n" +
+                "    public static boolean condition() {\n" +
+                "        var rnd = new Random();\n" +
+                "        return rnd.nextBoolean();\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Either<String, String> nameInternal() {\n" +
+                "        return Either.right(\"Alex\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/conditional_expression/Main.java", source);
 

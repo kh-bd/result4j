@@ -15,23 +15,22 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inBinaryBoth() throws Exception {
-        String source = """
-                package cases.in_binary;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, Integer> getSum(boolean flag1, boolean flag2) {
-                        var result = getInt(flag1).unwrap() + getInt(flag2).unwrap();
-                        return Either.right(result);
-                    }
-                    
-                    public static Either<String, Integer> getInt(boolean flag) {
-                        return flag ? Either.right(10) : Either.left("error");
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_binary;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, Integer> getSum(boolean flag1, boolean flag2) {\n" +
+                "        var result = getInt(flag1).unwrap() + getInt(flag2).unwrap();\n" +
+                "        return Either.right(result);\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Either<String, Integer> getInt(boolean flag) {\n" +
+                "        return flag ? Either.right(10) : Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 
@@ -62,23 +61,22 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inBinaryLeft() throws Exception {
-        String source = """
-                package cases.in_binary;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, Integer> getSum(boolean flag) {
-                        var result = getInt(flag).unwrap() + 1;
-                        return Either.right(result);
-                    }
-                    
-                    public static Either<String, Integer> getInt(boolean flag) {
-                        return flag ? Either.right(10) : Either.left("error");
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_binary;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, Integer> getSum(boolean flag) {\n" +
+                "        var result = getInt(flag).unwrap() + 1;\n" +
+                "        return Either.right(result);\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Either<String, Integer> getInt(boolean flag) {\n" +
+                "        return flag ? Either.right(10) : Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 
@@ -101,23 +99,22 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inBinaryRight() throws Exception {
-        String source = """
-                package cases.in_binary;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, Integer> getSum(boolean flag) {
-                        var result = 1 + getInt(flag).unwrap();
-                        return Either.right(result);
-                    }
-                    
-                    public static Either<String, Integer> getInt(boolean flag) {
-                        return flag ? Either.right(10) : Either.left("error");
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_binary;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, Integer> getSum(boolean flag) {\n" +
+                "        var result = 1 + getInt(flag).unwrap();\n" +
+                "        return Either.right(result);\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Either<String, Integer> getInt(boolean flag) {\n" +
+                "        return flag ? Either.right(10) : Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 
@@ -140,23 +137,22 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inComplexBinary() throws Exception {
-        String source = """
-                package cases.in_binary;
-                                
-                import dev.khbd.result4j.core.Either;
-                                
-                public class Main {
-                                
-                    public static Either<String, Integer> getSum(boolean flag) {
-                        var result = (getInt(flag).unwrap() + getInt(flag).unwrap()) + getInt(flag).unwrap();
-                        return Either.right(result);
-                    }
-                    
-                    public static Either<String, Integer> getInt(boolean flag) {
-                        return flag ? Either.right(10) : Either.left("error");
-                    }
-                }
-                """;
+        String source =
+                "package cases.in_binary;\n" +
+                "\n" +
+                "import dev.khbd.result4j.core.Either;\n" +
+                "\n" +
+                "public class Main {\n" +
+                "\n" +
+                "    public static Either<String, Integer> getSum(boolean flag) {\n" +
+                "        var result = (getInt(flag).unwrap() + getInt(flag).unwrap()) + getInt(flag).unwrap();\n" +
+                "        return Either.right(result);\n" +
+                "    }\n" +
+                "\n" +
+                "    public static Either<String, Integer> getInt(boolean flag) {\n" +
+                "        return flag ? Either.right(10) : Either.left(\"error\");\n" +
+                "    }\n" +
+                "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 

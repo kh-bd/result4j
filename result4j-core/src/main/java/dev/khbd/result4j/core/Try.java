@@ -319,7 +319,7 @@ public interface Try<V> {
      *
      * @param code code to run
      */
-    static Try<?> of(@NonNull Runnable code) {
+    static Try<NoData> of(@NonNull Runnable code) {
         return of(() -> {
             code.run();
             return NoData.INSTANCE;

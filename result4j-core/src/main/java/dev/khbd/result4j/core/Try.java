@@ -181,6 +181,13 @@ public interface Try<V> {
     }
 
     /**
+     * Drop value.
+     */
+    default Try<NoData> drop() {
+        return map(__ -> NoData.INSTANCE);
+    }
+
+    /**
      * If a value is present, invoke the specified consumer with the value,
      * otherwise do nothing.
      *

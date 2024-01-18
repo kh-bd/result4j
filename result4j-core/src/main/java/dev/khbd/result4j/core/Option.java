@@ -137,6 +137,13 @@ public interface Option<V> {
     }
 
     /**
+     * Drop value.
+     */
+    default Option<NoData> drop() {
+        return map(__ -> NoData.INSTANCE);
+    }
+
+    /**
      * Convert option instance to stream.
      */
     default Stream<V> toStream() {

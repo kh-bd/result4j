@@ -21,6 +21,66 @@ import java.util.stream.Stream;
 public class EitherTest {
 
     @Test
+    public void drop_valueIsLeft_returnSame() {
+        Either<String, Object> value = Either.left("error");
+
+        Either<String, NoData> result = value.drop();
+
+        assertThat(result.isLeft()).isTrue();
+        assertThat(result.getLeft()).isEqualTo("error");
+    }
+
+    @Test
+    public void drop_valueIsRight_dropValue() {
+        Either<Object, String> value = Either.right("Alex");
+
+        Either<Object, NoData> result = value.drop();
+
+        assertThat(result.isRight()).isTrue();
+        assertThat(result.getRight()).isEqualTo(NoData.INSTANCE);
+    }
+
+    @Test
+    public void dropRight_valueIsLeft_returnSame() {
+        Either<String, Object> value = Either.left("error");
+
+        Either<String, NoData> result = value.dropRight();
+
+        assertThat(result.isLeft()).isTrue();
+        assertThat(result.getLeft()).isEqualTo("error");
+    }
+
+    @Test
+    public void dropRight_valueIsRight_dropValue() {
+        Either<Object, String> value = Either.right("Alex");
+
+        Either<Object, NoData> result = value.dropRight();
+
+        assertThat(result.isRight()).isTrue();
+        assertThat(result.getRight()).isEqualTo(NoData.INSTANCE);
+    }
+
+    @Test
+    public void dropLeft_valueIsLeft_dropLeftValue() {
+        Either<String, Object> value = Either.left("error");
+
+        Either<NoData, Object> result = value.dropLeft();
+
+        assertThat(result.isLeft()).isTrue();
+        assertThat(result.getLeft()).isEqualTo(NoData.INSTANCE);
+    }
+
+    @Test
+    public void dropLeft_valueIsRight_returnSame() {
+        Either<Object, String> value = Either.right("Alex");
+
+        Either<NoData, String> result = value.dropLeft();
+
+        assertThat(result.isRight()).isTrue();
+        assertThat(result.getRight()).isEqualTo("Alex");
+    }
+
+    @Test
     public void toLeftStream_eitherIsLeft_returnOneElementStream() {
         Either<String, Integer> either = Either.left("ops");
 

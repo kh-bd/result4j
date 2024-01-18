@@ -58,6 +58,27 @@ public interface Either<L, R> {
     Stream<L> leftToStream();
 
     /**
+     * Drop right value.
+     */
+    default Either<L, NoData> drop() {
+        return dropRight();
+    }
+
+    /**
+     * Drop right value.
+     */
+    default Either<L, NoData> dropRight() {
+        return map(__ -> NoData.INSTANCE);
+    }
+
+    /**
+     * Drop left value.
+     */
+    default Either<NoData, R> dropLeft() {
+        return mapLeft(__ -> NoData.INSTANCE);
+    }
+
+    /**
      * Convert to option based on right value.
      */
     default Option<R> toOption() {

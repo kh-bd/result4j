@@ -11,7 +11,6 @@ import static org.mockito.Mockito.verify;
 import org.testng.annotations.Test;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -118,15 +117,15 @@ public class EitherTest {
 
     @Test
     public void fromOption_valueIsEmpty_returnLeft() {
-        Either<NoSuchElementException, String> either = Either.fromOption(Option.none());
+        Either<String, String> either = Either.fromOption(Option.none(), () -> "Option is empty");
 
         assertThat(either.isLeft()).isTrue();
-        assertThat(either.getLeft()).hasMessage("Option is empty");
+        assertThat(either.getLeft()).isEqualTo("Option is empty");
     }
 
     @Test
     public void fromOption_valueIsNotEmpty_returnRight() {
-        Either<NoSuchElementException, String> either = Either.fromOption(Option.some("hello"));
+        Either<String, String> either = Either.fromOption(Option.some("hello"), () -> "Option is empty");
 
         assertThat(either.isRight()).isTrue();
         assertThat(either.getRight()).isEqualTo("hello");
@@ -134,16 +133,15 @@ public class EitherTest {
 
     @Test
     public void fromNullable_valueIsNull_returnLeft() {
-        Either<NullPointerException, String> either = Either.fromNullable(null);
+        Either<String, String> either = Either.fromNullable(null, () -> "Element is null");
 
         assertThat(either.isLeft()).isTrue();
-        assertThat(either.getLeft()).isInstanceOf(NullPointerException.class)
-                .hasMessage("Element is null");
+        assertThat(either.getLeft()).isEqualTo("Element is null");
     }
 
     @Test
     public void fromNullable_valueIsNotNull_returnRight() {
-        Either<NullPointerException, String> either = Either.fromNullable("hello");
+        Either<String, String> either = Either.fromNullable("hello", () -> "element is null");
 
         assertThat(either.isRight()).isTrue();
         assertThat(either.getRight()).isEqualTo("hello");

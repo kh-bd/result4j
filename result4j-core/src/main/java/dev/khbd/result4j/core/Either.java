@@ -8,7 +8,6 @@ import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -698,70 +697,82 @@ public interface Either<L, R> {
      * Factory method to create either from element which may be null.
      *
      * @param right right value
+     * @param leftF default left value provider
+     * @param <L>   left value type
      * @param <R>   right value type
      * @return evaluated either
      */
-    static <R> Either<NullPointerException, R> fromNullable(R right) {
-        return rightFromNullable(right);
+    static <L, R> Either<L, R> fromNullable(R right, Supplier<L> leftF) {
+        return rightFromNullable(right, leftF);
     }
 
     /**
      * Factory method to create either from element which may be null.
      *
      * @param right right value
+     * @param leftF default left value provider
+     * @param <L>   left value type
      * @param <R>   right value type
      * @return evaluated either
      */
-    static <R> Either<NullPointerException, R> rightFromNullable(R right) {
-        return Objects.nonNull(right) ? Either.right(right) : Either.left(new NullPointerException("Element is null"));
+    static <L, R> Either<L, R> rightFromNullable(R right, Supplier<L> leftF) {
+        return Objects.nonNull(right) ? Either.right(right) : Either.left(leftF.get());
     }
 
     /**
      * Factory method to create either from element which may be null.
      *
-     * @param left left value
-     * @param <L>  left value type
+     * @param left   left value
+     * @param rightF default right value provider
+     * @param <L>    left value type
+     * @param <R>    right value type
      * @return evaluated either
      */
-    static <L> Either<L, NullPointerException> leftFromNullable(L left) {
-        return Objects.nonNull(left) ? Either.left(left) : Either.right(new NullPointerException("Element is null"));
+    static <L, R> Either<L, R> leftFromNullable(L left, Supplier<R> rightF) {
+        return Objects.nonNull(left) ? Either.left(left) : Either.right(rightF.get());
     }
 
     /**
      * Factory method to create either from option element.
      *
      * @param right right value
+     * @param leftF default left value producer
+     * @param <L>   left value type
      * @param <R>   right value type
      * @return evaluated either
      */
-    static <R> Either<NoSuchElementException, R> fromOption(Option<R> right) {
-        return rightFromOption(right);
+    static <L, R> Either<L, R> fromOption(Option<R> right, Supplier<L> leftF) {
+        return rightFromOption(right, leftF);
     }
 
     /**
      * Factory method to create either from option element.
      *
      * @param right right value
+     * @param leftF default left value producer
+     * @param <L>   left value type
      * @param <R>   right value type
      * @return evaluated either
      */
-    static <R> Either<NoSuchElementException, R> rightFromOption(Option<R> right) {
+    static <L, R> Either<L, R> rightFromOption(Option<R> right, Supplier<L> leftF) {
         return right
-                .map(Either::<NoSuchElementException, R>right)
-                .getOrElse(() -> Either.left(new NoSuchElementException("Option is empty")));
+                .map(Either::<L, R>right)
+                .getOrElse(() -> Either.left(leftF.get()));
     }
 
     /**
      * Factory method to create either from option element.
      *
-     * @param left left value
-     * @param <L>  right value type
+     * @param left   left value
+     * @param rightF default right value producer
+     * @param <L>    left value type
+     * @param <L>    right value type
      * @return evaluated either
      */
-    static <L> Either<L, NoSuchElementException> leftFromOption(Option<L> left) {
+    static <L, R> Either<L, R> leftFromOption(Option<L> left, Supplier<R> rightF) {
         return left
-                .map(Either::<L, NoSuchElementException>left)
-                .getOrElse(() -> Either.right(new NoSuchElementException("Option is empty")));
+                .map(Either::<L, R>left)
+                .getOrElse(() -> Either.right(rightF.get()));
     }
 
     /**

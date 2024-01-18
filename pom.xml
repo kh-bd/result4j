@@ -122,7 +122,6 @@
                     <source>21</source>
                     <fork>true</fork>
                     <compilerArgs>
-                        <arg>--enable-preview</arg>
                         <arg>--add-exports=${open.tree}</arg>
                         <arg>--add-exports=${open.util}</arg>
                         <arg>--add-exports=${open.api}</arg>
@@ -184,7 +183,6 @@
                         <configuration>
                             <source>21</source>
                             <additionalJOptions>
-                                <additionalJOption>--enable-preview</additionalJOption>
                                 <additionalJOption>--add-exports</additionalJOption>
                                 <additionalJOption>${open.tree}</additionalJOption>
                                 <additionalJOption>--add-exports</additionalJOption>

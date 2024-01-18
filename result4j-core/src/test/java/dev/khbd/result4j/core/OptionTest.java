@@ -15,6 +15,25 @@ import java.util.stream.Stream;
 public class OptionTest {
 
     @Test
+    public void drop_valueIsEmpty_returnEmpty() {
+        Option<Object> value = Option.none();
+
+        Option<NoData> result = value.drop();
+
+        assertThat(result.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void drop_valueIsNotEmpty_returnNotEmptyWithNoData() {
+        Option<String> value = Option.some("Alex");
+
+        Option<NoData> result = value.drop();
+
+        assertThat(result.isEmpty()).isFalse();
+        assertThat(result.get()).isEqualTo(NoData.INSTANCE);
+    }
+
+    @Test
     public void isEmpty_optionIsNone_returnTrue() {
         boolean result = Option.none().isEmpty();
 

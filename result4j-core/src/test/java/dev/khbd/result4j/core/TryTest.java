@@ -23,6 +23,27 @@ import java.util.stream.Stream;
 public class TryTest {
 
     @Test
+    public void drop_valueIsLeft_returnSame() {
+        Try<String> value = Try.failure(new RuntimeException("error"));
+
+        Try<NoData> result = value.drop();
+
+        assertThat(result.isFailure()).isTrue();
+        assertThat(result.getError()).isInstanceOf(RuntimeException.class)
+                .hasMessage("error");
+    }
+
+    @Test
+    public void drop_valueIsRight_returnRightWithoutData() {
+        Try<String> value = Try.success("helloe");
+
+        Try<NoData> result = value.drop();
+
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.get()).isEqualTo(NoData.INSTANCE);
+    }
+
+    @Test
     public void orElse_valueIsSuccess_returnIt() {
         Try<String> value = Try.success("hello").orElse(Throwable::getMessage);
 

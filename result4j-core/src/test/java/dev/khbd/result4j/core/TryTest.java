@@ -180,7 +180,7 @@ public class TryTest {
 
     @Test
     public void of_codeReturnNull_throwNPE() {
-        Try<?> tr = Try.of(() -> null);
+        Try<NoData> tr = Try.of(() -> null);
 
         assertThat(tr.getError()).isInstanceOf(NullPointerException.class);
     }

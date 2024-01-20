@@ -18,6 +18,7 @@ import com.sun.source.tree.ThrowTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.UnaryTree;
 import com.sun.source.tree.VariableTree;
+import com.sun.source.util.SimpleTreeVisitor;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.List;
@@ -32,7 +33,7 @@ import java.util.function.Consumer;
  * @author Sergei Khadanovich
  */
 @RequiredArgsConstructor
-class UnwrapCallSearcher implements EmptyTreeVisitor<UnwrapCallLens, Object> {
+class UnwrapCallSearcher extends SimpleTreeVisitor<UnwrapCallLens, Object> {
 
     private final Symbol type;
 
@@ -210,7 +211,7 @@ class UnwrapCallSearcher implements EmptyTreeVisitor<UnwrapCallLens, Object> {
 
         UnwrapCallLens lens = visitExpressions(jcNew.dims, replacement -> jcNew.dims = replacement, o);
         if (Objects.nonNull(lens)) {
-           return lens;
+            return lens;
         }
 
         return visitExpressions(jcNew.elems, replacement -> jcNew.elems = replacement, o);
@@ -242,8 +243,7 @@ class UnwrapCallSearcher implements EmptyTreeVisitor<UnwrapCallLens, Object> {
         return visit(node.getExpression(), o);
     }
 
-    @Override
-    public UnwrapCallLens reduce(UnwrapCallLens r1, UnwrapCallLens r2) {
+    private UnwrapCallLens reduce(UnwrapCallLens r1, UnwrapCallLens r2) {
         return Objects.nonNull(r1) ? r1 : r2;
     }
 

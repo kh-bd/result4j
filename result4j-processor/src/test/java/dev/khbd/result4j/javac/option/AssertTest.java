@@ -40,7 +40,6 @@ public class AssertTest extends AbstractPluginTest {
         assertThat(result.isFail()).isTrue();
         assertThat(result.getErrors()).extracting(Diagnostic::toString)
                 .anyMatch(msg -> msg.contains(" Unsupported position for unwrap method call"));
-
     }
 
     @Test

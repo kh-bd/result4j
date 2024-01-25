@@ -749,6 +749,19 @@ public interface Either<L, R> {
      * Factory method to create either from option element.
      *
      * @param right right value
+     * @param left  default left value
+     * @param <L>   left value type
+     * @param <R>   right value type
+     * @return evaluated either
+     */
+    static <L, R> Either<L, R> fromOption(Option<R> right, L left) {
+        return fromOption(right, () -> left);
+    }
+
+    /**
+     * Factory method to create either from option element.
+     *
+     * @param right right value
      * @param leftF default left value producer
      * @param <L>   left value type
      * @param <R>   right value type
@@ -763,16 +776,42 @@ public interface Either<L, R> {
     /**
      * Factory method to create either from option element.
      *
+     * @param right right value
+     * @param left  default left value
+     * @param <L>   left value type
+     * @param <R>   right value type
+     * @return evaluated either
+     */
+    static <L, R> Either<L, R> rightFromOption(Option<R> right, L left) {
+        return rightFromOption(right, () -> left);
+    }
+
+    /**
+     * Factory method to create either from option element.
+     *
      * @param left   left value
      * @param rightF default right value producer
      * @param <L>    left value type
-     * @param <L>    right value type
+     * @param <R>    right value type
      * @return evaluated either
      */
     static <L, R> Either<L, R> leftFromOption(Option<L> left, Supplier<R> rightF) {
         return left
                 .map(Either::<L, R>left)
                 .getOrElse(() -> Either.right(rightF.get()));
+    }
+
+    /**
+     * Factory method to create either from option element.
+     *
+     * @param left  left value
+     * @param right default right value
+     * @param <L>   left value type
+     * @param <R>   right value type
+     * @return evaluated either
+     */
+    static <L, R> Either<L, R> leftFromOption(Option<L> left, R right) {
+        return leftFromOption(left, () -> right);
     }
 
     /**

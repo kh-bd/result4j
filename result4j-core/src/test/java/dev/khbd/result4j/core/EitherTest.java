@@ -116,7 +116,23 @@ public class EitherTest {
     }
 
     @Test
-    public void fromOption_valueIsEmpty_returnLeft() {
+    public void leftFromOptionLazy_valueIsEmpty_returnRight() {
+        Either<String, ?> either = Either.leftFromOption(Option.none(), () -> "Option is empty");
+
+        assertThat(either.isRight()).isTrue();
+        assertThat(either.getRight()).isEqualTo("Option is empty");
+    }
+
+    @Test
+    public void leftFromOption_valueIsEmpty_returnRight() {
+        Either<String, ?> either = Either.leftFromOption(Option.none(), "Option is empty");
+
+        assertThat(either.isRight()).isTrue();
+        assertThat(either.getRight()).isEqualTo("Option is empty");
+    }
+
+    @Test
+    public void fromOptionLazy_valueIsEmpty_returnLeft() {
         Either<String, String> either = Either.fromOption(Option.none(), () -> "Option is empty");
 
         assertThat(either.isLeft()).isTrue();
@@ -124,8 +140,24 @@ public class EitherTest {
     }
 
     @Test
-    public void fromOption_valueIsNotEmpty_returnRight() {
+    public void fromOptionLazy_valueIsNotEmpty_returnRight() {
         Either<String, String> either = Either.fromOption(Option.some("hello"), () -> "Option is empty");
+
+        assertThat(either.isRight()).isTrue();
+        assertThat(either.getRight()).isEqualTo("hello");
+    }
+
+    @Test
+    public void fromOption_valueIsEmpty_returnLeft() {
+        Either<String, String> either = Either.fromOption(Option.none(), "Option is empty");
+
+        assertThat(either.isLeft()).isTrue();
+        assertThat(either.getLeft()).isEqualTo("Option is empty");
+    }
+
+    @Test
+    public void fromOption_valueIsNotEmpty_returnRight() {
+        Either<String, String> either = Either.fromOption(Option.some("hello"), "Option is empty");
 
         assertThat(either.isRight()).isTrue();
         assertThat(either.getRight()).isEqualTo("hello");

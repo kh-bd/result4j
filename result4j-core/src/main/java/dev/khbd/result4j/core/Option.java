@@ -7,16 +7,18 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -269,33 +271,46 @@ public interface Option<V> {
     }
 
     /**
-     * Traverse list  and reduce all elements into single option value.
+     * Create sequence collector.
      *
-     * @param list list
-     * @param <V>  result type
+     * @param <V> value type
+     * @param <A> downstream accumulator type
+     * @param <U> downstream result type
+     * @return sequence collector
      */
-    static <V> Option<List<V>> sequence(@NonNull List<Option<V>> list) {
-        return traverse(list, Function.identity());
+    static <V, A, U> Collector<Option<V>, ?, Option<U>> sequencing(@NonNull Collector<? super V, A, U> downstream) {
+        Supplier<A> supplier = downstream.supplier();
+        BiConsumer<A, ? super V> accumulator = downstream.accumulator();
+        BinaryOperator<A> combiner = downstream.combiner();
+        Function<A, U> finisher = downstream.finisher();
+
+        return Collector.of(
+                () -> new Ref<>(Option.some(supplier.get())),
+                (ref, option) -> {
+                    ref.ref = ref.ref.zip(option, (acc, r) -> {
+                        accumulator.accept(acc, r);
+                        return acc;
+                    });
+                },
+                (ref1, ref2) -> new Ref<>(ref1.ref.zip(ref2.ref, combiner)),
+                ref -> ref.ref.map(finisher)
+        );
     }
 
     /**
-     * Traverse list with applying function to each element and reduce all elements into single option value.
+     * Create traverse collector.
      *
-     * @param list list
-     * @param f    transformer
-     * @param <R>  original element type
-     * @param <V>  result type
+     * @param f          mapper function
+     * @param downstream downstream collector
+     * @param <V>        original value type
+     * @param <R>        transformed value type
+     * @param <A>        downstream accumulator type
+     * @param <U>        downstream result type
+     * @return traversing collector
      */
-    static <R, V> Option<List<V>> traverse(@NonNull List<R> list, @NonNull Function<? super R, Option<? extends V>> f) {
-        var result = new ArrayList<V>();
-        for (R e : list) {
-            var eOpt = f.apply(e);
-            if (eOpt.isEmpty()) {
-                return Option.none();
-            }
-            result.add(eOpt.get());
-        }
-        return Option.some(result);
+    static <V, R, A, U> Collector<V, ?, Option<U>> traversing(@NonNull Function<? super V, Option<R>> f,
+                                                              @NonNull Collector<? super R, A, U> downstream) {
+        return Collectors.mapping(f, sequencing(downstream));
     }
 }
 

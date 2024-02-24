@@ -8,13 +8,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.UtilityClass;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -364,35 +366,46 @@ public interface Try<V> {
     }
 
     /**
-     * Convert list of try to try of list and change all values.
+     * Create sequence collector.
      *
-     * @param list   list of try
-     * @param mapper transformation function
-     * @param <U>    value type
-     * @param <K>    new value type
-     * @return try of list
+     * @param <V> value type
+     * @param <A> downstream accumulator type
+     * @param <U> downstream result type
+     * @return sequence collector
      */
-    static <U, K> Try<List<K>> traverse(@NonNull List<U> list, Function<? super U, Try<K>> mapper) {
-        List<K> result = new ArrayList<>();
-        for (U u : list) {
-            Try<K> mappedU = Try.flatten(Try.of(() -> mapper.apply(u)));
-            if (mappedU.isFailure()) {
-                return Try.failure(mappedU.getError());
-            }
-            result.add(mappedU.get());
-        }
-        return Try.success(result);
+    static <V, A, U> Collector<Try<V>, ?, Try<U>> sequencing(@NonNull Collector<? super V, A, U> downstream) {
+        Supplier<A> supplier = downstream.supplier();
+        BiConsumer<A, ? super V> accumulator = downstream.accumulator();
+        BinaryOperator<A> combiner = downstream.combiner();
+        Function<A, U> finisher = downstream.finisher();
+
+        return Collector.of(
+                () -> new Ref<>(Try.success(supplier.get())),
+                (ref, e) -> {
+                    ref.ref = ref.ref.zip(e, (acc, r) -> {
+                        accumulator.accept(acc, r);
+                        return acc;
+                    });
+                },
+                (ref1, ref2) -> new Ref<>(ref1.ref.zip(ref2.ref, combiner)),
+                ref -> ref.ref.map(finisher)
+        );
     }
 
     /**
-     * Convert list of try to try of list.
+     * Create traverse collector.
      *
-     * @param list list of try
-     * @param <U>  value type
-     * @return try of list
+     * @param f          mapper function
+     * @param downstream downstream collector
+     * @param <V>        original value type
+     * @param <R>        transformed value type
+     * @param <A>        downstream accumulator type
+     * @param <U>        downstream result type
+     * @return traversing collector
      */
-    static <U> Try<List<U>> sequence(@NonNull List<Try<U>> list) {
-        return traverse(list, Function.identity());
+    static <V, R, A, U> Collector<V, ?, Try<U>> traversing(@NonNull Function<? super V, Try<R>> f,
+                                                           @NonNull Collector<? super R, A, U> downstream) {
+        return Collectors.mapping(f, sequencing(downstream));
     }
 
     /**
@@ -637,8 +650,8 @@ class Failure<V> implements Try<V> {
          */
         static boolean isFatal(Throwable th) {
             return th instanceof VirtualMachineError
-                    || th instanceof ThreadDeath
-                    || th instanceof InterruptedException;
+                   || th instanceof ThreadDeath
+                   || th instanceof InterruptedException;
         }
     }
 }

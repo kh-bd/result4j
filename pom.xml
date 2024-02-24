@@ -4,7 +4,7 @@
     <groupId>dev.khbd.result4j</groupId>
     <artifactId>result4j</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.2_jre21</version>
+    <version>0.0.3_jre21</version>
 
     <modelVersion>4.0.0</modelVersion>
 

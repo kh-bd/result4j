@@ -87,9 +87,9 @@ In the following table, you can find the latest result4j version for each suppor
 
 | Java<br/> version | Latest release                                                                                                                                                                                        |
 |-------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `11`              | [![Maven jdk11](https://img.shields.io/maven-central/v/dev.khbd.result4j/result4j?color=brightgreen&versionSuffix=_jre11)](https://mvnrepository.com/artifact/dev.khbd.result4j/result4j/0.0.3_jre11) |
-| `17`              | [![Maven jdk17](https://img.shields.io/maven-central/v/dev.khbd.result4j/result4j?color=brightgreen&versionSuffix=_jre17)](https://mvnrepository.com/artifact/dev.khbd.result4j/result4j/0.0.2_jre17) |
-| `21`              | [![Maven jdk21](https://img.shields.io/maven-central/v/dev.khbd.result4j/result4j?color=brightgreen&versionSuffix=_jre21)](https://mvnrepository.com/artifact/dev.khbd.result4j/result4j/0.0.2_jre21) |
+| `11`              | [![Maven jdk11](https://img.shields.io/maven-central/v/dev.khbd.result4j/result4j?color=brightgreen&versionSuffix=_jre11)](https://mvnrepository.com/artifact/dev.khbd.result4j/result4j/0.0.4_jre11) |
+| `17`              | [![Maven jdk17](https://img.shields.io/maven-central/v/dev.khbd.result4j/result4j?color=brightgreen&versionSuffix=_jre17)](https://mvnrepository.com/artifact/dev.khbd.result4j/result4j/0.0.3_jre17) |
+| `21`              | [![Maven jdk21](https://img.shields.io/maven-central/v/dev.khbd.result4j/result4j?color=brightgreen&versionSuffix=_jre21)](https://mvnrepository.com/artifact/dev.khbd.result4j/result4j/0.0.3_jre21) |
 
 ## Maven support
 

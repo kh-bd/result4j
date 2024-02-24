@@ -3,17 +3,20 @@ package dev.khbd.result4j.core;
 import static dev.khbd.result4j.core.Utils.cast;
 
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -552,100 +555,116 @@ public interface Either<L, R> {
     }
 
     /**
-     * Sequence by right values.
+     * Create sequence collector.
      *
-     * @param list list of either
-     * @param <L>  left type
-     * @param <R>  right type
-     * @return traversed either
+     * @param <L> either left type
+     * @param <R> either right type
+     * @param <A> downstream accumulator type
+     * @param <U> downstream result type
+     * @return sequence collector
      */
-    static <L, R> Either<L, List<R>> sequence(List<Either<L, R>> list) {
-        return traverse(list, Function.identity());
+    static <L, R, A, U> Collector<Either<L, R>, ?, Either<L, U>> sequencing(@NonNull Collector<? super R, A, U> downstream) {
+        return rightSequencing(downstream);
     }
 
     /**
-     * Sequence by right values.
+     * Create sequence collector.
      *
-     * @param list list of either
-     * @param <L>  left type
-     * @param <R>  right type
-     * @return traversed either
+     * @param <L> either left type
+     * @param <R> either right type
+     * @param <A> downstream accumulator type
+     * @param <U> downstream result type
+     * @return sequence collector
      */
-    static <L, R> Either<L, List<R>> rightSequence(List<Either<L, R>> list) {
-        return rightTraverse(list, Function.identity());
+    static <L, R, A, U> Collector<Either<L, R>, ?, Either<L, U>> rightSequencing(@NonNull Collector<? super R, A, U> downstream) {
+        Supplier<A> supplier = downstream.supplier();
+        BiConsumer<A, ? super R> accumulator = downstream.accumulator();
+        BinaryOperator<A> combiner = downstream.combiner();
+        Function<A, U> finisher = downstream.finisher();
+
+        return Collector.<Either<L, R>, Ref<Either<L, A>>, Either<L, U>>of(
+                () -> new Ref<>(Either.right(supplier.get())),
+                (ref, either) -> {
+                    ref.ref = ref.ref.zip(either, (acc, r) -> {
+                        accumulator.accept(acc, r);
+                        return acc;
+                    });
+                },
+                (ref1, ref2) -> new Ref<>(ref1.ref.zip(ref2.ref, combiner)),
+                ref -> ref.ref.map(finisher)
+        );
     }
 
     /**
-     * Traverse by left values.
+     * Create sequence collector.
      *
-     * @param list list of either
-     * @param <L>  left type
-     * @param <R>  right type
-     * @return traversed either
+     * @param <L> either left type
+     * @param <R> either right type
+     * @param <A> downstream accumulator type
+     * @param <U> downstream error type
+     * @return sequence collector
      */
-    static <L, R> Either<List<L>, R> leftSequence(List<Either<L, R>> list) {
-        return leftTraverse(list, Function.identity());
+    static <L, R, A, U> Collector<Either<L, R>, ?, Either<U, R>> leftSequencing(@NonNull Collector<? super L, A, U> downstream) {
+        Supplier<A> supplier = downstream.supplier();
+        BiConsumer<A, ? super L> accumulator = downstream.accumulator();
+        BinaryOperator<A> combiner = downstream.combiner();
+        Function<A, U> finisher = downstream.finisher();
+
+        return Collector.<Either<L, R>, Ref<Either<A, R>>, Either<U, R>>of(
+                () -> new Ref<>(Either.left(supplier.get())),
+                (ref, either) -> {
+                    ref.ref = ref.ref.zipLeft(either, (acc, r) -> {
+                        accumulator.accept(acc, r);
+                        return acc;
+                    });
+                },
+                (ref1, ref2) -> new Ref<>(ref1.ref.zipLeft(ref2.ref, combiner)),
+                ref -> ref.ref.mapLeft(finisher)
+        );
     }
 
     /**
-     * Traverse by right values.
+     * Create traverse collector.
      *
-     * @param list list of either
-     * @param f    transformation function
-     * @param <L>  left type
-     * @param <R>  right type
-     * @param <U>  new right type
-     * @return traversed either
+     * @param <E> original stream element type
+     * @param <L> either left type
+     * @param <R> either right type
+     * @param <A> downstream accumulator type
+     * @param <U> downstream result type
+     * @return sequence collector
      */
-    static <L, R, U> Either<L, List<U>> traverse(List<R> list,
-                                                 Function<? super R, Either<? extends L, ? extends U>> f) {
-        return rightTraverse(list, f);
+    static <E, L, R, A, U> Collector<E, ?, Either<L, U>> traversing(@NonNull Function<? super E, Either<L, R>> f,
+                                                                    @NonNull Collector<? super R, A, U> downstream) {
+        return rightTraversing(f, downstream);
     }
 
     /**
-     * Traverse by right values.
+     * Create traverse collector.
      *
-     * @param list list of either
-     * @param f    transformation function
-     * @param <L>  left type
-     * @param <R>  right type
-     * @param <U>  new right type
-     * @return right if all either were right and left if any either was left
+     * @param <E> original stream element type
+     * @param <L> either left type
+     * @param <R> either right type
+     * @param <A> downstream accumulator type
+     * @param <U> downstream result type
+     * @return sequence collector
      */
-    static <L, R, U> Either<L, List<U>> rightTraverse(List<R> list,
-                                                      Function<? super R, Either<? extends L, ? extends U>> f) {
-        List<U> result = new ArrayList<>();
-        for (R r : list) {
-            Either<? extends L, ? extends U> either = f.apply(r);
-            if (either.isLeft()) {
-                return Either.left(either.getLeft());
-            }
-            result.add(either.getRight());
-        }
-        return Either.right(result);
+    static <E, L, R, A, U> Collector<E, ?, Either<L, U>> rightTraversing(@NonNull Function<? super E, Either<L, R>> f,
+                                                                         @NonNull Collector<? super R, A, U> downstream) {
+        return Collectors.mapping(f, rightSequencing(downstream));
     }
 
     /**
-     * Traverse by left values.
+     * Create traverse collector.
      *
-     * @param list list of either
-     * @param f    transformation function
-     * @param <L>  left type
-     * @param <R>  right type
-     * @param <U>  new left type
-     * @return traversed either
+     * @param <L> either left type
+     * @param <R> either right type
+     * @param <A> downstream accumulator type
+     * @param <U> downstream error type
+     * @return sequence collector
      */
-    static <L, R, U> Either<List<U>, R> leftTraverse(List<L> list,
-                                                     Function<? super L, Either<? extends U, ? extends R>> f) {
-        List<U> result = new ArrayList<>();
-        for (L l : list) {
-            Either<? extends U, ? extends R> either = f.apply(l);
-            if (either.isRight()) {
-                return Either.right(either.getRight());
-            }
-            result.add(either.getLeft());
-        }
-        return Either.left(result);
+    static <E, L, R, A, U> Collector<E, ?, Either<U, R>> leftTraversing(@NonNull Function<? super E, Either<L, R>> f,
+                                                                        @NonNull Collector<? super L, A, U> downstream) {
+        return Collectors.mapping(f, leftSequencing(downstream));
     }
 
     /**

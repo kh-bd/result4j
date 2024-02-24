@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -583,63 +584,62 @@ public class TryTest {
     }
 
     @Test
-    public void sequence_someSuccessListOfTry_returnTryOfList() {
-        Try<List<Integer>> result = Try.sequence(List.of(Try.success(1), Try.success(2)));
+    public void sequencing_streamIsEmpty_returnEmpty() {
+        Try<List<String>> result = Stream.<Try<String>>empty()
+                .collect(Try.sequencing(Collectors.toList()));
 
         assertThat(result.isSuccess()).isTrue();
-        assertThat(result.get()).containsOnly(1, 2);
+        assertThat(result.get()).isEmpty();
     }
 
     @Test
-    public void sequence_oneFailureTryAndOtherIsSuccess_returnTryOfList() {
-        Try<List<Integer>> result = Try.sequence(List.of(Try.success(1), Try.failure(new RuntimeException())));
-
-        assertThat(result.isFailure()).isTrue();
-    }
-
-    @Test
-    public void traverse_someSuccessListOfTry_returnTryOfList() {
-        Try<List<Integer>> result = Try.traverse(
-                List.of(1, 2),
-                it -> Try.success(it + 1)
-        );
+    public void sequencing_allElementsAreSuccess_returnSuccessList() {
+        Try<List<String>> result = Stream.of(
+                Try.success("1"),
+                Try.success("2")
+        ).collect(Try.sequencing(Collectors.toList()));
 
         assertThat(result.isSuccess()).isTrue();
-        assertThat(result.get()).containsOnly(2, 3);
+        assertThat(result.get()).containsExactly("1", "2");
     }
 
     @Test
-    public void traverse_oneFailureTryAndOtherIsSuccess_returnTryOfList() {
-        Try<List<Integer>> result = Try.traverse(
-                List.of(1, 2),
-                it -> Try.of(() -> it / 0)
-        );
+    public void sequencing_atLeastOneElementIsFailure_returnFailure() {
+        Try<List<String>> result = Stream.of(
+                Try.success("1"),
+                Try.success("2"),
+                Try.<String>failure(new RuntimeException("Ops"))
+        ).collect(Try.sequencing(Collectors.toList()));
 
-        assertThat(result.isFailure()).isTrue();
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getError()).hasMessage("Ops");
     }
 
     @Test
-    public void traverse_emptyListOfTry_returnTryOfList() {
-        Try<List<Integer>> result = Try.traverse(
-                List.of(),
-                Function.identity()
-        );
+    public void traversing_streamIsEmpty_returnEmpty() {
+        Try<List<String>> result = Stream.empty()
+                .collect(Try.traversing(i -> Try.success("" + i), Collectors.toList()));
 
         assertThat(result.isSuccess()).isTrue();
+        assertThat(result.get()).isEmpty();
     }
 
     @Test
-    public void traverse_functionThrowError_returnFailure() {
-        RuntimeException error = new RuntimeException("error");
-        Try<List<Integer>> result = Try.traverse(
-                List.of(1, 2),
-                it -> {
-                    throw error;
-                }
-        );
+    public void traversing_allElementsAreSuccess_returnSuccessList() {
+        Try<List<String>> result = Stream.of(1, 2, 3)
+                .collect(Try.traversing(i -> Try.success("" + i), Collectors.toList()));
 
-        assertThat(result.isFailure()).isTrue();
-        assertThat(result.getError()).isEqualTo(error);
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.get()).containsExactly("1", "2", "3");
+    }
+
+    @Test
+    public void traversing_atLeastOneElementIsFailure_returnFailure() {
+        Try<List<String>> result = Stream.of(1, 2, 3)
+                .collect(Try.traversing(i -> i == 3 ? Try.failure(new RuntimeException("Ops")) : Try.success("" + i), Collectors.toList()));
+
+        assertThat(result.isSuccess()).isFalse();
+        assertThat(result.getError()).hasMessage("Ops");
     }
 
     @Test

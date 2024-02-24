@@ -12,6 +12,7 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -451,81 +452,6 @@ public class EitherTest {
     }
 
     @Test
-    public void traverseRight_allResultIsRight_returnRight() {
-        List<Integer> list = List.of(1, 2, 3);
-
-        Either<?, List<Integer>> result = Either.rightTraverse(list, i -> Either.right(i + 1));
-
-        assertThat(result.isRight()).isTrue();
-        assertThat(result.getRight()).isEqualTo(List.of(2, 3, 4));
-    }
-
-    @Test
-    public void traverseRight_anyResultIsNotRight_returnLeft() {
-        List<Integer> list = List.of(1, 2, 3);
-
-        Either<String, List<Integer>> result = Either.rightTraverse(list, i -> {
-            if (i == 2) {
-                return Either.left("error");
-            }
-            return Either.right(i + 1);
-        });
-
-        assertThat(result.isRight()).isFalse();
-        assertThat(result.getLeft()).isEqualTo("error");
-    }
-
-    @Test
-    public void traverse_allResultIsRight_returnRight() {
-        List<Integer> list = List.of(1, 2, 3);
-
-        Either<?, List<Integer>> result = Either.traverse(list, i -> Either.right(i + 1));
-
-        assertThat(result.isRight()).isTrue();
-        assertThat(result.getRight()).isEqualTo(List.of(2, 3, 4));
-    }
-
-    @Test
-    public void traverse_anyResultIsNotRight_returnLeft() {
-        List<Integer> list = List.of(1, 2, 3);
-
-        Either<String, List<Integer>> result = Either.traverse(list, i -> {
-            if (i == 2) {
-                return Either.left("error");
-            }
-            return Either.right(i + 1);
-        });
-
-        assertThat(result.isRight()).isFalse();
-        assertThat(result.getLeft()).isEqualTo("error");
-    }
-
-    @Test
-    public void traverseLeft_anyResultIsRight_returnRight() {
-        List<Integer> list = List.of(1, 2, 3);
-
-        Either<List<String>, Integer> result = Either.leftTraverse(list, i -> {
-            if (i == 2) {
-                return Either.right(i + 1);
-            }
-            return Either.left("error");
-        });
-
-        assertThat(result.isRight()).isTrue();
-        assertThat(result.getRight()).isEqualTo(3);
-    }
-
-    @Test
-    public void traverseLeft_allResultIsLeft_returnLeft() {
-        List<Integer> list = List.of(1, 2, 3);
-
-        Either<List<String>, Integer> result = Either.leftTraverse(list, i -> Either.left("error"));
-
-        assertThat(result.isLeft()).isTrue();
-        assertThat(result.getLeft()).isEqualTo(List.of("error", "error", "error"));
-    }
-
-    @Test
     public void flatMapRight_selfIsRightAndResultIsRight_returnRight() {
         Either<?, String> self = Either.right("hello");
 
@@ -737,63 +663,127 @@ public class EitherTest {
     }
 
     @Test
-    public void sequenceRight_allAreRight_returnRight() {
-        List<Either<String, Integer>> list = List.of(Either.right(1), Either.right(2), Either.right(3));
-
-        Either<String, List<Integer>> result = Either.rightSequence(list);
-
-        assertThat(result.isRight()).isTrue();
-        assertThat(result.getRight()).isEqualTo(List.of(1, 2, 3));
-    }
-
-    @Test
-    public void sequenceRight_anyOneIsLeft_returnLeft() {
-        List<Either<String, Integer>> list = List.of(Either.right(1), Either.left("error"), Either.right(3));
-
-        Either<String, List<Integer>> result = Either.rightSequence(list);
-
-        assertThat(result.isLeft()).isTrue();
-        assertThat(result.getLeft()).isEqualTo("error");
-    }
-
-    @Test
-    public void sequence_allAreRight_returnRight() {
-        List<Either<String, Integer>> list = List.of(Either.right(1), Either.right(2), Either.right(3));
-
-        Either<String, List<Integer>> result = Either.sequence(list);
+    public void sequencing_emptyStream_resultEmptyList() {
+        Either<String, List<Integer>> result = Stream.<Either<String, Integer>>empty()
+                .collect(Either.sequencing(Collectors.toList()));
 
         assertThat(result.isRight()).isTrue();
-        assertThat(result.getRight()).isEqualTo(List.of(1, 2, 3));
+        assertThat(result.getRight()).isEmpty();
     }
 
     @Test
-    public void sequence_anyOneIsLeft_returnLeft() {
-        List<Either<String, Integer>> list = List.of(Either.right(1), Either.left("error"), Either.right(3));
-
-        Either<String, List<Integer>> result = Either.sequence(list);
-
-        assertThat(result.isLeft()).isTrue();
-        assertThat(result.getLeft()).isEqualTo("error");
-    }
-
-    @Test
-    public void sequenceLeft_allAreLeft_returnLeft() {
-        List<Either<String, Integer>> list = List.of(Either.left("1"), Either.left("2"), Either.left("3"));
-
-        Either<List<String>, Integer> result = Either.leftSequence(list);
-
-        assertThat(result.isLeft()).isTrue();
-        assertThat(result.getLeft()).isEqualTo(List.of("1", "2", "3"));
-    }
-
-    @Test
-    public void sequenceLeft_anyOneIsRight_returnRight() {
-        List<Either<String, Integer>> list = List.of(Either.left("1"), Either.left("2"), Either.right(3));
-
-        Either<List<String>, Integer> result = Either.leftSequence(list);
+    public void sequencing_allElementsAreRight_resultRight() {
+        Either<String, List<Integer>> result = Stream.<Either<String, Integer>>of(
+                Either.right(1),
+                Either.right(2),
+                Either.right(3)
+        ).collect(Either.sequencing(Collectors.toList()));
 
         assertThat(result.isRight()).isTrue();
-        assertThat(result.getRight()).isEqualTo(3);
+        assertThat(result.getRight()).containsExactly(1, 2, 3);
+    }
+
+    @Test
+    public void sequencing_oneElementIsLeft_returnLeft() {
+        Either<String, List<Integer>> result = Stream.<Either<String, Integer>>of(
+                Either.right(1),
+                Either.left("ops"),
+                Either.right(3)
+        ).collect(Either.sequencing(Collectors.toList()));
+
+        assertThat(result.isLeft()).isTrue();
+        assertThat(result.getLeft()).isEqualTo("ops");
+    }
+
+    @Test
+    public void leftSequencing_streamIsEmpty_returnEmpty() {
+        Either<List<String>, Integer> result =
+                Stream.<Either<String, Integer>>empty()
+                        .collect(Either.leftSequencing(Collectors.toList()));
+
+        assertThat(result.isLeft()).isTrue();
+        assertThat(result.getLeft()).isEmpty();
+    }
+
+    @Test
+    public void leftSequencing_allIsLeft_returnJoined() {
+        Either<String, Integer> result =
+                Stream.<Either<String, Integer>>of(
+                        Either.left("1"),
+                        Either.left("2"),
+                        Either.left("3")
+                ).collect(Either.leftSequencing(Collectors.joining()));
+
+        assertThat(result.isLeft()).isTrue();
+        assertThat(result.getLeft()).isEqualTo("123");
+    }
+
+    @Test
+    public void leftSequencing_atLeastOneIsRight_returnRight() {
+        Either<String, Integer> result =
+                Stream.<Either<String, Integer>>of(
+                        Either.left("1"),
+                        Either.right(2),
+                        Either.right(3)
+                ).collect(Either.leftSequencing(Collectors.joining()));
+
+        assertThat(result.isLeft()).isFalse();
+        assertThat(result.getRight()).isEqualTo(2);
+    }
+
+    @Test
+    public void traversing_streamIsEmpty_returnEmpty() {
+        Either<String, List<Integer>> result = Stream.<Integer>empty()
+                .collect(Either.traversing(Either::right, Collectors.toList()));
+
+        assertThat(result.isRight()).isTrue();
+        assertThat(result.getRight()).isEmpty();
+    }
+
+    @Test
+    public void traversing_allIsRight_returnList() {
+        Either<String, List<Integer>> result = Stream.of(1, 2, 3)
+                .collect(Either.traversing(Either::right, Collectors.toList()));
+
+        assertThat(result.isRight()).isTrue();
+        assertThat(result.getRight()).containsExactly(1, 2, 3);
+    }
+
+    @Test
+    public void traversing_atLeastOneIsLeft_returnLeft() {
+        Either<String, List<Integer>> result = Stream.of(1, 2, 3)
+                .collect(Either.traversing(i -> i <= 1 ? Either.right(i) : Either.left("" + i), Collectors.toList()));
+
+        assertThat(result.isLeft()).isTrue();
+        assertThat(result.getLeft()).isEqualTo("2");
+    }
+
+    // left traversing
+    @Test
+    public void leftTraversing_streamIsEmpty_returnEmpty() {
+        Either<List<String>, Integer> result = Stream.<Integer>empty()
+                .collect(Either.leftTraversing(Either::right, Collectors.toList()));
+
+        assertThat(result.isLeft()).isTrue();
+        assertThat(result.getLeft()).isEmpty();
+    }
+
+    @Test
+    public void leftTraversing_allIsLeft_returnList() {
+        Either<List<String>, Integer> result = Stream.of(1, 2, 3)
+                .collect(Either.leftTraversing(i -> Either.left("" + i), Collectors.toList()));
+
+        assertThat(result.isLeft()).isTrue();
+        assertThat(result.getLeft()).containsExactly("1", "2", "3");
+    }
+
+    @Test
+    public void leftTraversing_atLeastOneIsRight_returnRight() {
+        Either<List<String>, Integer> result = Stream.of(1, 2, 3)
+                .collect(Either.leftTraversing(i -> i > 1 ? Either.right(i) : Either.left("" + i), Collectors.toList()));
+
+        assertThat(result.isRight()).isTrue();
+        assertThat(result.getRight()).isEqualTo(2);
     }
 
     @Test

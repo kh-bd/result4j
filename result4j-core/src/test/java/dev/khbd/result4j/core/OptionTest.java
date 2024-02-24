@@ -7,6 +7,7 @@ import org.testng.annotations.Test;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -188,7 +189,7 @@ public class OptionTest {
     public void toOptional_valueIsSome_returnNotEmptyOptional() {
         Option<String> option = Option.some("Alex");
 
-        Optional<String > result = option.toOptional();
+        Optional<String> result = option.toOptional();
 
         assertThat(result).hasValue("Alex");
     }
@@ -209,52 +210,58 @@ public class OptionTest {
     }
 
     @Test
-    public void traverse_emptyList_returnSomeWithEmptyList() {
-        Option<List<Boolean>> result = Option.traverse(List.of(), __ -> Option.some(true));
+    public void sequencing_emptyStream_emptyList() {
+        Option<List<Integer>> result = Stream.<Option<Integer>>empty()
+                .collect(Option.sequencing(Collectors.toList()));
 
         assertThat(result.isEmpty()).isFalse();
         assertThat(result.get()).isEmpty();
     }
 
     @Test
-    public void traverse_notEmptyListAndAllResultsAreSome_returnSome() {
-        Option<List<Integer>> result = Option.traverse(List.of("1", "2", "3"), str -> Option.some(Integer.parseInt(str)));
+    public void sequencing_allElementsAreNotEmpty_returnSomeWithList() {
+        Option<List<Integer>> result = Stream.of(
+                Option.some(1),
+                Option.some(2)
+        ).collect(Option.sequencing(Collectors.toList()));
 
         assertThat(result.isEmpty()).isFalse();
-        assertThat(result.get()).isEqualTo(List.of(1, 2, 3));
+        assertThat(result.get()).containsExactly(1, 2);
     }
 
     @Test
-    public void traverse_notEmptyListAndSomeValuesAreNone_returnNone() {
-        Option<List<Integer>> result = Option.traverse(List.of("1", "2", "3"), str -> {
-            if (str.equals("3")) {
-                return Option.none();
-            }
-            return Option.some(Integer.parseInt(str));
-        });
+    public void sequencing_atLeastOneIsEmpty_returnNone() {
+        Option<List<Integer>> result = Stream.of(
+                Option.some(1),
+                Option.<Integer>none(),
+                Option.some(2)
+        ).collect(Option.sequencing(Collectors.toList()));
 
         assertThat(result.isEmpty()).isTrue();
     }
 
     @Test
-    public void sequence_emptyList_returnSomeWithEmptyList() {
-        Option<List<Boolean>> result = Option.sequence(List.of());
+    public void traversing_emptyStream_emptyList() {
+        Option<List<Integer>> result = Stream.<Integer>empty()
+                .collect(Option.traversing(i -> Option.some(i * 2), Collectors.toList()));
 
         assertThat(result.isEmpty()).isFalse();
         assertThat(result.get()).isEmpty();
     }
 
     @Test
-    public void sequence_notEmptyListAndAllValuesAreSome_returnSome() {
-        Option<List<Integer>> result = Option.sequence(List.of(Option.some(1), Option.some(2), Option.some(3)));
+    public void traversing_allElementsAreNotEmpty_returnSomeWithList() {
+        Option<List<Integer>> result = Stream.of(1, 2, 3)
+                .collect(Option.traversing(Option::some, Collectors.toList()));
 
         assertThat(result.isEmpty()).isFalse();
-        assertThat(result.get()).isEqualTo(List.of(1, 2, 3));
+        assertThat(result.get()).containsExactly(1, 2, 3);
     }
 
     @Test
-    public void sequence_notEmptyListAndSomeValuesAreNone_returnNone() {
-        Option<List<Integer>> result = Option.sequence(List.of(Option.some(1), Option.none(), Option.some(3)));
+    public void traversing_atLeastOneIsEmpty_returnNone() {
+        Option<List<Integer>> result = Stream.of(1, 2, 3)
+                .collect(Option.traversing(i -> i == 2 ? Option.none() : Option.some(i), Collectors.toList()));
 
         assertThat(result.isEmpty()).isTrue();
     }

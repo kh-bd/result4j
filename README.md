@@ -22,13 +22,13 @@ Code might look like this:
 ```java
 
 class SignService {
-    
+
     Either<GenericError, DocumentDto> sign(UUID id) {
         return repository.findById(id)
                 .flatMap(document -> doSignDocument(document))
                 .map(repository::save)
                 .map(mapper::toDto);
-    }  
+    }
 }
 
 ```
@@ -64,7 +64,6 @@ Either<GenericError, DocumentDto> sign(UUID id) {
 
 So, the original code can be rewritten in something like this
 
-
 ```java
 
 class SignService {
@@ -85,11 +84,11 @@ Such code is much cleaner, easier to read and write then original one.
 We are going to support separate version for each LTS release as long as that release is supported.
 In the following table, you can find the latest result4j version for each supported java version.
 
-| Java<br/> version | Latest release                                                                                                                                                                                        |
-|-------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `11`              | [![Maven jdk11](https://img.shields.io/maven-central/v/dev.khbd.result4j/result4j?color=brightgreen&versionSuffix=_jre11)](https://mvnrepository.com/artifact/dev.khbd.result4j/result4j/0.0.4_jre11) |
-| `17`              | [![Maven jdk17](https://img.shields.io/maven-central/v/dev.khbd.result4j/result4j?color=brightgreen&versionSuffix=_jre17)](https://mvnrepository.com/artifact/dev.khbd.result4j/result4j/0.0.3_jre17) |
-| `21`              | [![Maven jdk21](https://img.shields.io/maven-central/v/dev.khbd.result4j/result4j?color=brightgreen&versionSuffix=_jre21)](https://mvnrepository.com/artifact/dev.khbd.result4j/result4j/0.0.3_jre21) |
+| Java<br/> version | Latest release                                                                                                                                                                                                    |
+|-------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `11`              | [![Maven jdk11](https://img.shields.io/maven-central/v/dev.khbd.result4j/result4j?color=brightgreen&versionSuffix=_jre11)](https://central.sonatype.com/artifact/dev.khbd.result4j/result4j/0.0.4_jre11/overview) 
+| `17`              | [![Maven jdk17](https://img.shields.io/maven-central/v/dev.khbd.result4j/result4j?color=brightgreen&versionSuffix=_jre17)](https://central.sonatype.com/artifact/dev.khbd.result4j/result4j/0.0.3_jre17/overview) |
+| `21`              | [![Maven jdk21](https://img.shields.io/maven-central/v/dev.khbd.result4j/result4j?color=brightgreen&versionSuffix=_jre21)](https://central.sonatype.com/artifact/dev.khbd.result4j/result4j/0.0.3_jre21/overview) |
 
 ## Maven support
 

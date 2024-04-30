@@ -171,6 +171,17 @@ public interface Try<V> {
     }
 
     /**
+     * Convert try to either.
+     *
+     * @param f error converter
+     * @param <L> either left type
+     * @return either
+     */
+    default <L> Either<L, V> toEither(Function<Throwable, L> f) {
+        return this.toEither().mapLeft(f);
+    }
+
+    /**
      * Convert value to option.
      */
     Option<V> toOption();

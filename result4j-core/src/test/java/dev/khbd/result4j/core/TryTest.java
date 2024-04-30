@@ -694,4 +694,24 @@ public class TryTest {
         assertThat(tr.isSuccess()).isTrue();
         assertThat(tr.get()).isEqualTo(1);
     }
+
+    @Test
+    public void toEither_tryIsSuccess_returnRight() {
+        Try<Integer> tr = Try.success(10);
+
+        Either<String, Integer> result = tr.toEither(Throwable::getMessage);
+
+        assertThat(result.isRight()).isTrue();
+        assertThat(result.getRight()).isEqualTo(10);
+    }
+
+    @Test
+    public void toEither_tryIsFailure_returnLeft() {
+        Try<Integer> tr = Try.failure(new RuntimeException("Ops"));
+
+        Either<String, Integer> result = tr.toEither(Throwable::getMessage);
+
+        assertThat(result.isLeft()).isTrue();
+        assertThat(result.getLeft()).isEqualTo("Ops");
+    }
 }

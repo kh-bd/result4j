@@ -149,6 +149,15 @@ public class OptionTest {
     }
 
     @Test
+    public void map_valueIsSomeAndFunctionReturnNullValue_returnNone() {
+        Option<String> option = Option.some("Alex");
+
+        Option<Integer> result = option.map(str -> null);
+
+        assertThat(result.isEmpty()).isTrue();
+    }
+
+    @Test
     public void flatmap_valueIsNone_returnNone() {
         Option<String> option = Option.none();
 
@@ -174,6 +183,14 @@ public class OptionTest {
 
         assertThat(result.isEmpty()).isFalse();
         assertThat(result.get()).isEqualTo(4);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class,
+            expectedExceptionsMessageRegExp = "Function result cannot be null.")
+    public void flatmap_functionReturnNull_throwNPE() {
+        Option<String> option = Option.some("Alex");
+
+        option.flatMap(str -> null);
     }
 
     @Test

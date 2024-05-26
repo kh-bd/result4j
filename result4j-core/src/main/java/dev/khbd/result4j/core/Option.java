@@ -418,12 +418,14 @@ class Some<V> implements Option<V> {
 
     @Override
     public <R> Option<R> map(@NonNull Function<? super V, ? extends R> function) {
-        return Option.some(function.apply(value));
+        return Option.fromNullable(function.apply(value));
     }
 
     @Override
     public <R> Option<R> flatMap(@NonNull Function<? super V, Option<? extends R>> function) {
-        return cast(function.apply(value));
+        Option<? extends R> result = function.apply(value);
+        Objects.requireNonNull(result, "Function result cannot be null.");
+        return cast(result);
     }
 
     @Override

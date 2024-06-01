@@ -16,6 +16,39 @@ import java.util.stream.Stream;
 public class OptionTest {
 
     @Test
+    public void ap2_firstOptionIsNone_returnNone() {
+        Option<String> result = Option.ap(Option.<String>none(), Option.some(2))
+                .apply((v1, v2) -> v1 + v2);
+
+        assertThat(result.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void ap2_secondOptionIsNone_returnNone() {
+        Option<String> result = Option.ap(Option.some("text"), Option.none())
+                .apply((v1, v2) -> v1 + v2);
+
+        assertThat(result.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void ap2_bothOptionsAreSome_returnSome() {
+        Option<String> result = Option.ap(Option.some("text"), Option.some(2))
+                .apply((v1, v2) -> v1 + v2);
+
+        assertThat(result.isEmpty()).isFalse();
+        assertThat(result.get()).isEqualTo("text2");
+    }
+
+    @Test
+    public void ap2_bothOptionsAreSomeAndFunctionReturnNull_returnNone() {
+        Option<String> result = Option.ap(Option.some("text"), Option.some(2))
+                .apply((v1, v2) -> null);
+
+        assertThat(result.isEmpty()).isTrue();
+    }
+
+    @Test
     public void drop_valueIsEmpty_returnEmpty() {
         Option<Object> value = Option.none();
 

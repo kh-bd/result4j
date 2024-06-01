@@ -16,6 +16,22 @@ import java.util.stream.Stream;
 public class OptionTest {
 
     @Test
+    public void toResult_valueIsNone_returnError() {
+        Result<String, ?> result = Option.none().toResult("error");
+
+        assertThat(result.isError()).isTrue();
+        assertThat(result.getError()).isEqualTo("error");
+    }
+
+    @Test
+    public void toResult_valueIsSome_returnSuccess() {
+        Result<String, Integer> result = Option.some(10).toResult(() -> "error");
+
+        assertThat(result.isSuccess()).isTrue();
+        assertThat(result.get()).isEqualTo(10);
+    }
+
+    @Test
     public void ap2_firstOptionIsNone_returnNone() {
         Option<String> result = Option.ap(Option.<String>none(), Option.some(2))
                 .apply((v1, v2) -> v1 + v2);

@@ -351,14 +351,14 @@ public class ResultTest {
     public void toStream_valueIsError_returnEmptyStream() {
         Stream<Integer> result = Result.<String, Integer>error("error").toStream();
 
-        assertThat(result.toList()).isEmpty();
+        assertThat(result.collect(Collectors.toList())).isEmpty();
     }
 
     @Test
     public void toStream_valueIsSuccess_returnOneElementStream() {
         Stream<Integer> result = Result.success(10).toStream();
 
-        assertThat(result.toList()).containsExactly(10);
+        assertThat(result.collect(Collectors.toList())).containsExactly(10);
     }
 
     @Test

@@ -215,6 +215,10 @@ public abstract class AbstractPluginTest {
             return !isSuccess();
         }
 
+        public ClassLoader classLoader() {
+            return classLoader;
+        }
+
         public List<Diagnostic<? extends JavaFileObject>> getErrors() {
             return diagnostics.stream()
                     .filter(d -> d.getKind() == Diagnostic.Kind.ERROR)

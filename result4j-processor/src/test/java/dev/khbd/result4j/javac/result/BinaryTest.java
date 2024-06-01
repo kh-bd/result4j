@@ -15,23 +15,21 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inBinaryBoth() throws Exception {
-        String source = """
-                package cases.in_binary;
-                                
-                import dev.khbd.result4j.core.Result;
-                                
-                public class Main {
-                                
-                    public static Result<String, Integer> getSum(boolean flag1, boolean flag2) {
-                        var result = getInt(flag1).unwrap() + getInt(flag2).unwrap();
-                        return Result.success(result);
-                    }
-                    
-                    public static Result<String, Integer> getInt(boolean flag) {
-                        return flag ? Result.success(10) : Result.error("error");
-                    }
-                }
-                """;
+        String source = "package cases.in_binary;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, Integer> getSum(boolean flag1, boolean flag2) {\n" +
+                        "        var result = getInt(flag1).unwrap() + getInt(flag2).unwrap();\n" +
+                        "        return Result.success(result);\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Result<String, Integer> getInt(boolean flag) {\n" +
+                        "        return flag ? Result.success(10) : Result.error(\"error\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 
@@ -62,23 +60,21 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inBinaryLeft() throws Exception {
-        String source = """
-                package cases.in_binary;
-                                
-                import dev.khbd.result4j.core.Result;
-                                
-                public class Main {
-                                
-                    public static Result<String, Integer> getSum(boolean flag) {
-                        var result = getInt(flag).unwrap() + 1;
-                        return Result.success(result);
-                    }
-                    
-                    public static Result<String, Integer> getInt(boolean flag) {
-                        return flag ? Result.success(10) : Result.error("error");
-                    }
-                }
-                """;
+        String source = "package cases.in_binary;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, Integer> getSum(boolean flag) {\n" +
+                        "        var result = getInt(flag).unwrap() + 1;\n" +
+                        "        return Result.success(result);\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Result<String, Integer> getInt(boolean flag) {\n" +
+                        "        return flag ? Result.success(10) : Result.error(\"error\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 
@@ -101,23 +97,21 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inBinaryRight() throws Exception {
-        String source = """
-                package cases.in_binary;
-                                
-                import dev.khbd.result4j.core.Result;
-                                
-                public class Main {
-                                
-                    public static Result<String, Integer> getSum(boolean flag) {
-                        var result = 1 + getInt(flag).unwrap();
-                        return Result.success(result);
-                    }
-                    
-                    public static Result<String, Integer> getInt(boolean flag) {
-                        return flag ? Result.success(10) : Result.error("error");
-                    }
-                }
-                """;
+        String source = "package cases.in_binary;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, Integer> getSum(boolean flag) {\n" +
+                        "        var result = 1 + getInt(flag).unwrap();\n" +
+                        "        return Result.success(result);\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Result<String, Integer> getInt(boolean flag) {\n" +
+                        "        return flag ? Result.success(10) : Result.error(\"error\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 
@@ -140,23 +134,21 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inComplexBinary() throws Exception {
-        String source = """
-                package cases.in_binary;
-                                
-                import dev.khbd.result4j.core.Result;
-                                
-                public class Main {
-                                
-                    public static Result<String, Integer> getSum(boolean flag) {
-                        var result = (getInt(flag).unwrap() + getInt(flag).unwrap()) + getInt(flag).unwrap();
-                        return Result.success(result);
-                    }
-                    
-                    public static Result<String, Integer> getInt(boolean flag) {
-                        return flag ? Result.success(10) : Result.error("error");
-                    }
-                }
-                """;
+        String source = "package cases.in_binary;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, Integer> getSum(boolean flag) {\n" +
+                        "        var result = (getInt(flag).unwrap() + getInt(flag).unwrap()) + getInt(flag).unwrap();\n" +
+                        "        return Result.success(result);\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Result<String, Integer> getInt(boolean flag) {\n" +
+                        "        return flag ? Result.success(10) : Result.error(\"error\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 

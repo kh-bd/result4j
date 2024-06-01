@@ -16,39 +16,36 @@ public class TryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInResources_failToCompile() {
-        String source = """
-                package cases.try_statement;
-                                
-                import dev.khbd.result4j.core.Result;
-                import java.lang.AutoCloseable;
-                
-                                
-                public class Main {
-                                
-                    public static Result<String, ?> greet(boolean flag) {
-                        try (var name = getName(flag).unwrap()) {
-                            return Result.success(name.name);
-                        }
-                    }
-                    
-                    private static Result<String, Name> getName(boolean flag) {
-                        if (flag) {
-                            return Result.success(new Name("Alex"));
-                        }
-                        return Result.error("error");
-                    }
-                }
-                
-                class Name implements AutoCloseable {
-                    String name;
-                    
-                    Name(String name) {
-                        this.name = name;
-                    }
-                    
-                    public void close() {}
-                }
-                """;
+        String source = "package cases.try_statement;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "import java.lang.AutoCloseable;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, ?> greet(boolean flag) {\n" +
+                        "        try (var name = getName(flag).unwrap()) {\n" +
+                        "            return Result.success(name.name);\n" +
+                        "        }\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    private static Result<String, Name> getName(boolean flag) {\n" +
+                        "        if (flag) {\n" +
+                        "            return Result.success(new Name(\"Alex\"));\n" +
+                        "        }\n" +
+                        "        return Result.error(\"error\");\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "\n" +
+                        "class Name implements AutoCloseable {\n" +
+                        "    String name;\n" +
+                        "\n" +
+                        "    Name(String name) {\n" +
+                        "        this.name = name;\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public void close() {}\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/try_statement/Main.java", source);
 
@@ -59,32 +56,30 @@ public class TryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInTryBlock() throws Exception {
-        String source = """
-                package cases.try_statement;
-                                
-                import dev.khbd.result4j.core.Result;
-                                
-                public class Main {
-                                
-                    public static Result<String, String> greet(boolean flag) {
-                        try {
-                            var name = getName(flag).unwrap();
-                            return Result.success(name);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            return Result.error("error");
-                        }
-                    }
-                    
-                    private static Result<String, String> getName(boolean flag) {
-                        if (flag) {
-                            return Result.success("Alex");
-                        }
-                        return Result.error("error");
-                    }
-                }
-                
-                """;
+        String source = "package cases.try_statement;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, String> greet(boolean flag) {\n" +
+                        "        try {\n" +
+                        "            var name = getName(flag).unwrap();\n" +
+                        "            return Result.success(name);\n" +
+                        "        } catch (Exception e) {\n" +
+                        "            e.printStackTrace();\n" +
+                        "            return Result.error(\"error\");\n" +
+                        "        }\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    private static Result<String, String> getName(boolean flag) {\n" +
+                        "        if (flag) {\n" +
+                        "            return Result.success(\"Alex\");\n" +
+                        "        }\n" +
+                        "        return Result.error(\"error\");\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/try_statement/Main.java", source);
 
@@ -108,30 +103,28 @@ public class TryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInCatchBlock() throws Exception {
-        String source = """
-                package cases.try_statement;
-                                
-                import dev.khbd.result4j.core.Result;
-                                
-                public class Main {
-                                
-                    public static Result<String, String> greet(boolean flag) {
-                        try {
-                            throw new RuntimeException();
-                        } catch (Exception e) {
-                            return Result.success(getName(flag).unwrap());
-                        }
-                    }
-                    
-                    private static Result<String, String> getName(boolean flag) {
-                        if (flag) {
-                            return Result.success("Alex");
-                        }
-                        return Result.error("error");
-                    }
-                }
-                
-                """;
+        String source = "package cases.try_statement;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, String> greet(boolean flag) {\n" +
+                        "        try {\n" +
+                        "            throw new RuntimeException();\n" +
+                        "        } catch (Exception e) {\n" +
+                        "            return Result.success(getName(flag).unwrap());\n" +
+                        "        }\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    private static Result<String, String> getName(boolean flag) {\n" +
+                        "        if (flag) {\n" +
+                        "            return Result.success(\"Alex\");\n" +
+                        "        }\n" +
+                        "        return Result.error(\"error\");\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/try_statement/Main.java", source);
 
@@ -155,31 +148,29 @@ public class TryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInFinallyBlock() throws Exception {
-        String source = """
-                package cases.try_statement;
-                                
-                import dev.khbd.result4j.core.Result;
-                                
-                public class Main {
-                                
-                    public static Result<String, String> greet(boolean flag) {
-                        try {
-                            throw new RuntimeException();
-                        } finally {
-                            var name = getName(flag).unwrap();
-                            return Result.success(name);
-                        }
-                    }
-                    
-                    private static Result<String, String> getName(boolean flag) {
-                        if (flag) {
-                            return Result.success("Alex");
-                        }
-                        return Result.error("error");
-                    }
-                }
-                
-                """;
+        String source = "package cases.try_statement;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, String> greet(boolean flag) {\n" +
+                        "        try {\n" +
+                        "            throw new RuntimeException();\n" +
+                        "        } finally {\n" +
+                        "            var name = getName(flag).unwrap();\n" +
+                        "            return Result.success(name);\n" +
+                        "        }\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    private static Result<String, String> getName(boolean flag) {\n" +
+                        "        if (flag) {\n" +
+                        "            return Result.success(\"Alex\");\n" +
+                        "        }\n" +
+                        "        return Result.error(\"error\");\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/try_statement/Main.java", source);
 

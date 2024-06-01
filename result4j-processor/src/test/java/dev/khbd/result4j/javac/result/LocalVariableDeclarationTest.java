@@ -15,26 +15,24 @@ public class LocalVariableDeclarationTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapOnLocalVarInitExpression_propagate() throws Exception {
-        String source = """
-                package cases.local_variable_declaration;
-                                
-                import dev.khbd.result4j.core.Result;
-                                
-                public class Main {
-                                
-                    public static Result<Exception, String> greet(int index) {
-                        var name = name(index).unwrap();
-                        return Result.success(name.toUpperCase());
-                    }
-                                
-                    private static Result<Exception, String> name(int index) {
-                        if (index == 0) {
-                            return Result.error(new RuntimeException("ERROR"));
-                        }
-                        return Result.success(index < 0 ? "Alex" : "Sergei");
-                    }
-                }
-                """;
+        String source = "package cases.local_variable_declaration;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<Exception, String> greet(int index) {\n" +
+                        "        var name = name(index).unwrap();\n" +
+                        "        return Result.success(name.toUpperCase());\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    private static Result<Exception, String> name(int index) {\n" +
+                        "        if (index == 0) {\n" +
+                        "            return Result.error(new RuntimeException(\"ERROR\"));\n" +
+                        "        }\n" +
+                        "        return Result.success(index < 0 ? \"Alex\" : \"Sergei\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/local_variable_declaration/Main.java", source);
 

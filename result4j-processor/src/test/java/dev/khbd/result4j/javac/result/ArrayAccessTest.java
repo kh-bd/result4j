@@ -15,23 +15,21 @@ public class ArrayAccessTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallAtInstancePosition() throws Exception {
-        String source = """
-                package cases.array_access;
-                                
-                import dev.khbd.result4j.core.Result;
-                                
-                public class Main {
-                
-                    public static Result<String, String> greet(boolean flag) {
-                        var name = getArray(flag).unwrap()[0];
-                        return Result.success(name);
-                    }
-                    
-                    private static Result<String, String[]> getArray(boolean flag) {
-                        return flag ? Result.success(new String[] {"Alex"}) : Result.error("error");
-                    }
-                }
-                """;
+        String source = "package cases.array_access;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, String> greet(boolean flag) {\n" +
+                        "        var name = getArray(flag).unwrap()[0];\n" +
+                        "        return Result.success(name);\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    private static Result<String, String[]> getArray(boolean flag) {\n" +
+                        "        return flag ? Result.success(new String[] {\"Alex\"}) : Result.error(\"error\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/array_access/Main.java", source);
 
@@ -54,24 +52,22 @@ public class ArrayAccessTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallAtIndexPosition() throws Exception {
-        String source = """
-                package cases.array_access;
-                                
-                import dev.khbd.result4j.core.Result;
-                                
-                public class Main {
-                
-                    public static Result<String, String> greet(boolean flag) {
-                        var names = new String[] {"Alex"};
-                        var name = names[getIndex(flag).unwrap()];
-                        return Result.success(name);
-                    }
-                    
-                    private static Result<String, Integer> getIndex(boolean flag) {
-                        return flag ? Result.success(0) : Result.error("error");
-                    }
-                }
-                """;
+        String source = "package cases.array_access;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, String> greet(boolean flag) {\n" +
+                        "        var names = new String[] {\"Alex\"};\n" +
+                        "        var name = names[getIndex(flag).unwrap()];\n" +
+                        "        return Result.success(name);\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    private static Result<String, Integer> getIndex(boolean flag) {\n" +
+                        "        return flag ? Result.success(0) : Result.error(\"error\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/array_access/Main.java", source);
 
@@ -94,27 +90,25 @@ public class ArrayAccessTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallAtInstanceAndIndexPositions() throws Exception {
-        String source = """
-                package cases.array_access;
-                                
-                import dev.khbd.result4j.core.Result;
-                                
-                public class Main {
-                
-                    public static Result<String, String> greet(boolean flag) {
-                        var name = getArray(flag).unwrap()[getIndex(flag).unwrap()];
-                        return Result.success(name);
-                    }
-                    
-                    private static Result<String, String[]> getArray(boolean flag) {
-                        return flag ? Result.success(new String[] {"Alex"}) : Result.error("error");
-                    }
-                    
-                    private static Result<String, Integer> getIndex(boolean flag) {
-                        return flag ? Result.success(0) : Result.error("error");
-                    }
-                }
-                """;
+        String source = "package cases.array_access;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, String> greet(boolean flag) {\n" +
+                        "        var name = getArray(flag).unwrap()[getIndex(flag).unwrap()];\n" +
+                        "        return Result.success(name);\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    private static Result<String, String[]> getArray(boolean flag) {\n" +
+                        "        return flag ? Result.success(new String[] {\"Alex\"}) : Result.error(\"error\");\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    private static Result<String, Integer> getIndex(boolean flag) {\n" +
+                        "        return flag ? Result.success(0) : Result.error(\"error\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/array_access/Main.java", source);
 

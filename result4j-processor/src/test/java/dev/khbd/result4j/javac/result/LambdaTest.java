@@ -15,27 +15,25 @@ public class LambdaTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLambdaBlock() throws Exception {
-        String source = """
-                package cases.in_lambda;
-                                
-                import dev.khbd.result4j.core.Result;
-                import java.util.concurrent.Callable;
-                                
-                public class Main {
-                                
-                    public static Result<String, String> getName(boolean flag) throws Exception {
-                        Callable<Result<String, String>> call = () -> {
-                            var name = name(flag).unwrap();
-                            return Result.success(name.toUpperCase());
-                        };
-                        return call.call();
-                    }
-                    
-                    public static Result<String, String> name(boolean flag) {
-                        return flag ? Result.success("Alex") : Result.error("error");
-                    }
-                }
-                """;
+        String source = "package cases.in_lambda;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "import java.util.concurrent.Callable;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, String> getName(boolean flag) throws Exception {\n" +
+                        "        Callable<Result<String, String>> call = () -> {\n" +
+                        "            var name = name(flag).unwrap();\n" +
+                        "            return Result.success(name.toUpperCase());\n" +
+                        "        };\n" +
+                        "        return call.call();\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Result<String, String> name(boolean flag) {\n" +
+                        "        return flag ? Result.success(\"Alex\") : Result.error(\"error\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_lambda/Main.java", source);
 
@@ -59,24 +57,22 @@ public class LambdaTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLambdaExpression() throws Exception {
-        String source = """
-                package cases.in_lambda;
-                                
-                import dev.khbd.result4j.core.Result;
-                import java.util.concurrent.Callable;
-                                
-                public class Main {
-                                
-                    public static Result<String, String> getName(boolean flag) throws Exception {
-                        Callable<Result<String, String>> call = () -> Result.success(name(flag).unwrap().toUpperCase());
-                        return call.call();
-                    }
-                    
-                    public static Result<String, String> name(boolean flag) {
-                        return flag ? Result.success("Alex") : Result.error("error");
-                    }
-                }
-                """;
+        String source = "package cases.in_lambda;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "import java.util.concurrent.Callable;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, String> getName(boolean flag) throws Exception {\n" +
+                        "        Callable<Result<String, String>> call = () -> Result.success(name(flag).unwrap().toUpperCase());\n" +
+                        "        return call.call();\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Result<String, String> name(boolean flag) {\n" +
+                        "        return flag ? Result.success(\"Alex\") : Result.error(\"error\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_lambda/Main.java", source);
 

@@ -16,25 +16,23 @@ public class ReturnTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInReturn_propagate() throws Exception {
-        String source = """
-                package cases.in_return;
-                                
-                import dev.khbd.result4j.core.Result;
-                                
-                public class Main {
-                                
-                    public static Result<RuntimeException, String> greet(int index) {
-                        return Result.success(name(index).unwrap());
-                    }
-                                
-                    private static Result<RuntimeException, String> name(int index) {
-                        if (index == 0) {
-                            return Result.error(new RuntimeException("error"));
-                        }
-                        return Result.success(index < 0 ? "Alex" : "Sergei");
-                    }
-                }
-                """;
+        String source = "package cases.in_return;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<RuntimeException, String> greet(int index) {\n" +
+                        "        return Result.success(name(index).unwrap());\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    private static Result<RuntimeException, String> name(int index) {\n" +
+                        "        if (index == 0) {\n" +
+                        "            return Result.error(new RuntimeException(\"error\"));\n" +
+                        "        }\n" +
+                        "        return Result.success(index < 0 ? \"Alex\" : \"Sergei\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_return/Main.java", source);
 
@@ -63,26 +61,24 @@ public class ReturnTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLabeledReturn_propagate() {
-        String source = """
-                package cases.in_return;
-                                
-                import dev.khbd.result4j.core.Result;
-                                
-                public class Main {
-                                
-                    public static Result<RuntimeException, String> greet(int index) {
-                        label:
-                        return Result.success(name(index).unwrap());
-                    }
-                                
-                    private static Result<RuntimeException, String> name(int index) {
-                        if (index == 0) {
-                            return Result.error(new RuntimeException("error"));
-                        }
-                        return Result.success(index < 0 ? "Alex" : "Sergei");
-                    }
-                }
-                """;
+        String source = "package cases.in_return;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<RuntimeException, String> greet(int index) {\n" +
+                        "        label:\n" +
+                        "        return Result.success(name(index).unwrap());\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    private static Result<RuntimeException, String> name(int index) {\n" +
+                        "        if (index == 0) {\n" +
+                        "            return Result.error(new RuntimeException(\"error\"));\n" +
+                        "        }\n" +
+                        "        return Result.success(index < 0 ? \"Alex\" : \"Sergei\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_return/Main.java", source);
 

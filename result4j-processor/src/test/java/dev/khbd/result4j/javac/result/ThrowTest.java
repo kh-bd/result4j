@@ -18,25 +18,23 @@ public class ThrowTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInThrowExpression() throws Exception {
-        String source = """
-                package cases.throw_statement;
-                                
-                import dev.khbd.result4j.core.Result;
-                                
-                public class Main {
-                                
-                    public static Result<String, ?> greet(boolean flag) {
-                        throw createThrow(flag).unwrap();
-                    }
-                                
-                    private static Result<String, RuntimeException> createThrow(boolean flag) {
-                        if (flag) {
-                            return Result.success(new RuntimeException());
-                        }
-                        return Result.error("error");
-                    }
-                }
-                """;
+        String source = "package cases.throw_statement;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, ?> greet(boolean flag) {\n" +
+                        "        throw createThrow(flag).unwrap();\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    private static Result<String, RuntimeException> createThrow(boolean flag) {\n" +
+                        "        if (flag) {\n" +
+                        "            return Result.success(new RuntimeException());\n" +
+                        "        }\n" +
+                        "        return Result.error(\"error\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/throw_statement/Main.java", source);
 
@@ -60,26 +58,24 @@ public class ThrowTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLabeledThrowExpression() {
-        String source = """
-                package cases.throw_statement;
-                                
-                import dev.khbd.result4j.core.Result;
-                                
-                public class Main {
-                                
-                    public static Result<String, ?> greet(boolean flag) {
-                        label:
-                        throw createThrow(flag).unwrap();
-                    }
-                                
-                    private static Result<String, RuntimeException> createThrow(boolean flag) {
-                        if (flag) {
-                            return Result.success(new RuntimeException());
-                        }
-                        return Result.error("error");
-                    }
-                }
-                """;
+        String source = "package cases.throw_statement;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, ?> greet(boolean flag) {\n" +
+                        "        label:\n" +
+                        "        throw createThrow(flag).unwrap();\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    private static Result<String, RuntimeException> createThrow(boolean flag) {\n" +
+                        "        if (flag) {\n" +
+                        "            return Result.success(new RuntimeException());\n" +
+                        "        }\n" +
+                        "        return Result.error(\"error\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/throw_statement/Main.java", source);
 

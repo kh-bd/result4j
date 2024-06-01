@@ -126,6 +126,28 @@ public interface Option<V> {
     }
 
     /**
+     * Convert option value to result value.
+     *
+     * @param error error value
+     * @param <E>   error type
+     * @return result
+     */
+    default <E> Result<E, V> toResult(@NonNull E error) {
+        return toResult(() -> error);
+    }
+
+    /**
+     * Convert option value to result value.
+     *
+     * @param errorF error provider
+     * @param <E>    error type
+     * @return result value
+     */
+    default <E> Result<E, V> toResult(@NonNull Supplier<E> errorF) {
+        return map(Result::<E, V>success).getOrElse(() -> Result.error(errorF.get()));
+    }
+
+    /**
      * Recover option by another instance.
      *
      * @param other another instance

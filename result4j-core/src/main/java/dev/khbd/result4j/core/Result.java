@@ -321,7 +321,7 @@ public interface Result<E, R> {
      * @param <R>    success value type
      * @return result
      */
-    static <E, R> Result<E, R> fromOption(@NonNull Option<R> option, E error) {
+    static <E, R> Result<E, R> fromOption(@NonNull Option<R> option, @NonNull E error) {
         return fromOption(option, () -> error);
     }
 
@@ -348,7 +348,7 @@ public interface Result<E, R> {
      * @param <R>   success value type
      * @return result
      */
-    static <E, R> Result<E, R> fromNullable(R value, E error) {
+    static <E, R> Result<E, R> fromNullable(R value, @NonNull E error) {
         return fromNullable(value, () -> error);
     }
 
@@ -361,7 +361,7 @@ public interface Result<E, R> {
      * @param <R>    success value type
      * @return result
      */
-    static <E, R> Result<E, R> fromNullable(R value, Supplier<E> errorF) {
+    static <E, R> Result<E, R> fromNullable(R value, @NonNull Supplier<E> errorF) {
         return Objects.isNull(value) ? Result.error(errorF.get()) : Result.success(value);
     }
 

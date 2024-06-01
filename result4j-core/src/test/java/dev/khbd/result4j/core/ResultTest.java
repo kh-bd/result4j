@@ -2,15 +2,22 @@ package dev.khbd.result4j.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.testng.annotations.Test;
 
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Sergei Khadanovich
@@ -186,6 +193,280 @@ public class ResultTest {
         result.peekError(f);
 
         verify(f, times(1)).accept("error");
+    }
+
+    @Test
+    public void getOrElse_valueIsSuccess_returnThatValue() {
+        Integer result = Result.success(10).getOrElse(12);
+
+        assertThat(result).isEqualTo(10);
+    }
+
+    @Test
+    public void getOrElse_valueIsFailure_returnDefaultValue() {
+        Integer result = Result.<String, Integer>error("error").getOrElse(12);
+
+        assertThat(result).isEqualTo(12);
+    }
+
+    @Test
+    public void getOrElseF_valueIsSuccess_returnThatValue() {
+        Function<String, Integer> elseF = mock(Function.class);
+        when(elseF.apply(any())).thenReturn(12);
+
+        Integer result = Result.<String, Integer>success(10).getOrElse(elseF);
+
+        assertThat(result).isEqualTo(10);
+        verify(elseF, never()).apply(anyString());
+    }
+
+    @Test
+    public void getOrElseF_valueIsFailure_returnDefaultValue() {
+        Integer result = Result.<String, Integer>error("error").getOrElse(__ -> 12);
+
+        assertThat(result).isEqualTo(12);
+    }
+
+    @Test
+    public void getOrThrow_valueIsSuccess_returnThatValue() {
+        Result<String, Integer> result = Result.success(10);
+
+        Integer value = result.getOrThrow(__ -> new RuntimeException("Ops"));
+
+        assertThat(value).isEqualTo(10);
+    }
+
+    @Test(expectedExceptions = RuntimeException.class, expectedExceptionsMessageRegExp = "Ops")
+    public void getOrThrow_valueIsFailure_throwException() {
+        Result.error("error").getOrThrow(__ -> new RuntimeException("Ops"));
+    }
+
+    @Test
+    public void orElse_resultIsError_returnDefault() {
+        Result<String, Integer> result = Result.<String, Integer>error("error")
+                .orElse(Result.success(10));
+
+        assertSuccess(result, 10);
+    }
+
+    @Test
+    public void orElse_resultIsSuccess_returnSelf() {
+        Result<String, Integer> result = Result.<String, Integer>success(9)
+                .orElse(Result.success(10));
+
+        assertSuccess(result, 9);
+    }
+
+    @Test
+    public void bimap_resultIsError_mapError() {
+        Function<String, Integer> errorF = mock(Function.class);
+        Function<Integer, String> successF = mock(Function.class);
+        Result<String, Integer> result = Result.error("error");
+        when(errorF.apply(anyString())).thenReturn(5);
+
+        Result<Integer, String> bimaped = result.bimap(String::length, successF);
+
+        assertError(bimaped, 5);
+        verify(successF, never()).apply(any());
+    }
+
+    @Test
+    public void bimap_resultIsSuccess_mapSuccess() {
+        Function<String, Integer> errorF = mock(Function.class);
+        Function<Integer, String> successF = mock(Function.class);
+        Result<String, Integer> result = Result.success(10);
+        when(successF.apply(any())).thenReturn("10");
+
+        Result<Integer, String> bimaped = result.bimap(String::length, successF);
+
+        assertSuccess(bimaped, "10");
+        verify(errorF, never()).apply(any());
+    }
+
+    @Test
+    public void flatten_resultIsError_returnIt() {
+        Result<String, ?> result = Result.flatten(Result.error("error"));
+
+        assertError(result, "error");
+    }
+
+    @Test
+    public void flatten_resultIsSuccessWithError_returnNestedError() {
+        Result<String, ?> result = Result.flatten(Result.success(Result.error("error")));
+
+        assertError(result, "error");
+    }
+
+    @Test
+    public void flatten_resultIsSuccessWithSuccess_returnSuccess() {
+        Result<String, Integer> result = Result.flatten(Result.success(Result.success(10)));
+
+        assertSuccess(result, 10);
+    }
+
+    @Test
+    public void drop_valueIsError_doNothing() {
+        Result<Integer, NoData> result = Result.error(10).drop();
+
+        assertError(result, 10);
+    }
+
+    @Test
+    public void drop_valueIsSuccess_dropSuccessValue() {
+        Result<?, NoData> result = Result.success(10).drop();
+
+        assertSuccess(result, NoData.INSTANCE);
+    }
+
+    @Test
+    public void dropError_valueIsError_dropIt() {
+        Result<NoData, ?> result = Result.error("error").dropError();
+
+        assertError(result, NoData.INSTANCE);
+    }
+
+    @Test
+    public void dropError_valueIsSuccess_doNothing() {
+        Result<NoData, String> result = Result.success("text").dropError();
+
+        assertSuccess(result, "text");
+    }
+
+    @Test
+    public void toOption_valueIsError_returnNone() {
+        Option<?> result = Result.error("error").toOption();
+
+        assertThat(result.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void toOption_valueIsSuccess_returnSome() {
+        Option<Integer> result = Result.success(10).toOption();
+
+        assertThat(result.isEmpty()).isFalse();
+        assertThat(result.get()).isEqualTo(10);
+    }
+
+    @Test
+    public void toStream_valueIsError_returnEmptyStream() {
+        Stream<Integer> result = Result.<String, Integer>error("error").toStream();
+
+        assertThat(result.toList()).isEmpty();
+    }
+
+    @Test
+    public void toStream_valueIsSuccess_returnOneElementStream() {
+        Stream<Integer> result = Result.success(10).toStream();
+
+        assertThat(result.toList()).containsExactly(10);
+    }
+
+    @Test
+    public void fromOption_optionIsNone_returnError() {
+        Result<String, Integer> result = Result.fromOption(Option.none(), "error");
+
+        assertError(result, "error");
+    }
+
+    @Test
+    public void fromOption_optionIsSome_returnSuccess() {
+        Result<String, Integer> result = Result.fromOption(Option.some(10), "error");
+
+        assertSuccess(result, 10);
+    }
+
+    @Test
+    public void fromNullable_valueIsNull_returnError() {
+        Result<String, Integer> result = Result.fromNullable(null, "error");
+
+        assertError(result, "error");
+    }
+
+    @Test
+    public void fromNullable_valueIsNotNull_returnSuccess() {
+        Result<String, Integer> result = Result.fromNullable(10, "error");
+
+        assertSuccess(result, 10);
+    }
+
+    @Test
+    public void sequencing_allValuesAreSuccess_returnCollectionOfThem() {
+        Result<String, List<Integer>> result =
+                Stream.<Result<String, Integer>>of(Result.success(10), Result.success(20), Result.success(30), Result.success(40))
+                        .collect(Result.sequencing(Collectors.toList()));
+
+        assertSuccess(result, List.of(10, 20, 30, 40));
+    }
+
+    @Test
+    public void sequencing_atLeastOneItemIsError_returnError() {
+        Result<String, List<Integer>> result =
+                Stream.<Result<String, Integer>>of(Result.success(10), Result.error("error"), Result.success(20))
+                        .collect(Result.sequencing(Collectors.toList()));
+
+        assertError(result, "error");
+    }
+
+    @Test
+    public void traversing_allValuesAreSuccess_returnCollectionOfThem() {
+        Result<String, Set<Integer>> result = Stream.of(10, 20, 30, 40)
+                .collect(Result.traversing(Result::<String, Integer>success, Collectors.toSet()));
+
+        assertSuccess(result, Set.of(10, 20, 30, 40));
+    }
+
+    @Test
+    public void traversing_someValuesAreError_returnError() {
+        Result<String, Set<Integer>> result = Stream.of(10, 20, 30, 40)
+                .collect(Result.traversing(num -> {
+                    if (num == 20) {
+                        return Result.error("error");
+                    }
+                    return Result.success(num);
+                }, Collectors.toSet()));
+
+        assertError(result, "error");
+    }
+
+    @Test
+    public void fromErroneousRunnable_withoutError_returnSuccess() {
+        Result<Exception, NoData> result = Result.fromErroneous(() -> {
+            System.out.println("10");
+        });
+
+        assertSuccess(result, NoData.INSTANCE);
+    }
+
+    @Test
+    public void fromErroneousRunnable_withError_returnFailure() {
+        Runnable code = () -> {
+            throw new RuntimeException("error");
+        };
+        Result<Exception, NoData> result = Result.fromErroneous(code);
+
+        assertThat(result.isError()).isTrue();
+        assertThat(result.getError()).hasMessage("error").isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    public void fromErroneousCallable_withoutError_returnSuccess() {
+        Result<Exception, Integer> result = Result.fromErroneous(() -> {
+            System.out.println("10");
+            return 10;
+        });
+
+        assertSuccess(result, 10);
+    }
+
+    @Test
+    public void fromErroneousCallable_withError_returnFailure() {
+        Callable<Integer> code = () -> {
+            throw new RuntimeException("error");
+        };
+        Result<Exception, Integer> result = Result.fromErroneous(code);
+
+        assertThat(result.isError()).isTrue();
+        assertThat(result.getError()).hasMessage("error").isInstanceOf(RuntimeException.class);
     }
 
     private static <E, V> void assertError(Result<E, V> result, E expected) {

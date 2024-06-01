@@ -9,41 +9,41 @@ import com.sun.tools.javac.util.List;
 import com.sun.tools.javac.util.Names;
 
 /**
- * Propagate strategy for {@link dev.khbd.result4j.core.Try} data type.
+ * Propagate strategy for {@link dev.khbd.result4j.core.Option} data type.
  *
  * @author Sergei Khadanovich
  */
-class TryResultPropagateStrategy implements ResultPropagateStrategy {
+class OptionPropagateStrategy implements PropagateStrategy {
 
     @Override
     public String id() {
-        return "try";
+        return "option";
     }
 
     @Override
     public Symbol type(Context context) {
         Symtab symtab = Symtab.instance(context);
         Names names = Names.instance(context);
-        return symtab.enterClass(symtab.unnamedModule, names.fromString("dev.khbd.result4j.core.Try"));
+        return symtab.enterClass(symtab.unnamedModule, names.fromString("dev.khbd.result4j.core.Option"));
     }
 
     @Override
     public PropagateLogicBuilder propagateLogicBuilder(Context context) {
-        return new TryPropagateLogicBuilder(context);
+        return new OptionPropagateLogicBuilder(context);
     }
 
     /**
-     * Propagate logic builder for {@link dev.khbd.result4j.core.Try} data type.
+     * Propagate logic builder for {@link dev.khbd.result4j.core.Option} data type.
      *
      * @author Sergei Khadanovich
      */
-    private static class TryPropagateLogicBuilder implements PropagateLogicBuilder {
+    private static class OptionPropagateLogicBuilder implements PropagateLogicBuilder {
 
         private final Names names;
         private final TreeMaker treeMaker;
         private final IdentNameStrategyFactory nameStrategyFactory;
 
-        TryPropagateLogicBuilder(Context context) {
+        OptionPropagateLogicBuilder(Context context) {
             this.names = Names.instance(context);
             this.treeMaker = TreeMaker.instance(context);
             this.nameStrategyFactory = IdentNameStrategyFactory.instance(context);
@@ -61,18 +61,10 @@ class TryResultPropagateStrategy implements ResultPropagateStrategy {
             List<JCTree.JCStatement> statements = List.of(
                     treeMaker.VarDef(treeMaker.Modifiers(0), receiverName, null, receiver, true),
                     treeMaker.If(
-                            treeMaker.Apply(List.nil(), treeMaker.Select(treeMaker.Ident(receiverName), names.fromString("isFailure")), List.nil()),
+                            treeMaker.Apply(List.nil(), treeMaker.Select(treeMaker.Ident(receiverName), names.fromString("isEmpty")), List.nil()),
                             treeMaker.Return(
-                                    treeMaker.Apply(
-                                            List.nil(),
-                                            treeMaker.Select(treeMaker.Ident(names.fromString("Try")), names.fromString("failure")),
-                                            List.of(
-                                                    treeMaker.Apply(
-                                                            List.nil(),
-                                                            treeMaker.Select(treeMaker.Ident(receiverName), names.fromString("getError")),
-                                                            List.nil()
-                                                    )
-                                            )
+                                    treeMaker.Apply(List.nil(),
+                                            treeMaker.Select(treeMaker.Ident(names.fromString("Option")), names.fromString("none")), List.nil()
                                     )
                             ),
                             null),

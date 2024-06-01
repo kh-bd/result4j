@@ -25,6 +25,30 @@ import java.util.stream.Stream;
 public class ResultTest {
 
     @Test
+    public void ap2_firstResultIsError_returnError() {
+        Result<String, ?> result = Result.ap(Result.success(1), Result.<String, String>error("error"))
+                .apply((r1, r2) -> r2 + r1);
+
+        assertError(result, "error");
+    }
+
+    @Test
+    public void ap2_secondResultIsError_returnError() {
+        Result<String, String> result = Result.ap(Result.error("error"), Result.success("Alex"))
+                .apply((r1, r2) -> r2 + r1);
+
+        assertError(result, "error");
+    }
+
+    @Test
+    public void ap2_bothResultsAreSuccess_returnCombinedResult() {
+        Result<?, String> result = Result.ap(Result.success(1), Result.success("Alex"))
+                .apply((r1, r2) -> r2 + r1);
+
+        assertSuccess(result, "Alex1");
+    }
+
+    @Test
     public void isError_resultIsError_returnTrue() {
         Result<String, ?> result = Result.error("error");
 

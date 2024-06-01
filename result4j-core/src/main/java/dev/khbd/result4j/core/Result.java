@@ -2,6 +2,7 @@ package dev.khbd.result4j.core;
 
 import static dev.khbd.result4j.core.Utils.cast;
 
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -200,36 +201,6 @@ public interface Result<E, R> {
     }
 
     /**
-     * Combine both results by a function.
-     *
-     * @param other another result value
-     * @param f     combine function
-     * @return combined either
-     */
-    default <R1, R2> Result<E, R2> zip(@NonNull Result<? extends E, ? extends R1> other,
-                                       @NonNull BiFunction<? super R, ? super R1, R2> f) {
-        return zipF(other, (r1, r2) -> Result.success(f.apply(r1, r2)));
-    }
-
-    /**
-     * Combine both results by a function.
-     *
-     * @param other another result value
-     * @param f     combine function
-     * @return combined either
-     */
-    default <R1, R2> Result<E, R2> zipF(@NonNull Result<? extends E, ? extends R1> other,
-                                        @NonNull BiFunction<? super R, ? super R1, Result<? extends E, R2>> f) {
-        // This cast is correct because <R1> is at a covariant position.
-        // If other contains subtype of R1, <code>R1 value = narrowed.get();</code> is correct
-        // because R1 is supertype for ? extends R1.
-        // Such code <code>R1 value = narrowed.getOrDefault(another r1 value);</code> is correct too for
-        // R1 type or any subtype of R1.
-        Result<E, R1> narrowed = cast(other);
-        return flatMap(r -> narrowed.flatMap(r1 -> f.apply(r, r1)));
-    }
-
-    /**
      * Recover result instance.
      *
      * @param other result recovering result instance
@@ -413,12 +384,12 @@ public interface Result<E, R> {
         return Collector.<Result<E, R>, Ref<Result<E, A>>, Result<E, U>>of(
                 () -> new Ref<>(Result.success(supplier.get())),
                 (ref, result) -> {
-                    ref.ref = ref.ref.zip(result, (acc, r) -> {
+                    ref.ref = Result.ap(ref.ref, result).apply((acc, r) -> {
                         accumulator.accept(acc, r);
                         return acc;
                     });
                 },
-                (ref1, ref2) -> new Ref<>(ref1.ref.zip(ref2.ref, combiner)),
+                (ref1, ref2) -> new Ref<>(Result.ap(ref1.ref, ref2.ref).apply(combiner)),
                 ref -> ref.ref.map(finisher)
         );
     }
@@ -449,6 +420,44 @@ public interface Result<E, R> {
     static <E, R> Result<E, R> flatten(@NonNull Result<? extends E, Result<? extends E, R>> result) {
         Result<E, Result<? extends E, R>> narrowed = cast(result);
         return narrowed.flatMap(Function.identity());
+    }
+
+    /**
+     * Combine two results into single one.
+     *
+     * @param result1 first result
+     * @param result2 second result
+     */
+    static <E, R1, R2> ResultApply2<E, R1, R2> ap(@NonNull Result<? extends E, R1> result1, @NonNull Result<? extends E, R2> result2) {
+        // This cast is correct because <E> is at a covariant position.
+        // Because it is at a covariant position, the <E> type is a supertype for
+        // result1 and result2 error types, it's correct to cast it to <E>.
+        return new ResultApply2<>(cast(result1), cast(result2));
+    }
+
+    /**
+     * Intermediate class to combine two result values.
+     *
+     * @param <E>  error type
+     * @param <R1> first success type
+     * @param <R2> second success type
+     */
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    final class ResultApply2<E, R1, R2> {
+
+        private final Result<E, R1> result1;
+        private final Result<E, R2> result2;
+
+        /**
+         * Apply combine function.
+         *
+         * @param f   function
+         * @param <R> new result value type
+         * @return combined result
+         */
+        public <R> Result<E, R> apply(@NonNull BiFunction<? super R1, ? super R2, R> f) {
+            return result1.flatMap(r1 -> result2.map(r2 -> f.apply(r1, r2)));
+        }
     }
 }
 

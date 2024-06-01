@@ -2,6 +2,7 @@ package dev.khbd.result4j.core;
 
 import static dev.khbd.result4j.core.Utils.cast;
 
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -94,34 +95,6 @@ public interface Option<V> {
      * @return transformed option
      */
     <R> Option<R> flatMap(Function<? super V, Option<? extends R>> function);
-
-    /**
-     * Zip option with another option.
-     *
-     * @param other    other option
-     * @param function combine function
-     * @param <R>      other option value type
-     * @param <C>      result value type
-     * @return combined value if both options are some
-     */
-    default <R, C> Option<C> zip(@NonNull Option<? extends R> other,
-                                 @NonNull BiFunction<? super V, ? super R, ? extends C> function) {
-        return zipF(other, (v, r) -> Option.fromNullable(function.apply(v, r)));
-    }
-
-    /**
-     * Zip option with another option.
-     *
-     * @param other    other option
-     * @param function combine function
-     * @param <R>      other option value type
-     * @param <C>      result value type
-     * @return combined value if both options are some
-     */
-    default <R, C> Option<C> zipF(@NonNull Option<? extends R> other,
-                                  @NonNull BiFunction<? super V, ? super R, Option<? extends C>> function) {
-        return flatMap(v -> other.flatMap(r -> function.apply(v, r)));
-    }
 
     /**
      * Peek value if present.
@@ -287,12 +260,12 @@ public interface Option<V> {
         return Collector.of(
                 () -> new Ref<>(Option.some(supplier.get())),
                 (ref, option) -> {
-                    ref.ref = ref.ref.zip(option, (acc, r) -> {
+                    ref.ref = Option.ap(ref.ref, option).apply((acc, r) -> {
                         accumulator.accept(acc, r);
                         return acc;
                     });
                 },
-                (ref1, ref2) -> new Ref<>(ref1.ref.zip(ref2.ref, combiner)),
+                (ref1, ref2) -> new Ref<>(Option.ap(ref1.ref, ref2.ref).apply(combiner)),
                 ref -> ref.ref.map(finisher)
         );
     }
@@ -311,6 +284,43 @@ public interface Option<V> {
     static <V, R, A, U> Collector<V, ?, Option<U>> traversing(@NonNull Function<? super V, Option<R>> f,
                                                               @NonNull Collector<? super R, A, U> downstream) {
         return Collectors.mapping(f, sequencing(downstream));
+    }
+
+    /**
+     * Combine two options into single one.
+     *
+     * @param option1 first option
+     * @param option2 second option
+     * @param <V1>    first type
+     * @param <V2>    second type
+     * @return combined option
+     */
+    static <V1, V2> OptionApply2<V1, V2> ap(@NonNull Option<V1> option1, @NonNull Option<V2> option2) {
+        return new OptionApply2<>(option1, option2);
+    }
+
+    /**
+     * Intermediate class to combine two option values.
+     *
+     * @param <V1> first option value type
+     * @param <V2> second option value type
+     */
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    final class OptionApply2<V1, V2> {
+
+        private final Option<V1> option1;
+        private final Option<V2> option2;
+
+        /**
+         * Apply combine function.
+         *
+         * @param f   function
+         * @param <V> new result type
+         * @return combined option
+         */
+        public <V> Option<V> apply(@NonNull BiFunction<? super V1, ? super V2, V> f) {
+            return option1.flatMap(v1 -> option2.map(v2 -> f.apply(v1, v2)));
+        }
     }
 }
 

@@ -2,6 +2,9 @@ package dev.khbd.result4j.javac;
 
 import static com.sun.tools.javac.code.Flags.UNATTRIBUTED;
 
+import com.sun.source.tree.MethodInvocationTree;
+import com.sun.source.tree.VariableTree;
+import com.sun.source.util.TreeScanner;
 import com.sun.tools.javac.comp.Attr;
 import com.sun.tools.javac.comp.AttrContext;
 import com.sun.tools.javac.comp.Enter;
@@ -29,6 +32,7 @@ class ReAttributer {
      * Reattribute compilation unit.
      */
     void attribute(JCTree.JCCompilationUnit unit) {
+//        unit.accept(new RemoveTypesScanner(), null);
         unit.getTypeDecls()
                 .stream()
                 .filter(declaration -> declaration instanceof JCTree.JCClassDecl)
@@ -55,5 +59,28 @@ class ReAttributer {
         var env = memberEnter.getMethodEnv(methodDecl, parent);
         methodDecl.sym.flags_field = methodDecl.sym.flags_field | UNATTRIBUTED;
         attr.attrib(env);
+    }
+
+    static class RemoveTypesScanner extends TreeScanner<Void, Void> {
+
+        @Override
+        public Void visitVariable(VariableTree node, Void unused) {
+            var decl = (JCTree.JCVariableDecl) node;
+
+            if (decl.declaredUsingVar()) {
+                decl.type = null;
+                decl.vartype = null;
+            }
+
+            return super.visitVariable(node, unused);
+        }
+
+        @Override
+        public Void visitMethodInvocation(MethodInvocationTree node, Void unused) {
+            var invocation = (JCTree.JCMethodInvocation) node;
+            invocation.type = null;
+            invocation.meth.type = null;
+            return super.visitMethodInvocation(node, unused);
+        }
     }
 }

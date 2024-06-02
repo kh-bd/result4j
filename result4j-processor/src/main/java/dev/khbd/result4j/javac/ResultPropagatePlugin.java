@@ -63,7 +63,7 @@ public class ResultPropagatePlugin implements Plugin {
                 return;
             }
 
-//            installDiagnostic();
+            installDiagnostic();
         }
 
         @Override
@@ -72,7 +72,7 @@ public class ResultPropagatePlugin implements Plugin {
                 return;
             }
 
-//            clearDiagnostic();
+            clearDiagnostic();
 
             StatementProcessingTreeScanner scanner = buildStatementProcessingTreeScanner(context);
 

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -308,6 +309,35 @@ public interface Result<E, R> {
     static <E, R> Result<E, R> fromOption(@NonNull Option<R> option, @NonNull Supplier<E> errorF) {
         return option.map(Result::<E, R>success)
                 .getOrElse(() -> Result.error(errorF.get()));
+    }
+
+    /**
+     * Factory method to create result from optional.
+     *
+     * @param option optional value
+     * @param error  error value
+     * @param <E>    error value type
+     * @param <R>    success value type
+     * @return result
+     */
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    static <E, R> Result<E, R> fromOptional(@NonNull Optional<R> option, @NonNull E error) {
+        return fromOptional(option, () -> error);
+    }
+
+    /**
+     * Factory method to create result from optional element.
+     *
+     * @param option optional value
+     * @param errorF error value provider
+     * @param <E>    error value type
+     * @param <R>    success value type
+     * @return result
+     */
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    static <E, R> Result<E, R> fromOptional(@NonNull Optional<R> option, @NonNull Supplier<E> errorF) {
+        return option.map(Result::<E, R>success)
+                .orElseGet(() -> Result.error(errorF.get()));
     }
 
     /**

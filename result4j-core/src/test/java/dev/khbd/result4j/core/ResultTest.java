@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import org.testng.annotations.Test;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -395,6 +396,20 @@ public class ResultTest {
     @Test
     public void fromOption_optionIsSome_returnSuccess() {
         Result<String, Integer> result = Result.fromOption(Option.some(10), "error");
+
+        assertSuccess(result, 10);
+    }
+
+    @Test
+    public void fromOptional_optionalIsEmpty_returnError() {
+        Result<String, Integer> result = Result.fromOptional(Optional.empty(), "error");
+
+        assertError(result, "error");
+    }
+
+    @Test
+    public void fromOptional_optionalIsNotEmpty_returnSuccess() {
+        Result<String, Integer> result = Result.fromOptional(Optional.of(10), "error");
 
         assertSuccess(result, 10);
     }

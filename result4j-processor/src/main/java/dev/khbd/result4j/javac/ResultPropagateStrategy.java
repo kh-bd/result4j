@@ -59,7 +59,7 @@ class ResultPropagateStrategy implements PropagateStrategy {
             treeMaker.at(position);
 
             List<JCTree.JCStatement> statements = List.of(
-                    treeMaker.VarDef(treeMaker.Modifiers(0), receiverName, null, receiver, true),
+                    treeMaker.VarDef(treeMaker.Modifiers(0), receiverName, treeMaker.Type(receiver.type), receiver, false),
                     treeMaker.If(
                             treeMaker.Apply(List.nil(), treeMaker.Select(treeMaker.Ident(receiverName), names.fromString("isError")), List.nil()),
                             treeMaker.Return(

@@ -9,5 +9,5 @@ import com.sun.tools.javac.util.List;
  * @param statements statements with propagation logic
  * @param ident      expression which can be inserted in place of original receiver
  */
-record PropagateLogic(List<JCTree.JCStatement> statements, JCTree.JCExpression ident) {
+record PropagateLogic(List<JCTree.JCStatement> statements, JCTree.JCIdent ident) {
 }

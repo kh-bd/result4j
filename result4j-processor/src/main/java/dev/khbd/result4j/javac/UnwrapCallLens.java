@@ -11,5 +11,5 @@ import java.util.function.Consumer;
  * @param replaceF function to consume replacement
  * @author Sergei Khadanovich
  */
-record UnwrapCallLens(JCTree.JCExpression receiver, Consumer<JCTree.JCExpression> replaceF) {
+record UnwrapCallLens(JCTree.JCExpression receiver, Consumer<JCTree.JCIdent> replaceF) {
 }

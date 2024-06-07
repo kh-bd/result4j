@@ -124,7 +124,7 @@ public class TryTest extends AbstractPluginTest {
     }
 
     @Test
-    public void propagate_unwrapCallInResourcesWithSeveralVarButUnwrapOnlyAtSecondPosition_failToCompile() throws Exception {
+    public void propagate_unwrapCallInResourcesWithSeveralVarButUnwrapOnlyAtSecondPosition() throws Exception {
         String source = """
                 package cases.try_statement;
                 
@@ -135,9 +135,8 @@ public class TryTest extends AbstractPluginTest {
                 public class Main {
                 
                     public static Option<?> greet(boolean flag) {
-                        try (var name = getName(flag).unwrap(); var name2 = getName(!flag).unwrap()) {
-                            System.out.println(name2.name);
-                            return Option.some(name.name);
+                        try (var name = getName(flag).unwrap(); var name2 = getName(flag).unwrap()) {
+                            return Option.some(name.name + name2.name);
                         }
                     }
                 
@@ -162,9 +161,78 @@ public class TryTest extends AbstractPluginTest {
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/try_statement/Main.java", source);
 
-        assertThat(result.isFail()).isTrue();
-        assertThat(result.getErrors()).extracting(Diagnostic::toString)
-                .anyMatch(msg -> msg.contains(" Unsupported position for unwrap method call"));
+        assertThat(result.isFail()).isFalse();
+
+        ClassLoader classLoader = result.classLoader();
+        Class<?> clazz = classLoader.loadClass("cases.try_statement.Main");
+        Method method = clazz.getMethod("greet", boolean.class);
+
+        // invoke with true
+        Option<String> greet = (Option<String>) method.invoke(null, true);
+        assertThat(greet.isEmpty()).isFalse();
+        assertThat(greet.get()).isEqualTo("AlexAlex");
+
+        // invoke with false
+        greet = (Option<String>) method.invoke(null, false);
+        assertThat(greet.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void propagate_unwrapCallInResourcesWithSeveralVarAndNextVarUsesPrevVar() throws Exception {
+        String source = """
+                package cases.try_statement;
+                
+                import dev.khbd.result4j.core.Option;
+                import java.lang.AutoCloseable;
+                
+                
+                public class Main {
+                
+                    public static Option<?> greet(boolean flag) {
+                        try (var name = getName(flag).unwrap(); var name2 = getName(name).unwrap(); var name3 = getName(name2).unwrap()) {
+                            return Option.some(name.name + name2.name + name3.name);
+                        }
+                    }
+                
+                    private static Option<Name> getName(boolean flag) {
+                        if (flag) {
+                            return Option.some(new Name("Alex"));
+                        }
+                        return Option.none();
+                    }
+                
+                    private static Option<Name> getName(Name other) {
+                        return Option.some(new Name(other.name));
+                    }
+                }
+                
+                class Name implements AutoCloseable {
+                    String name;
+                
+                    Name(String name) {
+                        this.name = name;
+                    }
+                
+                    public void close() {}
+                }
+                """;
+
+        CompilationResult result = compiler.compile(new PluginOptions(true), "cases/try_statement/Main.java", source);
+
+        assertThat(result.isFail()).isFalse();
+
+        ClassLoader classLoader = result.classLoader();
+        Class<?> clazz = classLoader.loadClass("cases.try_statement.Main");
+        Method method = clazz.getMethod("greet", boolean.class);
+
+        // invoke with true
+        Option<String> greet = (Option<String>) method.invoke(null, true);
+        assertThat(greet.isEmpty()).isFalse();
+        assertThat(greet.get()).isEqualTo("AlexAlexAlex");
+
+        // invoke with false
+        greet = (Option<String>) method.invoke(null, false);
+        assertThat(greet.isEmpty()).isTrue();
     }
 
     @Test

@@ -16,6 +16,7 @@ import com.sun.source.tree.SwitchTree;
 import com.sun.source.tree.SynchronizedTree;
 import com.sun.source.tree.ThrowTree;
 import com.sun.source.tree.Tree;
+import com.sun.source.tree.TryTree;
 import com.sun.source.tree.UnaryTree;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.util.SimpleTreeVisitor;
@@ -36,6 +37,27 @@ import java.util.function.Consumer;
 class UnwrapCallSearcher extends SimpleTreeVisitor<UnwrapCallLens, Object> {
 
     private final Symbol type;
+
+    @Override
+    public UnwrapCallLens visitTry(TryTree node, Object o) {
+        JCTree.JCTry jcTry = (JCTree.JCTry) node;
+
+        if (jcTry.resources != null) {
+            JCTree head = jcTry.resources.head;
+            if (Objects.nonNull(head) && head.getKind() == Tree.Kind.VARIABLE) {
+                JCTree.JCVariableDecl jcVar = (JCTree.JCVariableDecl) head;
+                JCTree.JCExpression receiver = getUnwrapCallReceiver(jcVar.init);
+                if (receiver != null) {
+                    return new UnwrapCallLens(receiver, (expr) -> {
+                        jcVar.init = expr;
+                        jcVar.sym = null;
+                    });
+                }
+            }
+        }
+
+        return null;
+    }
 
     @Override
     public UnwrapCallLens visitBinary(BinaryTree node, Object o) {

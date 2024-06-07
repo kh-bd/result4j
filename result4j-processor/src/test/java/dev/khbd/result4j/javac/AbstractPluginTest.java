@@ -15,7 +15,7 @@ import javax.tools.ToolProvider;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.StringWriter;
+import java.io.OutputStreamWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -167,9 +167,10 @@ public abstract class AbstractPluginTest {
             arguments.add(System.getProperty("java.class.path"));
             arguments.add(options.toString());
             arguments.add("--release=11");
+            arguments.add("-verbose");
 
             JavaCompiler.CompilationTask task
-                    = compiler.getTask(new StringWriter(), fileManager, diagnostic, arguments, null,
+                    = compiler.getTask(new OutputStreamWriter(System.out), fileManager, diagnostic, arguments, null,
                     toCompile);
 
             task.call();

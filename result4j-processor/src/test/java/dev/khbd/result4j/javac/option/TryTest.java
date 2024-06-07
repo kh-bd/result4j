@@ -15,22 +15,22 @@ import java.lang.reflect.Method;
 public class TryTest extends AbstractPluginTest {
 
     @Test
-    public void propagate_unwrapCallInResources_failToCompile() {
+    public void propagate_unwrapCallInResourcesWithOneVar() throws Exception {
         String source = """
                 package cases.try_statement;
-                                
+                
                 import dev.khbd.result4j.core.Option;
                 import java.lang.AutoCloseable;
                 
-                                
+                
                 public class Main {
-                                
+                
                     public static Option<?> greet(boolean flag) {
                         try (var name = getName(flag).unwrap()) {
                             return Option.some(name.name);
                         }
                     }
-                    
+                
                     private static Option<Name> getName(boolean flag) {
                         if (flag) {
                             return Option.some(new Name("Alex"));
@@ -41,11 +41,121 @@ public class TryTest extends AbstractPluginTest {
                 
                 class Name implements AutoCloseable {
                     String name;
-                    
+                
                     Name(String name) {
                         this.name = name;
                     }
-                    
+                
+                    public void close() {}
+                }
+                """;
+
+        CompilationResult result = compiler.compile(new PluginOptions(true), "cases/try_statement/Main.java", source);
+
+        assertThat(result.isFail()).isFalse();
+
+        ClassLoader classLoader = result.classLoader();
+        Class<?> clazz = classLoader.loadClass("cases.try_statement.Main");
+        Method method = clazz.getMethod("greet", boolean.class);
+
+        // invoke with true
+        Option<String> greet = (Option<String>) method.invoke(null, true);
+        assertThat(greet.isEmpty()).isFalse();
+        assertThat(greet.get()).isEqualTo("Alex");
+
+        // invoke with false
+        greet = (Option<String>) method.invoke(null, false);
+        assertThat(greet.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void propagate_unwrapCallInResourcesWithSeveralVarButUnwrapOnlyAtFirstPosition() throws Exception {
+        String source = """
+                package cases.try_statement;
+                
+                import dev.khbd.result4j.core.Option;
+                import java.lang.AutoCloseable;
+                
+                
+                public class Main {
+                
+                    public static Option<?> greet(boolean flag) {
+                        try (var name = getName(flag).unwrap(); var name2 = new Name("Sergei")) {
+                            System.out.println(name2.name);
+                            return Option.some(name.name);
+                        }
+                    }
+                
+                    private static Option<Name> getName(boolean flag) {
+                        if (flag) {
+                            return Option.some(new Name("Alex"));
+                        }
+                        return Option.none();
+                    }
+                }
+                
+                class Name implements AutoCloseable {
+                    String name;
+                
+                    Name(String name) {
+                        this.name = name;
+                    }
+                
+                    public void close() {}
+                }
+                """;
+
+        CompilationResult result = compiler.compile(new PluginOptions(true), "cases/try_statement/Main.java", source);
+
+        assertThat(result.isFail()).isFalse();
+
+        ClassLoader classLoader = result.classLoader();
+        Class<?> clazz = classLoader.loadClass("cases.try_statement.Main");
+        Method method = clazz.getMethod("greet", boolean.class);
+
+        // invoke with true
+        Option<String> greet = (Option<String>) method.invoke(null, true);
+        assertThat(greet.isEmpty()).isFalse();
+        assertThat(greet.get()).isEqualTo("Alex");
+
+        // invoke with false
+        greet = (Option<String>) method.invoke(null, false);
+        assertThat(greet.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void propagate_unwrapCallInResourcesWithSeveralVarButUnwrapOnlyAtSecondPosition_failToCompile() throws Exception {
+        String source = """
+                package cases.try_statement;
+                
+                import dev.khbd.result4j.core.Option;
+                import java.lang.AutoCloseable;
+                
+                
+                public class Main {
+                
+                    public static Option<?> greet(boolean flag) {
+                        try (var name = getName(flag).unwrap(); var name2 = getName(!flag).unwrap()) {
+                            System.out.println(name2.name);
+                            return Option.some(name.name);
+                        }
+                    }
+                
+                    private static Option<Name> getName(boolean flag) {
+                        if (flag) {
+                            return Option.some(new Name("Alex"));
+                        }
+                        return Option.none();
+                    }
+                }
+                
+                class Name implements AutoCloseable {
+                    String name;
+                
+                    Name(String name) {
+                        this.name = name;
+                    }
+                
                     public void close() {}
                 }
                 """;
@@ -61,11 +171,11 @@ public class TryTest extends AbstractPluginTest {
     public void propagate_unwrapCallInTryBlock() throws Exception {
         String source = """
                 package cases.try_statement;
-                                
+                
                 import dev.khbd.result4j.core.Option;
-                                
+                
                 public class Main {
-                                
+                
                     public static Option<String> greet(boolean flag) {
                         try {
                             var name = getName(flag).unwrap();
@@ -75,7 +185,7 @@ public class TryTest extends AbstractPluginTest {
                             return Option.none();
                         }
                     }
-                    
+                
                     private static Option<String> getName(boolean flag) {
                         if (flag) {
                             return Option.some("Alex");
@@ -88,7 +198,6 @@ public class TryTest extends AbstractPluginTest {
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/try_statement/Main.java", source);
 
-        System.out.println(result);
         assertThat(result.isFail()).isFalse();
 
         ClassLoader classLoader = result.classLoader();
@@ -109,11 +218,11 @@ public class TryTest extends AbstractPluginTest {
     public void propagate_unwrapCallInCatchBlock() throws Exception {
         String source = """
                 package cases.try_statement;
-                                
+                
                 import dev.khbd.result4j.core.Option;
-                                
+                
                 public class Main {
-                                
+                
                     public static Option<String> greet(boolean flag) {
                         try {
                             throw new RuntimeException();
@@ -121,7 +230,7 @@ public class TryTest extends AbstractPluginTest {
                             return Option.some(getName(flag).unwrap());
                         }
                     }
-                    
+                
                     private static Option<String> getName(boolean flag) {
                         if (flag) {
                             return Option.some("Alex");
@@ -134,7 +243,6 @@ public class TryTest extends AbstractPluginTest {
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/try_statement/Main.java", source);
 
-        System.out.println(result);
         assertThat(result.isFail()).isFalse();
 
         ClassLoader classLoader = result.classLoader();
@@ -155,11 +263,11 @@ public class TryTest extends AbstractPluginTest {
     public void propagate_unwrapCallInFinallyBlock() throws Exception {
         String source = """
                 package cases.try_statement;
-                                
+                
                 import dev.khbd.result4j.core.Option;
-                                
+                
                 public class Main {
-                                
+                
                     public static Option<String> greet(boolean flag) {
                         try {
                             throw new RuntimeException();
@@ -168,7 +276,7 @@ public class TryTest extends AbstractPluginTest {
                             return Option.some(name);
                         }
                     }
-                    
+                
                     private static Option<String> getName(boolean flag) {
                         if (flag) {
                             return Option.some("Alex");
@@ -181,7 +289,6 @@ public class TryTest extends AbstractPluginTest {
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/try_statement/Main.java", source);
 
-        System.out.println(result);
         assertThat(result.isFail()).isFalse();
 
         ClassLoader classLoader = result.classLoader();

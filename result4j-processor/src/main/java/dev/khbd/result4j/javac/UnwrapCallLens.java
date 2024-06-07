@@ -1,7 +1,8 @@
 package dev.khbd.result4j.javac;
 
 import com.sun.tools.javac.tree.JCTree;
-import lombok.Value;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.function.Consumer;
 
@@ -10,9 +11,10 @@ import java.util.function.Consumer;
  *
  * @author Sergei Khadanovich
  */
-@Value
+@Getter
+@RequiredArgsConstructor
 class UnwrapCallLens {
 
-    JCTree.JCExpression receiver;
-    Consumer<JCTree.JCIdent> replaceF;
+    private final JCTree.JCExpression receiver;
+    private final Consumer<JCTree.JCIdent> replaceF;
 }

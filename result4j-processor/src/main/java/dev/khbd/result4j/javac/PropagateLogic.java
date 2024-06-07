@@ -2,14 +2,16 @@ package dev.khbd.result4j.javac;
 
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.List;
-import lombok.Value;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 /**
  * Propagate logic.
  */
-@Value
+@Getter
+@RequiredArgsConstructor
 class PropagateLogic {
 
-    List<JCTree.JCStatement> statements;
-    JCTree.JCIdent ident;
+    private final List<JCTree.JCStatement> statements;
+    private final JCTree.JCIdent ident;
 }

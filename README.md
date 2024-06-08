@@ -1,12 +1,12 @@
 # Result4j
 
-Result4j is a library with simple functional primitives like `Option`, `Either`, etc. and compiler support for them.
+Result4j is a library with simple functional primitives like `Option` and `Result` with compiler support for them.
 
 [![CI latest](https://github.com/kh-bd/result4j/actions/workflows/main-tests.yml/badge.svg)](https://github.com/kh-bd/result4j/actions/workflows/main-tests.yml)
 
 ## Why do we need it?
 
-All we love functional primitives like `Option` and `Either`.
+All we love functional primitives like `Option` and `Result`.
 To use such primitives properly we have to write our code in so-called monad style
 with higher-order functions like `map` and `flatmap`.
 
@@ -23,8 +23,8 @@ Code might look like this:
 
 class SignService {
 
-    Either<GenericError, DocumentDto> sign(UUID id) {
-        return repository.findById(id)
+    Result<GenericError, DocumentDto> sign(UUID id) {
+        return Result.fromOptional(repository.findById(id), GenericError.entityNotFound(id))
                 .flatMap(document -> doSignDocument(document))
                 .map(repository::save)
                 .map(mapper::toDto);
@@ -42,8 +42,8 @@ The invocation of this method is going to be detected at compile time and origin
 For example, if we have a local variable declaration like this
 
 ```java
-Either<GenericError, DocumentDto> sign(UUID id) {
-    Document document = repository.findById(id).unwrap();
+Result<GenericError, DocumentDto> sign(UUID id) {
+    Document document = findDocumentById(id).unwrap();
     // ...
 }
 ```
@@ -51,33 +51,34 @@ Either<GenericError, DocumentDto> sign(UUID id) {
 it's going to be rewritten at compile time to something like this
 
 ```java
-Either<GenericError, DocumentDto> sign(UUID id) {
-    Either<GenericError, Document> $$rev = repository.findById(id);
-    if ($$rev.isLeft()) {
-        return Either.left($$rev.getLeft());
+Result<GenericError, DocumentDto> sign(UUID id) {
+    Result<GenericError, Document> $$rev = findDocumentById(id);
+    if ($$rev.isError()) {
+        return Result.error($$rev.getError());
     }
-    Document document = $$rev.getRight();
+    Document document = $$rev.get();
     // ...
 }
 
 ```
 
-So, the original code can be rewritten in something like this
+So, the original code can be rewritten in more imperative way
 
 ```java
 
 class SignService {
 
-    Either<GenericError, DocumentDto> sign(UUID id) {
-        Document document = repository.findById(id).unwrap();
-        Document signed = doSignDocument(document).uwwrap();
-        return Either.right(mapper.toDto(repository.save(signed)));
+    Result<GenericError, DocumentDto> sign(UUID id) {
+        Document document = Result.fromOptional(repository.findById(id), GenericError.entityNotFound(id)).unwrap();
+        Document signed = doSignDocument(document).unwrap();
+        return Result.success(mapper.toDto(repository.save(signed)));
     }
 }
 
 ```
 
-Such code is much cleaner, easier to read and write then original one.
+Such code is much cleaner, easier to read and write then original one and at the same time explicitly propagates errors
+as original code does.
 
 ## Versions
 

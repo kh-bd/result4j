@@ -6,6 +6,7 @@ import dev.khbd.result4j.core.Option;
 import dev.khbd.result4j.javac.AbstractPluginTest;
 import org.testng.annotations.Test;
 
+import javax.tools.Diagnostic;
 import java.lang.reflect.Method;
 
 /**
@@ -154,20 +155,9 @@ public class TryTest extends AbstractPluginTest {
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/try_statement/Main.java", source);
 
-        assertThat(result.isFail()).isFalse();
-
-        ClassLoader classLoader = result.classLoader();
-        Class<?> clazz = classLoader.loadClass("cases.try_statement.Main");
-        Method method = clazz.getMethod("greet", boolean.class);
-
-        // invoke with true
-        Option<String> greet = (Option<String>) method.invoke(null, true);
-        assertThat(greet.isEmpty()).isFalse();
-        assertThat(greet.get()).isEqualTo("AlexAlex");
-
-        // invoke with false
-        greet = (Option<String>) method.invoke(null, false);
-        assertThat(greet.isEmpty()).isTrue();
+        assertThat(result.isFail()).isTrue();
+        assertThat(result.getErrors()).extracting(Diagnostic::toString)
+                .anyMatch(msg -> msg.contains(" Unsupported position for unwrap method call"));
     }
 
     @Test
@@ -210,20 +200,9 @@ public class TryTest extends AbstractPluginTest {
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/try_statement/Main.java", source);
 
-        assertThat(result.isFail()).isFalse();
-
-        ClassLoader classLoader = result.classLoader();
-        Class<?> clazz = classLoader.loadClass("cases.try_statement.Main");
-        Method method = clazz.getMethod("greet", boolean.class);
-
-        // invoke with true
-        Option<String> greet = (Option<String>) method.invoke(null, true);
-        assertThat(greet.isEmpty()).isFalse();
-        assertThat(greet.get()).isEqualTo("AlexAlexAlex");
-
-        // invoke with false
-        greet = (Option<String>) method.invoke(null, false);
-        assertThat(greet.isEmpty()).isTrue();
+        assertThat(result.isFail()).isTrue();
+        assertThat(result.getErrors()).extracting(Diagnostic::toString)
+                .anyMatch(msg -> msg.contains(" Unsupported position for unwrap method call"));
     }
 
     @Test

@@ -15,20 +15,18 @@ public class GenericTests extends AbstractPluginTest {
     
     @Test
     public void propagate_useRawType() throws Exception {
-        String source = """
-                package cases.generics;
-                
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    public static Option get(Option value) {
-                        Object obj = value.unwrap();
-                        return Option.some(obj.toString());
-                    }
-                }
-                
-                """;
+        String source = "package cases.generics;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Option;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Option get(Option value) {\n" +
+                        "        Object obj = value.unwrap();\n" +
+                        "        return Option.some(obj.toString());\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/generics/Main.java", source);
 
@@ -49,20 +47,18 @@ public class GenericTests extends AbstractPluginTest {
 
     @Test
     public void propagate_useTypeVariable() throws Exception {
-        String source = """
-                package cases.generics;
-                
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    public static <T> Option<T> get(Option<T> value) {
-                        T obj = value.unwrap();
-                        return Option.some(obj);
-                    }
-                }
-                
-                """;
+        String source = "package cases.generics;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Option;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static <T> Option<T> get(Option<T> value) {\n" +
+                        "        T obj = value.unwrap();\n" +
+                        "        return Option.some(obj);\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/generics/Main.java", source);
 
@@ -83,19 +79,17 @@ public class GenericTests extends AbstractPluginTest {
 
     @Test
     public void propagate_useWildcardWithExtendBounds() throws Exception {
-        String source = """
-                package cases.generics;
-                
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    public static <T> Option<T> get(Option<? extends T> value) {
-                        return Option.some(value.unwrap());
-                    }
-                }
-                
-                """;
+        String source = "package cases.generics;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Option;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static <T> Option<T> get(Option<? extends T> value) {\n" +
+                        "        return Option.some(value.unwrap());\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/generics/Main.java", source);
 
@@ -116,19 +110,17 @@ public class GenericTests extends AbstractPluginTest {
 
     @Test
     public void propagate_useWildcardWithNoBounds() throws Exception {
-        String source = """
-                package cases.generics;
-                
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    public static Option<Object> get(Option<?> value) {
-                        return Option.some(value.unwrap());
-                    }
-                }
-                
-                """;
+        String source = "package cases.generics;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Option;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Option<Object> get(Option<?> value) {\n" +
+                        "        return Option.some(value.unwrap());\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/generics/Main.java", source);
 
@@ -149,19 +141,17 @@ public class GenericTests extends AbstractPluginTest {
 
     @Test
     public void propagate_useWildcardWithSuperBounds() throws Exception {
-        String source = """
-                package cases.generics;
-                
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    public static <T> Option<Object> get(Option<? super T> value) {
-                        return Option.some(value.unwrap());
-                    }
-                }
-                
-                """;
+        String source = "package cases.generics;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Option;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static <T> Option<Object> get(Option<? super T> value) {\n" +
+                        "        return Option.some(value.unwrap());\n" +
+                        "    }\n" +
+                        "}\n" +
+                        "\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/generics/Main.java", source);
 

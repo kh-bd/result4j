@@ -6,7 +6,6 @@ import com.sun.source.tree.BinaryTree;
 import com.sun.source.tree.CompoundAssignmentTree;
 import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.ExpressionStatementTree;
-import com.sun.source.tree.IdentifierTree;
 import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.NewArrayTree;
@@ -22,7 +21,6 @@ import com.sun.source.tree.TryTree;
 import com.sun.source.tree.UnaryTree;
 import com.sun.source.tree.VariableTree;
 import com.sun.source.util.SimpleTreeVisitor;
-import com.sun.source.util.TreeScanner;
 import com.sun.tools.javac.code.Symbol;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.util.List;
@@ -45,38 +43,21 @@ class UnwrapCallSearcher extends SimpleTreeVisitor<UnwrapCallLens, Object> {
     public UnwrapCallLens visitTry(TryTree node, Object o) {
         JCTree.JCTry jcTry = (JCTree.JCTry) node;
 
-        if (jcTry.resources != null) {
-            for (int i = 0; i < jcTry.resources.size(); i++) {
-                JCTree jcTree = jcTry.getResources().get(i);
-                if (jcTree.getKind() != Tree.Kind.VARIABLE) {
-                    continue;
-                }
+        if (jcTry.resources != null && jcTry.resources.head != null) {
+            JCTree jcTree = jcTry.resources.head;
+            if (jcTree.getKind() != Tree.Kind.VARIABLE) {
+                // variable declaration and variable usage (ident) are allowed in try with resources.
+                // in ident case, there is no way to use unwrap function so no need to analise this case.
+                return null;
+            }
 
-                JCTree.JCVariableDecl jcVar = (JCTree.JCVariableDecl) jcTree;
-                JCTree.JCExpression receiver = getUnwrapCallReceiver(jcVar.init);
-                if (receiver != null) {
-                    int current = i;
-                    return new UnwrapCallLens(receiver, expr -> {
-                        jcVar.init = expr;
-                        jcVar.sym = null;
-
-                        // replace current variable name with new generated name
-                        // for each remaining var declarations
-                        for (int j = current + 1; j < jcTry.resources.size(); j++) {
-                            JCTree nextTree = jcTry.getResources().get(j);
-                            nextTree.accept(new TreeScanner<Void, Void>() {
-                                @Override
-                                public Void visitIdentifier(IdentifierTree node, Void unused) {
-                                    JCTree.JCIdent ident = (JCTree.JCIdent) node;
-                                    if (ident.name.equals(jcVar.name)) {
-                                        ident.name = expr.name;
-                                    }
-                                    return null;
-                                }
-                            }, null);
-                        }
-                    });
-                }
+            JCTree.JCVariableDecl jcVar = (JCTree.JCVariableDecl) jcTree;
+            JCTree.JCExpression receiver = getUnwrapCallReceiver(jcVar.init);
+            if (receiver != null) {
+               return new UnwrapCallLens(receiver, expr -> {
+                   jcVar.init = expr;
+                   jcVar.sym = null;
+               });
             }
         }
 

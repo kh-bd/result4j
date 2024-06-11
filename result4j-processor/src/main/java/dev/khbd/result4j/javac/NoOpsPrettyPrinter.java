@@ -9,5 +9,6 @@ public class NoOpsPrettyPrinter implements PrettyPrinter {
 
     @Override
     public void print(JCTree tree) {
+        // Ops pretty printer
     }
 }

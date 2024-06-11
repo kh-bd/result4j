@@ -15,7 +15,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Cherry pick
-        uses: carloscastrojumo/github-cherry-pick-action@v1.0.1
+        uses: carloscastrojumo/github-cherry-pick-action@v1.0.10
         with:
           branch: backport-java21
           labels: |
@@ -35,7 +35,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Cherry pick
-        uses: carloscastrojumo/github-cherry-pick-action@v1.0.1
+        uses: carloscastrojumo/github-cherry-pick-action@v1.0.10
         with:
           branch: backport-java17
           labels: |
@@ -55,7 +55,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Cherry pick
-        uses: carloscastrojumo/github-cherry-pick-action@v1.0.1
+        uses: carloscastrojumo/github-cherry-pick-action@v1.0.10
         with:
           branch: backport-java11
           labels: |

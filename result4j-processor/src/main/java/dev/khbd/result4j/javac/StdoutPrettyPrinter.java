@@ -22,6 +22,7 @@ public class StdoutPrettyPrinter implements PrettyPrinter {
             writer.write(System.lineSeparator());
             writer.flush();
         } catch (IOException ioe) {
+            // ops
             ioe.printStackTrace();
         }
     }

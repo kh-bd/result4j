@@ -1,0 +1,28 @@
+on:
+  pull_request:
+    branches:
+      - main
+    types: ["closed"]
+
+jobs:
+  cherry-pick-to-backport-java21:
+    runs-on: ubuntu-latest
+    name: Cherry pick into backport-java21
+    if: ${{ (contains(github.event.pull_request.labels.*.name, 'backport-java21') || contains(github.event.pull_request.labels.*.name, 'backport-all')) && github.event.pull_request.merged == true }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Cherry pick
+        uses: carloscastrojumo/github-cherry-pick-action@v1.0.1
+        with:
+          branch: backport-java21
+          labels: |
+            cherry-pick
+          reviewers: |
+            KhadanovichSergey
+          title: '[cherry-pick] {old_title}'
+          body: 'Cherry picking #{old_pull_request_id} onto this branch'
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

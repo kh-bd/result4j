@@ -93,7 +93,62 @@ In the following table, you can find the latest result4j version for each suppor
 
 ## Maven support
 
-todo
+To enable `unwrap()` call processing in maven-based projects you have to configure `maven-compiler-plugin` to enable `result4j` plugin during compilation.
+Add the following configuration to your `pom.xml` file and that's it.
+
+```xml
+
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <configuration>
+        <compilerArgs>
+            <!-- enable result4j compiler plugin -->
+            <arg>-Xplugin:result4j</arg>
+        </compilerArgs>
+        <annotationProcessorPaths>
+            <path>
+                <groupId>dev.khbd.result4j</groupId>
+                <artifactId>result4j-processor</artifactId>
+                <version>VERSION</version>
+            </path>
+        </annotationProcessorPaths>
+    </configuration>
+</plugin>
+```
+
+Compiler plugin uses internal jdk api and this api is [strongly encapsulated by default](https://openjdk.org/jeps/403) in jdk 17.
+To relax it at compile time configuration should be changed accordingly.
+
+```xml
+
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <configuration>
+        <fork>true</fork>
+        <compilerArgs>
+            <!-- enable result4j compiler plugin -->
+            <arg>-Xplugin:result4j prettyPrint=true</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED</arg>
+            <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED</arg>
+        </compilerArgs>
+        <annotationProcessorPaths>
+            <path>
+                <groupId>dev.khbd.result4j</groupId>
+                <artifactId>result4j-processor</artifactId>
+                <version>VERSION</version>
+            </path>
+        </annotationProcessorPaths>
+    </configuration>
+</plugin>
+
+```
+Additional exports are needed only for compiling process, resulted code will not be dependent on internal jdk api.
 
 ## Gradle support
 

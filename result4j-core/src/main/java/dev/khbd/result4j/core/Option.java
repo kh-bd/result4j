@@ -1,5 +1,6 @@
 package dev.khbd.result4j.core;
 
+import static dev.khbd.result4j.core.Utils.ERROR_MESSAGE;
 import static dev.khbd.result4j.core.Utils.cast;
 
 import lombok.AccessLevel;
@@ -208,7 +209,7 @@ public interface Option<V> {
      * }</pre>
      */
     default V unwrap() {
-        throw new UnsupportedOperationException("This is a method with special support at compile time");
+        throw new UnsupportedOperationException(ERROR_MESSAGE);
     }
 
     /**

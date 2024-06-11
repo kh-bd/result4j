@@ -24,5 +24,43 @@ jobs:
             KhadanovichSergey
           title: '[cherry-pick] {old_title}'
           body: 'Cherry picking #{old_pull_request_id} onto this branch'
+  cherry-pick-to-backport-java17:
+    runs-on: ubuntu-latest
+    name: Cherry pick into backport-java17
+    if: ${{ (contains(github.event.pull_request.labels.*.name, 'backport-java17') || contains(github.event.pull_request.labels.*.name, 'backport-all')) && github.event.pull_request.merged == true }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Cherry pick
+        uses: carloscastrojumo/github-cherry-pick-action@v1.0.1
+        with:
+          branch: backport-java17
+          labels: |
+            cherry-pick
+          reviewers: |
+            KhadanovichSergey
+          title: '[cherry-pick] {old_title}'
+          body: 'Cherry picking #{old_pull_request_id} onto this branch'
+  cherry-pick-to-backport-java11:
+    runs-on: ubuntu-latest
+    name: Cherry pick into backport-java11
+    if: ${{ (contains(github.event.pull_request.labels.*.name, 'backport-java11') || contains(github.event.pull_request.labels.*.name, 'backport-all')) && github.event.pull_request.merged == true }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Cherry pick
+        uses: carloscastrojumo/github-cherry-pick-action@v1.0.1
+        with:
+          branch: backport-java11
+          labels: |
+            cherry-pick
+          reviewers: |
+            KhadanovichSergey
+          title: '[cherry-pick] {old_title}'
+          body: 'Cherry picking #{old_pull_request_id} onto this branch'
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

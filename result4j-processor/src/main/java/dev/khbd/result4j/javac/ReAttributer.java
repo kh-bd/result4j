@@ -35,5 +35,7 @@ class ReAttributer {
         var env = enter.getClassEnv(classDeclaration.sym);
         classDeclaration.sym.flags_field = classDeclaration.sym.flags_field | UNATTRIBUTED;
         attr.attrib(env);
+
+        // sout();
     }
 }

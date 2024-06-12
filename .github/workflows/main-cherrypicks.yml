@@ -22,7 +22,7 @@ jobs:
             cherry-pick
           reviewers: |
             KhadanovichSergey
-          title: '[cherry-pick] {old_title}'
+          title: '[cherry-pick backport-java21] {old_title}'
           body: 'Cherry picking #{old_pull_request_id} onto this branch'
           cherry-pick-branch: 'cherry-pick-backport-java21-${commitSha}'
   cherry-pick-to-backport-java17:
@@ -42,7 +42,7 @@ jobs:
             cherry-pick
           reviewers: |
             KhadanovichSergey
-          title: '[cherry-pick] {old_title}'
+          title: '[cherry-pick backport-java17] {old_title}'
           body: 'Cherry picking #{old_pull_request_id} onto this branch'
           cherry-pick-branch: 'cherry-pick-backport-java17-${commitSha}'
   cherry-pick-to-backport-java11:
@@ -62,7 +62,7 @@ jobs:
             cherry-pick
           reviewers: |
             KhadanovichSergey
-          title: '[cherry-pick] {old_title}'
+          title: '[cherry-pick backport-java11] {old_title}'
           body: 'Cherry picking #{old_pull_request_id} onto this branch'
           cherry-pick-branch: 'cherry-pick-backport-java11-${commitSha}'
 env:

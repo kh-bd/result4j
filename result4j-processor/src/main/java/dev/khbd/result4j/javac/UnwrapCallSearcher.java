@@ -68,6 +68,17 @@ class UnwrapCallSearcher extends SimpleTreeVisitor<UnwrapCallLens, Object> {
     public UnwrapCallLens visitBinary(BinaryTree node, Object o) {
         JCTree.JCBinary jcBinary = (JCTree.JCBinary) node;
 
+        // binary boolean operators
+        // only left side can be analized because execution order rules can be violated
+        // after code transformation.
+        if (jcBinary.getTag() == JCTree.Tag.OR || jcBinary.getTag() == JCTree.Tag.AND) {
+            JCTree.JCExpression leftReceiver = getUnwrapCallReceiver(jcBinary.lhs);
+            if (leftReceiver != null) {
+                return new UnwrapCallLens(leftReceiver, expr -> jcBinary.lhs = expr);
+            }
+            return visit(jcBinary.lhs, o);
+        }
+
         JCTree.JCExpression leftReceiver = getUnwrapCallReceiver(jcBinary.lhs);
         if (leftReceiver != null) {
             return new UnwrapCallLens(leftReceiver, expr -> jcBinary.lhs = expr);

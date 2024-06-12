@@ -16,18 +16,16 @@ public class ReturnTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallOnFunctionArgument() throws Exception {
-        String source = """
-                package cases.in_return;
-                
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    public static <T> Option<T> __unwrap__(Option<T> value) {
-                        return Option.some(value.unwrap());
-                    }
-                }
-                """;
+        String source = "package cases.in_return;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Option;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static <T> Option<T> __unwrap__(Option<T> value) {\n" +
+                        "        return Option.some(value.unwrap());\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_return/Main.java", source);
 
@@ -49,25 +47,23 @@ public class ReturnTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInReturn_propagate() throws Exception {
-        String source = """
-                package cases.in_return;
-                
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    public static Option<String> greet(int index) {
-                        return Option.some(name(index).unwrap());
-                    }
-                
-                    private static Option<String> name(int index) {
-                        if (index == 0) {
-                            return Option.none();
-                        }
-                        return Option.some(index < 0 ? "Alex" : "Sergei");
-                    }
-                }
-                """;
+        String source = "package cases.in_return;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Option;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Option<String> greet(int index) {\n" +
+                        "        return Option.some(name(index).unwrap());\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    private static Option<String> name(int index) {\n" +
+                        "        if (index == 0) {\n" +
+                        "            return Option.none();\n" +
+                        "        }\n" +
+                        "        return Option.some(index < 0 ? \"Alex\" : \"Sergei\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_return/Main.java", source);
 
@@ -94,26 +90,24 @@ public class ReturnTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInLabeledReturn_propagate() {
-        String source = """
-                package cases.in_return;
-                
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    public static Option<String> greet(int index) {
-                        label:
-                        return Option.some(name(index).unwrap());
-                    }
-                
-                    private static Option<String> name(int index) {
-                        if (index == 0) {
-                            return Option.none();
-                        }
-                        return Option.some(index < 0 ? "Alex" : "Sergei");
-                    }
-                }
-                """;
+        String source = "package cases.in_return;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Option;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Option<String> greet(int index) {\n" +
+                        "        label:\n" +
+                        "        return Option.some(name(index).unwrap());\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    private static Option<String> name(int index) {\n" +
+                        "        if (index == 0) {\n" +
+                        "            return Option.none();\n" +
+                        "        }\n" +
+                        "        return Option.some(index < 0 ? \"Alex\" : \"Sergei\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_return/Main.java", source);
 

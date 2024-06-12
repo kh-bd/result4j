@@ -15,18 +15,52 @@ import java.lang.reflect.Method;
 public class ReturnTest extends AbstractPluginTest {
 
     @Test
+    public void propagate_unwrapCallOnFunctionArgument() throws Exception {
+        String source = """
+                package cases.in_return;
+                
+                import dev.khbd.result4j.core.Result;
+                
+                public class Main {
+                
+                    public static <T> Result<String, T> __unwrap__(Result<String, T> value) {
+                        return Result.success(value.unwrap());
+                    }
+                }
+                """;
+
+        CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_return/Main.java", source);
+
+        assertThat(result.isSuccess()).isTrue();
+
+        ClassLoader classLoader = result.classLoader();
+        Class<?> clazz = classLoader.loadClass("cases.in_return.Main");
+        Method method = clazz.getMethod("__unwrap__", Result.class);
+
+        // invoke with 0
+        Result<String, String> unwrapped = (Result<String, String>) method.invoke(null, Result.error("error"));
+        assertThat(unwrapped.isError()).isTrue();
+        assertThat(unwrapped.getError()).isEqualTo("error");
+
+        // invoke with negative
+        unwrapped = (Result<String, String>) method.invoke(null, Result.success("Alex"));
+        assertThat(unwrapped.isSuccess()).isTrue();
+        assertThat(unwrapped.get()).isEqualTo("Alex");
+    }
+
+    @Test
     public void propagate_unwrapCallInReturn_propagate() throws Exception {
         String source = """
                 package cases.in_return;
-                                
+                
                 import dev.khbd.result4j.core.Result;
-                                
+                
                 public class Main {
-                                
+                
                     public static Result<RuntimeException, String> greet(int index) {
                         return Result.success(name(index).unwrap());
                     }
-                                
+                
                     private static Result<RuntimeException, String> name(int index) {
                         if (index == 0) {
                             return Result.error(new RuntimeException("error"));
@@ -65,16 +99,16 @@ public class ReturnTest extends AbstractPluginTest {
     public void propagate_unwrapCallInLabeledReturn_propagate() {
         String source = """
                 package cases.in_return;
-                                
+                
                 import dev.khbd.result4j.core.Result;
-                                
+                
                 public class Main {
-                                
+                
                     public static Result<RuntimeException, String> greet(int index) {
                         label:
                         return Result.success(name(index).unwrap());
                     }
-                                
+                
                     private static Result<RuntimeException, String> name(int index) {
                         if (index == 0) {
                             return Result.error(new RuntimeException("error"));

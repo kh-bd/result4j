@@ -16,23 +16,21 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inBinaryOrBoth() {
-        String source = """
-                package cases.in_binary;
-                
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    public static Option<Boolean> get(boolean flag1, boolean flag2) {
-                        var result = getByFlag(flag1).unwrap() || getByFlag(flag2).unwrap();
-                        return Option.some(result);
-                    }
-                
-                    public static Option<Boolean> getByFlag(boolean flag) {
-                        return Option.some(flag);
-                    }
-                }
-                """;
+        String source = "package cases.in_binary;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Option;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Option<Boolean> get(boolean flag1, boolean flag2) {\n" +
+                        "        var result = getByFlag(flag1).unwrap() || getByFlag(flag2).unwrap();\n" +
+                        "        return Option.some(result);\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Option<Boolean> getByFlag(boolean flag) {\n" +
+                        "        return Option.some(flag);\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 
@@ -43,23 +41,21 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inBinaryOrRight() {
-        String source = """
-                package cases.in_binary;
-                
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    public static Option<Boolean> get(boolean flag1, boolean flag2) {
-                        var result = flag1 || getByFlag(flag2).unwrap();
-                        return Option.some(result);
-                    }
-                
-                    public static Option<Boolean> getByFlag(boolean flag) {
-                        return Option.some(flag);
-                    }
-                }
-                """;
+        String source = "package cases.in_binary;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Option;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Option<Boolean> get(boolean flag1, boolean flag2) {\n" +
+                        "        var result = flag1 || getByFlag(flag2).unwrap();\n" +
+                        "        return Option.some(result);\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Option<Boolean> getByFlag(boolean flag) {\n" +
+                        "        return Option.some(flag);\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 
@@ -70,23 +66,21 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inBinaryOrLeft() throws Exception {
-        String source = """
-                package cases.in_binary;
-                
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    public static Option<Boolean> get(boolean flag1, boolean flag2) {
-                        var result = getByFlag(flag1).unwrap() || flag2;
-                        return Option.some(result);
-                    }
-                
-                    public static Option<Boolean> getByFlag(boolean flag) {
-                        return Option.some(flag);
-                    }
-                }
-                """;
+        String source = "package cases.in_binary;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Option;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Option<Boolean> get(boolean flag1, boolean flag2) {\n" +
+                        "        var result = getByFlag(flag1).unwrap() || flag2;\n" +
+                        "        return Option.some(result);\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Option<Boolean> getByFlag(boolean flag) {\n" +
+                        "        return Option.some(flag);\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 
@@ -117,23 +111,21 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inBinaryAndBoth() {
-        String source = """
-                package cases.in_binary;
-                
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    public static Option<Boolean> get(boolean flag1, boolean flag2) {
-                        var result = getByFlag(flag1).unwrap() && getByFlag(flag2).unwrap();
-                        return Option.some(result);
-                    }
-                
-                    public static Option<Boolean> getByFlag(boolean flag) {
-                        return Option.some(flag);
-                    }
-                }
-                """;
+        String source = "package cases.in_binary;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Option;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Option<Boolean> get(boolean flag1, boolean flag2) {\n" +
+                        "        var result = getByFlag(flag1).unwrap() && getByFlag(flag2).unwrap();\n" +
+                        "        return Option.some(result);\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Option<Boolean> getByFlag(boolean flag) {\n" +
+                        "        return Option.some(flag);\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 
@@ -144,23 +136,21 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inBinaryAndRight() {
-        String source = """
-                package cases.in_binary;
-                
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    public static Option<Boolean> get(boolean flag1, boolean flag2) {
-                        var result = flag1 && getByFlag(flag2).unwrap();
-                        return Option.some(result);
-                    }
-                
-                    public static Option<Boolean> getByFlag(boolean flag) {
-                        return Option.some(flag);
-                    }
-                }
-                """;
+        String source = "package cases.in_binary;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Option;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Option<Boolean> get(boolean flag1, boolean flag2) {\n" +
+                        "        var result = flag1 && getByFlag(flag2).unwrap();\n" +
+                        "        return Option.some(result);\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Option<Boolean> getByFlag(boolean flag) {\n" +
+                        "        return Option.some(flag);\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 
@@ -171,23 +161,21 @@ public class BinaryTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inBinaryAndLeft() throws Exception {
-        String source = """
-                package cases.in_binary;
-                
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    public static Option<Boolean> get(boolean flag1, boolean flag2) {
-                        var result = getByFlag(flag1).unwrap() && flag2;
-                        return Option.some(result);
-                    }
-                
-                    public static Option<Boolean> getByFlag(boolean flag) {
-                        return Option.some(flag);
-                    }
-                }
-                """;
+        String source = "package cases.in_binary;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Option;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Option<Boolean> get(boolean flag1, boolean flag2) {\n" +
+                        "        var result = getByFlag(flag1).unwrap() && flag2;\n" +
+                        "        return Option.some(result);\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Option<Boolean> getByFlag(boolean flag) {\n" +
+                        "        return Option.some(flag);\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/in_binary/Main.java", source);
 

@@ -6,6 +6,7 @@ import com.sun.source.tree.BinaryTree;
 import com.sun.source.tree.CompoundAssignmentTree;
 import com.sun.source.tree.EnhancedForLoopTree;
 import com.sun.source.tree.ExpressionStatementTree;
+import com.sun.source.tree.IfTree;
 import com.sun.source.tree.MemberSelectTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.NewArrayTree;
@@ -150,6 +151,18 @@ class UnwrapCallSearcher extends SimpleTreeVisitor<UnwrapCallLens, Object> {
         }
 
         return visit(jcSwitch.selector, o);
+    }
+
+    @Override
+    public UnwrapCallLens visitIf(IfTree node, Object o) {
+        JCTree.JCIf jcIf = (JCTree.JCIf) node;
+
+        JCTree.JCExpression receiver = getUnwrapCallReceiver(jcIf.cond);
+        if (receiver != null) {
+            return new UnwrapCallLens(receiver, expr -> jcIf.cond = expr);
+        }
+
+        return visit(jcIf.cond, o);
     }
 
     @Override

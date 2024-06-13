@@ -16,28 +16,26 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inCondition() throws Exception {
-        String source = """
-                package cases.if_statement;
-                
-                import dev.khbd.result4j.core.Result;
-                
-                public class Main {
-                
-                    public static Result<String, String> getName(int flag) {
-                        if (getFlag(flag).unwrap().booleanValue()) {
-                            return Result.success("Alex");
-                        }
-                        return Result.success("Sergei");
-                    }
-                
-                    public static Result<String, Boolean> getFlag(int flag) {
-                        if (flag == 0) {
-                            return Result.error("error");
-                        }
-                        return Result.success(flag > 0);
-                    }
-                }
-                """;
+        String source = "package cases.if_statement;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, String> getName(int flag) {\n" +
+                        "        if (getFlag(flag).unwrap().booleanValue()) {\n" +
+                        "            return Result.success(\"Alex\");\n" +
+                        "        }\n" +
+                        "        return Result.success(\"Sergei\");\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Result<String, Boolean> getFlag(int flag) {\n" +
+                        "        if (flag == 0) {\n" +
+                        "            return Result.error(\"error\");\n" +
+                        "        }\n" +
+                        "        return Result.success(flag > 0);\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -65,28 +63,26 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inComplexConditionButAtLeftSide() throws Exception {
-        String source = """
-                package cases.if_statement;
-                
-                import dev.khbd.result4j.core.Result;
-                
-                public class Main {
-                
-                    public static Result<String, String> getName(int flag) {
-                        if (getFlag(flag).unwrap().booleanValue() && flag > 0) {
-                            return Result.success("Alex");
-                        }
-                        return Result.success("Sergei");
-                    }
-                
-                    public static Result<String, Boolean> getFlag(int flag) {
-                        if (flag == 0) {
-                            return Result.error("error");
-                        }
-                        return Result.success(flag > 0);
-                    }
-                }
-                """;
+        String source = "package cases.if_statement;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, String> getName(int flag) {\n" +
+                        "        if (getFlag(flag).unwrap().booleanValue() && flag > 0) {\n" +
+                        "            return Result.success(\"Alex\");\n" +
+                        "        }\n" +
+                        "        return Result.success(\"Sergei\");\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Result<String, Boolean> getFlag(int flag) {\n" +
+                        "        if (flag == 0) {\n" +
+                        "            return Result.error(\"error\");\n" +
+                        "        }\n" +
+                        "        return Result.success(flag > 0);\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -114,30 +110,28 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inElseIfCondition_failCompilation() throws Exception {
-        String source = """
-                package cases.if_statement;
-                
-                import dev.khbd.result4j.core.Result;
-                
-                public class Main {
-                
-                    public static Result<String, String> getName(int flag) {
-                        if (flag == 0) {
-                            return Result.error("error");
-                        } else if (getFlag(flag).unwrap().booleanValue()) {
-                            return Result.success("Alex");
-                        }
-                        return Result.success("Sergei");
-                    }
-                
-                    public static Result<String, Boolean> getFlag(int flag) {
-                        if (flag == 0) {
-                            return Result.error("error");
-                        }
-                        return Result.success(flag > 0);
-                    }
-                }
-                """;
+        String source = "package cases.if_statement;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, String> getName(int flag) {\n" +
+                        "        if (flag == 0) {\n" +
+                        "            return Result.error(\"error\");\n" +
+                        "        } else if (getFlag(flag).unwrap().booleanValue()) {\n" +
+                        "            return Result.success(\"Alex\");\n" +
+                        "        }\n" +
+                        "        return Result.success(\"Sergei\");\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Result<String, Boolean> getFlag(int flag) {\n" +
+                        "        if (flag == 0) {\n" +
+                        "            return Result.error(\"error\");\n" +
+                        "        }\n" +
+                        "        return Result.success(flag > 0);\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -165,28 +159,26 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inRightSideOfComplexCondition_failCompilation() {
-        String source = """
-                package cases.if_statement;
-                
-                import dev.khbd.result4j.core.Result;
-                
-                public class Main {
-                
-                    public static Result<String, String> getName(int flag) {
-                        if (flag > 0 && getFlag(flag).unwrap().booleanValue()) {
-                            return Result.success("Alex");
-                        }
-                        return Result.error("error");
-                    }
-                
-                    public static Result<String, Boolean> getFlag(int flag) {
-                        if (flag == 0) {
-                            return Result.error("error");
-                        }
-                        return Result.success(flag > 0);
-                    }
-                }
-                """;
+        String source = "package cases.if_statement;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, String> getName(int flag) {\n" +
+                        "        if (flag > 0 && getFlag(flag).unwrap().booleanValue()) {\n" +
+                        "            return Result.success(\"Alex\");\n" +
+                        "        }\n" +
+                        "        return Result.error(\"error\");\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Result<String, Boolean> getFlag(int flag) {\n" +
+                        "        if (flag == 0) {\n" +
+                        "            return Result.error(\"error\");\n" +
+                        "        }\n" +
+                        "        return Result.success(flag > 0);\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -197,26 +189,24 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inThenBlock_success() throws Exception {
-        String source = """
-                package cases.if_statement;
-                
-                import dev.khbd.result4j.core.Result;
-                
-                public class Main {
-                
-                    public static Result<String, String> getName(boolean flag) {
-                        if (flag) {
-                            return Result.success(getName().unwrap().toUpperCase());
-                        } else {
-                            return Result.error("error");
-                        }
-                    }
-                
-                    public static Result<String, String> getName() {
-                        return Result.success("Alex");
-                    }
-                }
-                """;
+        String source = "package cases.if_statement;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, String> getName(boolean flag) {\n" +
+                        "        if (flag) {\n" +
+                        "            return Result.success(getName().unwrap().toUpperCase());\n" +
+                        "        } else {\n" +
+                        "            return Result.error(\"error\");\n" +
+                        "        }\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Result<String, String> getName() {\n" +
+                        "        return Result.success(\"Alex\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -239,26 +229,24 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inElseBlock_success() throws Exception {
-        String source = """
-                package cases.if_statement;
-                
-                import dev.khbd.result4j.core.Result;
-                
-                public class Main {
-                
-                    public static Result<String, String> getName(boolean flag) {
-                        if (flag) {
-                            return Result.error("error");
-                        } else {
-                            return Result.success(getName().unwrap().toUpperCase());
-                        }
-                    }
-                
-                    public static Result<String, String> getName() {
-                        return Result.success("Alex");
-                    }
-                }
-                """;
+        String source = "package cases.if_statement;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, String> getName(boolean flag) {\n" +
+                        "        if (flag) {\n" +
+                        "            return Result.error(\"error\");\n" +
+                        "        } else {\n" +
+                        "            return Result.success(getName().unwrap().toUpperCase());\n" +
+                        "        }\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Result<String, String> getName() {\n" +
+                        "        return Result.success(\"Alex\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -281,23 +269,21 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inThenStatement_success() throws Exception {
-        String source = """
-                package cases.if_statement;
-                
-                import dev.khbd.result4j.core.Result;
-                
-                public class Main {
-                
-                    public static Result<String, String> getName(boolean flag) {
-                        if (flag) return Result.success(getName().unwrap().toUpperCase());
-                        else return Result.error("error");
-                    }
-                
-                    public static Result<String, String> getName() {
-                        return Result.success("Alex");
-                    }
-                }
-                """;
+        String source = "package cases.if_statement;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, String> getName(boolean flag) {\n" +
+                        "        if (flag) return Result.success(getName().unwrap().toUpperCase());\n" +
+                        "        else return Result.error(\"error\");\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Result<String, String> getName() {\n" +
+                        "        return Result.success(\"Alex\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 
@@ -320,23 +306,21 @@ public class IfTest extends AbstractPluginTest {
 
     @Test
     public void propagate_inElseStatement_success() throws Exception {
-        String source = """
-                package cases.if_statement;
-                
-                import dev.khbd.result4j.core.Result;
-                
-                public class Main {
-                
-                    public static Result<String, String> getName(boolean flag) {
-                        if (flag) return Result.error("error");
-                        else return Result.success(getName().unwrap().toUpperCase());
-                    }
-                
-                    public static Result<String, String> getName() {
-                        return Result.success("Alex");
-                    }
-                }
-                """;
+        String source = "package cases.if_statement;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Result;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Result<String, String> getName(boolean flag) {\n" +
+                        "        if (flag) return Result.error(\"error\");\n" +
+                        "        else return Result.success(getName().unwrap().toUpperCase());\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Result<String, String> getName() {\n" +
+                        "        return Result.success(\"Alex\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/if_statement/Main.java", source);
 

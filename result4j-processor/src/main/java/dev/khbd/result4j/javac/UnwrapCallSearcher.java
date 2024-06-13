@@ -141,18 +141,6 @@ class UnwrapCallSearcher extends SimpleTreeVisitor<UnwrapCallLens, Object> {
     }
 
     @Override
-    public UnwrapCallLens visitSwitchExpression(SwitchExpressionTree node, Object o) {
-        JCTree.JCSwitchExpression jcSwitch = (JCTree.JCSwitchExpression) node;
-
-        JCTree.JCExpression receiver = getUnwrapCallReceiver(jcSwitch.selector);
-        if (receiver != null) {
-            return new UnwrapCallLens(receiver, expr -> jcSwitch.selector = expr);
-        }
-
-        return visit(jcSwitch.selector, o);
-    }
-
-    @Override
     public UnwrapCallLens visitIf(IfTree node, Object o) {
         JCTree.JCIf jcIf = (JCTree.JCIf) node;
 

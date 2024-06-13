@@ -16,30 +16,28 @@ public class ConditionalExpressionTest extends AbstractPluginTest {
 
     @Test
     public void propagate_nestedThen_failCompilation() {
-        String source = """
-                package cases.conditional_expression;
-                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    static Random rnd = new Random();
-                
-                    public static Option<String> getName() {
-                        return rnd.nextBoolean()
-                          ? (random().unwrap() ? Option.some("Alex") : Option.none())
-                          : Option.some("Alex");
-                    }
-                
-                    public static Option<Boolean> random() {
-                        if (rnd.nextBoolean()) {
-                            return Option.some(rnd.nextBoolean());
-                        }
-                        return Option.none();
-                    }
-                }
-                """;
+        String source = "package cases.conditional_expression;\n" +
+                        "\n" +
+                        "import java.util.Random;\n" +
+                        "import dev.khbd.result4j.core.Option;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    static Random rnd = new Random();\n" +
+                        "\n" +
+                        "    public static Option<String> getName() {\n" +
+                        "        return rnd.nextBoolean()\n" +
+                        "          ? (random().unwrap() ? Option.some(\"Alex\") : Option.none())\n" +
+                        "          : Option.some(\"Alex\");\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Option<Boolean> random() {\n" +
+                        "        if (rnd.nextBoolean()) {\n" +
+                        "            return Option.some(rnd.nextBoolean());\n" +
+                        "        }\n" +
+                        "        return Option.none();\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/conditional_expression/Main.java", source);
 
@@ -50,30 +48,28 @@ public class ConditionalExpressionTest extends AbstractPluginTest {
 
     @Test
     public void propagate_nestedElse_failCompilation() {
-        String source = """
-                package cases.conditional_expression;
-                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    static Random rnd = new Random();
-                
-                    public static Option<String> getName() {
-                        return rnd.nextBoolean()
-                          ? Option.some("Alex")
-                          : (random().unwrap() ? Option.some("Alex") : Option.none());
-                    }
-                
-                    public static Option<Boolean> random() {
-                        if (rnd.nextBoolean()) {
-                            return Option.some(rnd.nextBoolean());
-                        }
-                        return Option.none();
-                    }
-                }
-                """;
+        String source = "package cases.conditional_expression;\n" +
+                        "\n" +
+                        "import java.util.Random;\n" +
+                        "import dev.khbd.result4j.core.Option;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    static Random rnd = new Random();\n" +
+                        "\n" +
+                        "    public static Option<String> getName() {\n" +
+                        "        return rnd.nextBoolean()\n" +
+                        "          ? Option.some(\"Alex\")\n" +
+                        "          : (random().unwrap() ? Option.some(\"Alex\") : Option.none());\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Option<Boolean> random() {\n" +
+                        "        if (rnd.nextBoolean()) {\n" +
+                        "            return Option.some(rnd.nextBoolean());\n" +
+                        "        }\n" +
+                        "        return Option.none();\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/conditional_expression/Main.java", source);
 
@@ -84,27 +80,25 @@ public class ConditionalExpressionTest extends AbstractPluginTest {
 
     @Test
     public void propagate_nestedCondition() throws Exception {
-        String source = """
-                package cases.conditional_expression;
-                
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    public static Option<String> getName(int flag) {
-                        return (flag(flag).unwrap() ? true : false)
-                          ? Option.some("Alex")
-                          : Option.some("Sergei");
-                    }
-                
-                    public static Option<Boolean> flag(int flag) {
-                        if (flag == 0) {
-                            return Option.none();
-                        }
-                        return Option.some(flag > 0);
-                    }
-                }
-                """;
+        String source = "package cases.conditional_expression;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Option;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Option<String> getName(int flag) {\n" +
+                        "        return (flag(flag).unwrap() ? true : false)\n" +
+                        "          ? Option.some(\"Alex\")\n" +
+                        "          : Option.some(\"Sergei\");\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Option<Boolean> flag(int flag) {\n" +
+                        "        if (flag == 0) {\n" +
+                        "            return Option.none();\n" +
+                        "        }\n" +
+                        "        return Option.some(flag > 0);\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/conditional_expression/Main.java", source);
 
@@ -128,27 +122,25 @@ public class ConditionalExpressionTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInCondition() throws Exception {
-        String source = """
-                package cases.conditional_expression;
-                
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    public static Option<String> getName(int flag) {
-                        return flag(flag).unwrap()
-                          ? Option.some("Alex")
-                          : Option.some("Sergei");
-                    }
-                
-                    public static Option<Boolean> flag(int flag) {
-                        if (flag == 0) {
-                            return Option.none();
-                        }
-                        return Option.some(flag > 0);
-                    }
-                }
-                """;
+        String source = "package cases.conditional_expression;\n" +
+                        "\n" +
+                        "import dev.khbd.result4j.core.Option;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Option<String> getName(int flag) {\n" +
+                        "        return flag(flag).unwrap()\n" +
+                        "          ? Option.some(\"Alex\")\n" +
+                        "          : Option.some(\"Sergei\");\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Option<Boolean> flag(int flag) {\n" +
+                        "        if (flag == 0) {\n" +
+                        "            return Option.none();\n" +
+                        "        }\n" +
+                        "        return Option.some(flag > 0);\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/conditional_expression/Main.java", source);
 
@@ -172,28 +164,26 @@ public class ConditionalExpressionTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInThen_failCompilation() {
-        String source = """
-                package cases.conditional_expression;
-                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    public static Option<String> getName() {
-                        return condition() ? Option.some(nameInternal().unwrap().toUpperCase()) : Option.none();
-                    }
-                
-                    public static boolean condition() {
-                        var rnd = new Random();
-                        return rnd.nextBoolean();
-                    }
-                
-                    public static Option<String> nameInternal() {
-                        return Option.some("Alex");
-                    }
-                }
-                """;
+        String source = "package cases.conditional_expression;\n" +
+                        "\n" +
+                        "import java.util.Random;\n" +
+                        "import dev.khbd.result4j.core.Option;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Option<String> getName() {\n" +
+                        "        return condition() ? Option.some(nameInternal().unwrap().toUpperCase()) : Option.none();\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static boolean condition() {\n" +
+                        "        var rnd = new Random();\n" +
+                        "        return rnd.nextBoolean();\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Option<String> nameInternal() {\n" +
+                        "        return Option.some(\"Alex\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/conditional_expression/Main.java", source);
 
@@ -204,28 +194,26 @@ public class ConditionalExpressionTest extends AbstractPluginTest {
 
     @Test
     public void propagate_unwrapCallInElse_failCompilation() {
-        String source = """
-                package cases.conditional_expression;
-                
-                import java.util.Random;
-                import dev.khbd.result4j.core.Option;
-                
-                public class Main {
-                
-                    public static Option<String> getName() {
-                        return condition() ?  Option.none() : Option.some(nameInternal().unwrap().toUpperCase());
-                    }
-                
-                    public static boolean condition() {
-                        var rnd = new Random();
-                        return rnd.nextBoolean();
-                    }
-                
-                    public static Option<String> nameInternal() {
-                        return Option.some("Alex");
-                    }
-                }
-                """;
+        String source = "package cases.conditional_expression;\n" +
+                        "\n" +
+                        "import java.util.Random;\n" +
+                        "import dev.khbd.result4j.core.Option;\n" +
+                        "\n" +
+                        "public class Main {\n" +
+                        "\n" +
+                        "    public static Option<String> getName() {\n" +
+                        "        return condition() ?  Option.none() : Option.some(nameInternal().unwrap().toUpperCase());\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static boolean condition() {\n" +
+                        "        var rnd = new Random();\n" +
+                        "        return rnd.nextBoolean();\n" +
+                        "    }\n" +
+                        "\n" +
+                        "    public static Option<String> nameInternal() {\n" +
+                        "        return Option.some(\"Alex\");\n" +
+                        "    }\n" +
+                        "}\n";
 
         CompilationResult result = compiler.compile(new PluginOptions(true), "cases/conditional_expression/Main.java", source);
 
